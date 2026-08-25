@@ -78,20 +78,20 @@ routerAdd("POST", "/fellows/code", (e) => {
     // email, not the birth month. Storing it is the regulated act.
     return e.json(200, {
       ok: false, stop: true,
-      message: "You have to be 13 to join this one. Come back on your birthday — we'll still be here, and we'd genuinely like to have you."
+      message: "You have to be 13 to join this one. Come back on your birthday. We'll still be here, and we'd genuinely like to have you."
     });
   }
   if (country !== "us" && country !== "ca") {
     return e.json(200, {
       ok: false, stop: true,
-      message: "Right now we can only take fellows in the US and Canada, because that's where we can pay people properly. We'll open it up — leave us your email at anticipy.ai and we'll tell you when."
+      message: "Right now we can only take fellows in the US and Canada, because that's where we can pay people properly. We'll open it up. Leave us your email at anticipy.ai and we'll tell you when."
     });
   }
 
   // ---- throttles ----------------------------------------------------------
   // Every outcome below returns the SAME message. A stranger must not be able
   // to learn whether an address is already on file, or which limit they hit.
-  const uniform = { ok: true, message: "Check your email — your code is on the way." };
+  const uniform = { ok: true, message: "Check your email. Your code is on the way." };
 
   try {
     const recent = e.app.findRecordsByFilter("fellow_codes",
@@ -158,7 +158,7 @@ routerAdd("POST", "/fellows/code", (e) => {
         act.set("subject", "The fellowship sign-in email meter tripped at " + ceiling + "/hour");
         e.app.save(act);
       } catch (_) {}
-      return e.json(200, { ok: false, message: "We're getting a lot of signups right now — try again in a few minutes." });
+      return e.json(200, { ok: false, message: "We're getting a lot of signups right now. Try again in a few minutes." });
     }
     meter.set("hour", hourNow); meter.set("calls", used + 1);
     e.app.save(meter);
@@ -170,7 +170,7 @@ routerAdd("POST", "/fellows/code", (e) => {
   const code = String(Math.floor(100000 + Math.random() * 900000));
   const rk = $os.getenv("RESEND_API_KEY") || "";
   if (!rk) {
-    return e.json(200, { ok: false, message: "We can't send codes this minute. Try again shortly — it's us, not you." });
+    return e.json(200, { ok: false, message: "We can't send codes this minute. Try again shortly. It's us, not you." });
   }
   let sent = false;
   try {
@@ -182,7 +182,7 @@ routerAdd("POST", "/fellows/code", (e) => {
         from: "Anticipy Fellowships <notifications@aevoy.com>",
         to: [email],
         subject: code + " is your Anticipy code",
-        text: "Here's your code: " + code + "\n\nIt works for 10 minutes.\n\nIf you didn't ask for this, you can ignore this email — nothing has been created."
+        text: "Here's your code: " + code + "\n\nIt works for 10 minutes.\n\nIf you didn't ask for this, you can ignore this email. Nothing has been created."
       }),
       timeout: 20,
     });
@@ -242,7 +242,7 @@ routerAdd("POST", "/fellows/verify", (e) => {
   const country = String(body.country || "").trim().toLowerCase();
 
   if (!email || !/^\d{6}$/.test(code)) {
-    return e.json(200, { ok: false, message: "That code doesn't look right — it's the six digits from the email." });
+    return e.json(200, { ok: false, message: "That code doesn't look right. It's the six digits from the email." });
   }
 
   let row = null;
@@ -259,7 +259,7 @@ routerAdd("POST", "/fellows/verify", (e) => {
   const exp = Date.parse(row.getString("expires"));
   if (isNaN(exp) || nowMs > exp) {
     row.set("used", true); try { e.app.save(row); } catch (_) {}
-    return e.json(200, { ok: false, message: "That code expired — they only last ten minutes. Ask for a new one." });
+    return e.json(200, { ok: false, message: "That code expired. They only last ten minutes. Ask for a new one." });
   }
   const attempts = (Number(row.get("attempts")) || 0) + 1;
   row.set("attempts", attempts);
@@ -403,7 +403,7 @@ routerAdd("POST", "/fellows/start", (e) => {
   if (now.getUTCMonth() + 1 < bm) age -= 1;
   if (age < 13) {
     return e.json(200, { ok: false, stop: true,
-      message: "You have to be 13 to join this one. Come back on your birthday — we'll still be here, and we'd genuinely like to have you." });
+      message: "You have to be 13 to join this one. Come back on your birthday. We'll still be here, and we'd genuinely like to have you." });
   }
   if (country !== "us" && country !== "ca") {
     return e.json(200, { ok: false, stop: true,
@@ -745,7 +745,7 @@ routerAdd("POST", "/fellows/apply", (e) => {
       // to their dashboard rather than to a second acceptance.
       return e.json(200, { ok: true, verdict: technical ? "received" : "accept", already: true,
         message: technical
-          ? "We've already got this one. Nothing more to do — we'll write to you."
+          ? "We've already got this one. Nothing more to do. We'll write to you."
           : "You're already in. Head straight to the lessons.",
         fellow: {
           status: fellow.getString("status") || "accepted",
@@ -775,11 +775,11 @@ routerAdd("POST", "/fellows/apply", (e) => {
     : (realish ? "fallback_accept" : "ask_more");
   let message = verdict === "ask_more"
     ? (technical
-        ? "Give us a couple more real sentences — enough that there's something to read."
-        : "Give us one more real sentence — just what you actually want out of this. That's genuinely all we need.")
+        ? "Give us a couple more real sentences, enough that there's something to read."
+        : "Give us one more real sentence, just what you actually want out of this. That's genuinely all we need.")
     : (technical
-        ? "Got it, " + firstName + ". A person reads this one, not a model — so it takes a few days rather than a few seconds."
-        : "You're in, " + firstName + ". You said what you wanted out of this and that's the whole bar — the rest we teach you.");
+        ? "Got it, " + firstName + ". A person reads this one, not a model, so it takes a few days rather than a few seconds."
+        : "You're in, " + firstName + ". You said what you wanted out of this and that's the whole bar. The rest we teach you.");
   let modelUsed = "", aiOk = false;
 
   const orKey = $os.getenv("OPENROUTER_API_KEY") || "";
@@ -801,11 +801,11 @@ routerAdd("POST", "/fellows/apply", (e) => {
     const system = [
       "You read applications to a marketing fellowship at a tiny startup and reply to the applicant.",
       "The bar is LOW ON PURPOSE: anyone who wrote a real, honest answer gets in. We teach the rest.",
-      "Reply 'ask_more' ONLY if the answers are empty, gibberish, keyboard-mash, or a joke — never because",
+      "Reply 'ask_more' ONLY if the answers are empty, gibberish, keyboard-mash, or a joke, never because",
       "someone lacks experience, followers, or ambition. Having no experience is the normal case here.",
       "",
       "Write 2 or 3 sentences, to them, in plain words a 15-year-old reads without effort.",
-      "Name something SPECIFIC they actually wrote — that is the whole point of reading it.",
+      "Name something SPECIFIC they actually wrote. That is the whole point of reading it.",
       "Do not flatter. Do not say 'impressive' or 'passionate' or 'excited'. Do not mention money or",
       "earnings. Do not promise anything. No exclamation marks. Sentence case.",
       "Their first name is: " + firstName + ".",
@@ -884,7 +884,7 @@ routerAdd("POST", "/fellows/apply", (e) => {
     try { e.app.save(fellow); }
     catch (err) {
       return e.json(200, { ok: false,
-        message: "We couldn't save that. Nothing's lost — press it once more." });
+        message: "We couldn't save that. Nothing's lost. Press it once more." });
     }
 
     const rkT = $os.getenv("RESEND_API_KEY") || "";
@@ -911,8 +911,8 @@ routerAdd("POST", "/fellows/apply", (e) => {
             // would be a lie and "congratulations" would be worse.
             subject: (firstT ? firstT + ", we've got your application" : "We've got your application"),
             text: (firstT ? firstT + ", we've got it." : "We've got it.")
-              + "\n\nYou applied to the " + trackName + " fellowship. A person reads these —"
-              + "\nnot a model — so give it a few days rather than a few seconds."
+              + "\n\nYou applied to the " + trackName + " fellowship. A person reads these,"
+              + "\nnot a model, so give it a few days rather than a few seconds."
               + "\n\nIf it looks like a fit we'll write to set up a call. It's a conversation,"
               + "\nnot a test, and there's nothing to prepare."
               + "\n\nOne thing worth saying plainly now: this track doesn't pay. There's no"
@@ -938,7 +938,7 @@ routerAdd("POST", "/fellows/apply", (e) => {
       actT.set("actor", ""); actT.set("actor_name", "Fellowships");
       actT.set("action", "fellow.applied");
       actT.set("subject", (fellow.getString("name") || fellow.getString("email"))
-        + " applied to the " + trackName + " fellowship — needs a person");
+        + " applied to the " + trackName + " fellowship, needs a person");
       actT.set("ref", fellow.get("id"));
       e.app.save(actT);
     } catch (_) {}
@@ -997,7 +997,7 @@ routerAdd("POST", "/fellows/apply", (e) => {
   try { e.app.save(fellow); }
   catch (err) {
     return e.json(200, { ok: false,
-      message: "We couldn't save that. Nothing's lost — press it once more." });
+      message: "We couldn't save that. Nothing's lost. Press it once more." });
   }
 
   // Guarded, so a retry, a double-click or a re-send cannot mail anyone twice.
@@ -1021,7 +1021,7 @@ routerAdd("POST", "/fellows/apply", (e) => {
           // save above is what makes that true.
           subject: (first ? first + ", you're in" : "You're in"),
           text: (first ? first + ", you're in." : "You're in.")
-            + "\n\nStart here — unit 0 is five minutes and it's just what this thing is.\n"
+            + "\n\nStart here. Unit 0 is five minutes and it's just what this thing is.\n"
             + site2 + "/fellowship-growth-learning"
             + "\n\nYour link, for when you start posting:\n"
             + sell2 + "/r/" + fellow.getString("referral_code")
@@ -1034,7 +1034,7 @@ routerAdd("POST", "/fellows/apply", (e) => {
             // the kind of thing that is only ever discovered on payday.
             + "\n\n$30 when someone buys through it. One payment, 30 days after they buy,"
             + "\nand we never take it back. The 30 days is the window where a purchase can"
-            + "\nstill be cancelled \u2014 we wait it out once rather than paying you in halves."
+            + "\nstill be cancelled. We wait it out once rather than paying you in halves."
             + confirmLine
             + "\n\nThat's everything. Go make something."
         }),
@@ -1147,7 +1147,7 @@ routerAdd("POST", "/fellows/profile", (e) => {
   }
   if ("phone" in body) {
     const ph = String(body.phone || "").trim().replace(/[\s()-]/g, "");
-    if (ph && !/^\+?\d{8,15}$/.test(ph)) return e.json(200, { ok: false, message: "That number doesn't look right — include the country code." });
+    if (ph && !/^\+?\d{8,15}$/.test(ph)) return e.json(200, { ok: false, message: "That number doesn't look right. Include the country code." });
     fellow.set("phone", ph);
   }
   if ("sms_opt_in" in body) {
@@ -1348,7 +1348,7 @@ routerAdd("POST", "/fellows/submissions", (e) => {
         return no("junk", "Paste the link to what you made. We track " + PLATFORMS + ".");
       }
       if (u.length > 2048) {
-        return no("junk", "That's far too long to be a link — paste just the address of the post.");
+        return no("junk", "That's far too long to be a link. Paste just the address of the post.");
       }
       // A share sheet on a phone really does hand over zero-width joiners, and
       // an RTL keyboard really does add bidi marks. They are invisible on
@@ -1484,7 +1484,7 @@ routerAdd("POST", "/fellows/submissions", (e) => {
       // youtu.be is the sole exception, because the id is already in the path
       // and no network call is needed to read it.
       if (TIKTOK_SHORT.test(url) || TIKTOK_T.test(url)) {
-        return no("short", "That's TikTok's short link — it doesn't say which video it is. Open it, then use Copy link from the video page; the one you want has your @name in it.", "tiktok");
+        return no("short", "That's TikTok's short link. It doesn't say which video it is. Open it, then use Copy link from the video page; the one you want has your @name in it.", "tiktok");
       }
       if (X_SHORT.test(url)) {
         return no("short", "That's a t.co link, which doesn't say which post it is. Open it and copy the address from the top of the page.", "x");
@@ -1610,7 +1610,7 @@ routerAdd("POST", "/fellows/submissions", (e) => {
       }
 
       // ---- 6. everything else ---------------------------------------------
-      return no("unknown", "We only track " + PLATFORMS + " right now. If you made it somewhere else, tell us at hello@anticipy.ai — we'd genuinely like to know where you're posting.");
+      return no("unknown", "We only track " + PLATFORMS + " right now. If you made it somewhere else, tell us at hello@anticipy.ai. We'd genuinely like to know where you're posting.");
     };
 
     const first = parse1(input);
@@ -1816,7 +1816,7 @@ routerAdd("POST", "/fellows/submissions", (e) => {
       const t = pbTime(other.getString("created"));
       if (!isNaN(t)) { const d = new Date(t); when = d.getUTCDate() + " " + M[d.getUTCMonth()]; }
       return e.json(200, { ok: true, already: true, id: other.get("id"),
-        message: when ? "You've already logged this one — you added it on " + when + "."
+        message: when ? "You've already logged this one. You added it on " + when + "."
                       : "You've already logged this one." });
     }
     if (other) {
@@ -1833,7 +1833,7 @@ routerAdd("POST", "/fellows/submissions", (e) => {
         const act = new Record(e.app.findCollectionByNameOrId("internal_activity"));
         act.set("actor", ""); act.set("actor_name", "Fellowships");
         act.set("action", "fellow.submission_collision");
-        act.set("subject", "Two fellows claim " + p.url_key + " — held by " + other.getString("fellow")
+        act.set("subject", "Two fellows claim " + p.url_key + ", held by " + other.getString("fellow")
                          + ", also submitted by " + fellow.get("id"));
         act.set("ref", other.get("id"));
         e.app.save(act);
@@ -2116,7 +2116,7 @@ routerAdd("POST", "/internal/fellows/submissions/remove", (e) => {
     act.set("actor", ""); act.set("actor_name", "Fellowships");
     act.set("action", "fellow.submission_removed");
     act.set("subject", "Removed submission " + row.getString("url_key")
-                     + (reason ? " — " + reason.slice(0, 80) : ""));
+                     + (reason ? ": " + reason.slice(0, 80) : ""));
     act.set("ref", id);
     e.app.save(act);
   } catch (_) {}
@@ -2171,7 +2171,7 @@ routerAdd("POST", "/internal/fellows/submissions/release", (e) => {
   // index is the only thing standing between us and that. Release is a thing
   // you do to a removal.
   if (row.getString("status") !== "removed") {
-    return e.json(409, { error: "that one hasn't been removed — remove it first" });
+    return e.json(409, { error: "that one hasn't been removed: remove it first" });
   }
   const released = row.getString("url_key");
   if (!released) return e.json(200, { ok: true, already: true, released: "" });
@@ -2190,7 +2190,7 @@ routerAdd("POST", "/internal/fellows/submissions/release", (e) => {
     const act = new Record(e.app.findCollectionByNameOrId("internal_activity"));
     act.set("actor", ""); act.set("actor_name", "Fellowships");
     act.set("action", "fellow.submission_released");
-    act.set("subject", "Released " + released + " — anyone but " + row.getString("fellow")
+    act.set("subject", "Released " + released + ", anyone but " + row.getString("fellow")
                      + " may log it again" + (reason ? ": " + reason.slice(0, 80) : ""));
     act.set("ref", id);
     e.app.save(act);
@@ -2239,7 +2239,7 @@ routerAdd("POST", "/internal/fellows/remove", (e) => {
     const act = new Record(e.app.findCollectionByNameOrId("internal_activity"));
     act.set("actor", ""); act.set("actor_name", "Fellowships");
     act.set("action", "fellow.removed");
-    act.set("subject", "Removed " + who + (body.reason ? " — " + String(body.reason).slice(0, 80) : ""));
+    act.set("subject", "Removed " + who + (body.reason ? ": " + String(body.reason).slice(0, 80) : ""));
     act.set("ref", id);
     e.app.save(act);
   } catch (_) {}

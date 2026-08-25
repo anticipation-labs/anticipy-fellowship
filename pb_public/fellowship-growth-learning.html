@@ -136,10 +136,10 @@ hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
 
 /* ---- the course map ---------------------------------------------------- */
 /* The continue card. The single highest-leverage element on this page: it
-   answers "start here" and "where was I" with the same component, and it is
-   the ONLY gold-marked element on the map. Nothing else competes. */
+   answers "start here" and "where was I" with the same component. It carries
+   no gold mark; size and position do the work. */
 .cont{margin-top:34px;background:var(--paper-2);border:1px solid var(--rule-2);
-  border-left:2px solid var(--accent);border-radius:14px;padding:30px 30px 30px 32px}
+  border-radius:14px;padding:30px}
 .cont .lname{font:400 clamp(22px,3.4vw,28px)/1.12 var(--serif);letter-spacing:-.03em;margin-top:4px}
 .cont .meta{margin-top:8px;font:300 14.5px/1.6 var(--sans);color:var(--ink-2)}
 .cont .crail{position:relative;height:2px;background:var(--rule-2);margin:22px 0 24px}
@@ -293,7 +293,6 @@ hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
 .c-vs .pane{background:var(--paper-2);border:1px solid var(--rule-2);border-radius:14px;padding:24px}
 .c-vs .pane .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--ink-2);display:block;margin-bottom:12px}
-.c-vs .pane.yes{border-left:2px solid var(--accent);padding-left:22px}
 .c-vs .pane q{font:400 20px/1.34 var(--serif);letter-spacing:-.02em;quotes:'"' '"'}
 
 /* TYPE 5 — rule. The only place --danger appears outside answer feedback,
@@ -372,7 +371,7 @@ hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
    harder to read. */
 .qopt:disabled{opacity:1;cursor:default}
 .qwhy{margin-top:18px;font:300 15.5px/1.65 var(--sans);color:var(--ink-2);
-  border-left:2px solid var(--accent);padding-left:16px;display:none}
+  padding-left:16px;display:none}
 .qwhy.on{display:block;animation:pane .2s linear both}
 
 /* TYPE 11 — do. Instruction first, rule, then the guard underneath. The old
@@ -397,11 +396,11 @@ hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
 .c-land .inv p{margin:0;font:300 15.5px/1.7 var(--sans);font-variant-numeric:tabular-nums;max-width:32em}
 /* MAKE ONE. The founder's line: "it should be showing, after every lesson,
    that you should make a video." Every lesson, above the fold at 390px, and
-   the only gold-marked block on the screen. Lesson-specific and never
-   generic: generic nagging gets ignored, a one-step ask built from the thing
-   you just made does not. */
+   the closing block on the screen. Lesson-specific and never generic:
+   generic nagging gets ignored, a one-step ask built from the thing you just
+   made does not. */
 .c-land .make{margin-top:26px;background:var(--paper-2);border:1px solid var(--rule-2);
-  border-left:2px solid var(--accent);border-radius:14px;padding:24px 24px 24px 26px}
+  border-radius:14px;padding:24px}
 .c-land .make .ask{font:400 21px/1.32 var(--serif);letter-spacing:-.02em;max-width:22em}
 .c-land .make .guard{margin-top:12px;font:300 13.5px/1.6 var(--sans);color:var(--ink-2)}
 .c-land .next{margin-top:24px;font:300 15.5px/1.7 var(--sans);color:var(--ink-2)}
@@ -576,10 +575,10 @@ var COURSE = [
       { claim:"it just does things on its own", truth:"it asks before anything it can't undo." }
     ]},
 
-    "notice the last one. ‹it asks first›. that isn't a limit you apologise for — it's the reason a stranger believes the rest.",
+    "notice the last one. ‹it asks first›. that isn't a limit you apologise for. it's the reason a stranger believes the rest.",
 
     { t:"check", q:"a stranger comments \"so it records everything and ships it to a server?\" which reply can you still defend next week?",
-      a:["nothing ever leaves my device","the pendant sends audio off to be turned into text — that part does leave"], right:1,
+      a:["nothing ever leaves my device","the pendant sends audio off to be turned into text, and that part does leave"], right:1,
       why:"it's the one that's actually true, and true is the only thing that survives someone checking.",
       whyWrong:"it sounds stronger and it isn't true. that trade is exactly what killed the last three of these." },
 
@@ -640,7 +639,7 @@ var COURSE = [
       sub:"not as encouragement. as a description of how the thing is built." },
 
     { t:"check", q:"a brand with 2 million followers posts the same day you do. who has the better shot at a million views?",
-      a:["the brand, obviously","either of you — the first few hundred strangers decide"], right:1,
+      a:["the brand, obviously","either of you: the first few hundred strangers decide"], right:1,
       why:"the test group doesn't know or care who posted it. that's the part that's good for you.",
       whyWrong:"followers get the brand a slightly bigger first room. after that it's the same fight, and their video usually looks like an ad." },
 
@@ -665,7 +664,7 @@ var COURSE = [
       close:"likes are nice. likes decide nothing. stop chasing them." },
 
     { t:"check", q:"your video gets 900 likes and 22% of people watch to the end. what happened?",
-      a:["it did well — 900 likes is a lot","it died — the ending number is the one that matters"], right:1,
+      a:["it did well: 900 likes is a lot","it died: the ending number is the one that matters"], right:1,
       why:"under about 30% finishing, the app stops showing it. the likes came from the few who stayed.",
       whyWrong:"900 people liking it feels great and it isn't the number that buys you the next room." },
 
@@ -758,7 +757,7 @@ var COURSE = [
 
     { t:"bar", lead:"and here's how the app reads what happened next.",
       segs:[{a:0,b:30,tone:"quiet"},{a:30,b:70,tone:"quiet"},{a:70,b:100,tone:"gold"}],
-      ticks:[{at:30,label:"under 30% — it dies"},{at:70,label:"over 70% — viral zone",end:true}],
+      ticks:[{at:30,label:"under 30%, it dies"},{at:70,label:"over 70%, viral zone",end:true}],
       sub:"the percentage of people who stop to watch instead of scrolling past." },
 
     "so the first moment is most of the work. we're going to obsess over it.",
@@ -860,12 +859,12 @@ var COURSE = [
     "you will never again sit down and wonder what to make. that's what the grid is for.",
 
     { t:"check", q:"you build the grid and 19 of the 24 are bad. what does that mean?",
-      a:["you're bad at this","it's working — you only needed five"], right:1,
+      a:["you're bad at this","it's working: you only needed five"], right:1,
       why:"the grid exists to produce the five. the nineteen are how you found them.",
       whyWrong:"nobody writes 24 good hooks. writing 24 and keeping 5 is what the professionals are doing too." },
 
     { t:"do", mins:8,
-      text:"build your grid. cross out the weak ones. circle your top 5. keep it — it feeds every video you'll ever make." }
+      text:"build your grid. cross out the weak ones. circle your top 5. keep it: it feeds every video you'll ever make." }
   ]},
 
   { id:"u2-l6", name:"film the hook test", cards:[
@@ -881,12 +880,12 @@ var COURSE = [
     "you just did what most people who call themselves marketers never do. you tested before you built.",
 
     { t:"check", q:"all three of your hooks feel a bit embarrassing to watch back. what's the read?",
-      a:["they're bad, start over","that's what everyone's first three feel like — pick the least bad and move"], right:1,
+      a:["they're bad, start over","that's what everyone's first three feel like: pick the least bad and move"], right:1,
       why:"the cringe is you watching yourself, not the viewer watching you. it fades around clip nine.",
       whyWrong:"starting over is how people spend a month making nothing. the fix is volume, not another rewrite." },
 
     { t:"do", mins:6, kind:"film",
-      text:"film your top 3 hooks, 5 seconds each. keep the winning clip — next unit we build your first full video on top of it." }
+      text:"film your top 3 hooks, 5 seconds each. keep the winning clip. next unit we build your first full video on top of it." }
   ]}
 ]},
 {
@@ -1005,7 +1004,7 @@ var COURSE = [
       { head:"cut the middle out", body:"playhead on the gap, tap split, tap the dead bit, delete. that is every cut you will ever make." },
       { head:"captions on", body:"text, then auto captions. then read every line back." },
       { head:"words to the middle", body:"the app's own buttons sit over the bottom and the right edge." },
-      { head:"export", body:"1080p, 30. delete the last clip first — the one that says capcut." }
+      { head:"export", body:"1080p, 30. delete the last clip first, the one that says capcut." }
     ], close:"that is the whole app. everything else in it is optional." },
 
     "the subtitles it writes are nearly right, and the bit it gets wrong is always a name. it spells what it heard. ‹anticipy› comes out \"anticipate\" until you tap that line and fix it.",
@@ -1018,7 +1017,7 @@ var COURSE = [
       yesLab:"where it survives", yes:"the middle third",
       close:"the bottom quarter is the app's own caption bar and the right edge is the like button. words there are covered on every phone." },
 
-    "export the file, then upload the file. never screen-record it, and never save a video off tiktok and hand that to instagram — it carries a watermark and gets buried.",
+    "export the file, then upload the file. never screen-record it, and never save a video off tiktok and hand that to instagram. it carries a watermark and gets buried.",
 
     { t:"check", q:"you finish the edit and your caption sits at the bottom of the frame. what happens when you upload it?",
       a:["it's fine, that's where captions go","the app's own buttons sit on top of it and nobody reads it"], right:1,
@@ -1054,7 +1053,7 @@ var COURSE = [
       sub:"a person who made twenty videos in one lane is a channel. a person who made four in each of five lanes is a stranger." },
 
     { t:"check", q:"you don't have a pendant yet. which lanes can you film today?",
-      a:["none of them, you need the product","lanes 1, 2 and 3 — none of them need the object"], right:1,
+      a:["none of them, you need the product","lanes 1, 2 and 3: none of them need the object"], right:1,
       why:"three of the five are about you and the problem. the product turns up in the last five seconds, if at all.",
       whyWrong:"waiting for the object is how people make nothing for six months. the object is not the video." },
 
@@ -1080,7 +1079,7 @@ var COURSE = [
     "why so strict? because a comment saying \"this is fake\" under your video costs you more than the video earned.",
 
     { t:"check", q:"you're filming and you can't remember whether it does speaker ID. what do you say?",
-      a:["say it does — you can correct it in a comment later","leave it out of the video entirely"], right:1,
+      a:["say it does: you can correct it in a comment later","leave it out of the video entirely"], right:1,
       why:"nothing you don't say can be screenshotted. a correction in the comments never catches the video.",
       whyWrong:"the comment gets 40 views and the video gets 40,000. that trade never works." },
 
@@ -1102,7 +1101,7 @@ var COURSE = [
     "then posting is a two-minute job, not a whole evening. that's the difference between week three and quitting in week three.",
 
     { t:"check", q:"you filmed six videos on sunday in the same shirt. someone notices. what happens?",
-      a:["they think you're lazy","nothing — nobody watches your videos back to back except you"], right:1,
+      a:["they think you're lazy","nothing: nobody watches your videos back to back except you"], right:1,
       why:"your feed is a wall to you and a single video to everyone else. they see one, days apart.",
       whyWrong:"the only person who'll ever scroll your page in one sitting is you, at midnight, being unkind to yourself." },
 
@@ -1191,7 +1190,7 @@ var COURSE = [
     ]},
 
     { t:"check", q:"your video is about to end. do you say \"link in bio\"?",
-      a:["yes, otherwise how do they find it","no — saying it gets the video buried, and they'll look anyway"], right:1,
+      a:["yes, otherwise how do they find it","no: saying it gets the video buried, and they'll look anyway"], right:1,
       why:"the app treats it as an ad the moment you say it. a buried video sells nothing to nobody.",
       whyWrong:"people who want the thing go to your profile without being told. that's what a profile is for." },
 
@@ -1223,12 +1222,12 @@ var COURSE = [
     { t:"check", q:"someone buys through your link today. when do you get the $30?",
       a:["straight away","30 days later, in one go"], right:1,
       why:"30 days is how long a purchase can still be cancelled. we wait it out, then it's yours for good.",
-      whyWrong:"nobody pays out the same day — that's how you end up being asked for money back." },
+      whyWrong:"nobody pays out the same day. that's how you end up being asked for money back." },
 
     { t:"keep", line:"we don't get to change those numbers quietly." },
 
     { t:"do", mins:2,
-      text:"open your fellowship page and look at your click count. it's probably zero. that's fine — it's a real number and it's yours." }
+      text:"open your fellowship page and look at your click count. it's probably zero. that's fine. it's a real number and it's yours." }
   ]},
 
   { id:"u7-l2", name:"getting the money out", cards:[
@@ -1272,7 +1271,7 @@ var COURSE = [
       whyWrong:"it feels like monitoring and it's actually just a bad evening. the number isn't real yet." },
 
     { t:"do", mins:2,
-      text:"next time you post — whenever that is — look once, the next day, and write down that one number. that's your whole analytics practice." }
+      text:"next time you post, whenever that is, look once, the next day, and write down that one number. that's your whole analytics practice." }
   ]},
 
   { id:"u8-l2", name:"what to do with a winner", cards:[
@@ -1325,13 +1324,13 @@ var MAKEONE = {
 "u3-l2":"film the script you just fixed. read it out loud once first, then put the paper down.",
 "u3-l3":"film the loop. watch it twice on purpose. if you can't see the seam, post it.",
 "u3-l4":"film your disclosure line once so you know how it sounds in your mouth. it should sound like nothing.",
-"u3-l5":"you have a finished file now. film a second clip and run the same five moves — the second one takes two minutes.",
+"u3-l5":"you have a finished file now. film a second clip and run the same five moves. the second one takes two minutes.",
 "u4-l1":"pick lane 1 and film two of the things you forgot this week. that's a video and you already wrote it.",
 "u4-l2":"film your honest line: what it is, what it isn't. two sentences. this is the clip you'll reuse the most.",
 "u5-l1":"film one thing in the corner you just picked. now the corner is a studio, because you used it once.",
 "u5-l2":"film cut number two of your best idea. same script, different hook. it takes 40 seconds.",
 "u5-l3":"film your number and say it out loud. saying it is what makes it a plan instead of a wish.",
-"u6-l1":"film the rewritten first line — the one about the person, not the pendant. 6 seconds.",
+"u6-l1":"film the rewritten first line, the one about the person, not the pendant. 6 seconds.",
 "u6-l2":"film a 10-second video that never says \"link in bio.\" notice how much room that leaves you.",
 "u7-l1":"film yourself saying the $30 split in your own words. people ask. now you can answer in one take.",
 "u7-l2":"film nothing this time. do the five-minute setup instead. it's the only lesson where admin beats filming.",
@@ -1608,7 +1607,7 @@ function renderCard(c, rv){
       + eyebrow("try this · " + (c.mins || 3) + " min" + (c.kind === "film" ? " · filming one" : ""))
       + '<div class="panel"><div class="text">' + mk(c.text) + '</div><hr>'
       + '<div class="note">optional, and it&#39;s for your own account. finishing the lesson is pressing '
-      + 'the button — nobody checks whether you did it.</div></div></div>';
+      + 'the button. nobody checks whether you did it.</div></div></div>';
   }
   return '<div class="cardwrap c-statement"><p class="lead">' + mk(c.lead) + '</p>'
     + (c.sub ? '<div class="sub">' + mk(c.sub) + '</div>' : "") + '</div>';
@@ -1716,7 +1715,7 @@ function back(){
 
 /* ---------- the end of a lesson ----------------------------------------- */
 function inventory(){
-  if (!L.todo.length) return "nothing saved yet — the try above takes four minutes.";
+  if (!L.todo.length) return "nothing saved yet. the try above takes four minutes.";
   var films = L.todo.filter(function(x){ return x.kind === "film"; }).length;
   return L.todo.length + (L.todo.length === 1 ? " thing saved" : " things saved")
     + (films ? " · " + films + " of them on camera" : "");

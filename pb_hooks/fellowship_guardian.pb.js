@@ -46,7 +46,7 @@ routerAdd("POST", "/fellows/guardian/link", (e) => {
   }
   if (fellow.getString("parental_consent") === "confirmed") {
     return e.json(200, { ok: true, done: true,
-      message: "Already done — " + (fellow.getString("guardian_name") || "your guardian") + " completed this." });
+      message: "Already done. " + (fellow.getString("guardian_name") || "your guardian") + " completed this." });
   }
 
   const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -94,7 +94,7 @@ routerAdd("GET", "/fellows/guardian", (e) => {
 
   const HEAD = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
     + '<meta name="viewport" content="width=device-width, initial-scale=1">'
-    + '<title>Anticipy — one step for a parent or guardian</title>'
+    + '<title>Anticipy: one step for a parent or guardian</title>'
     + '<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 32 32\'%3E%3Crect width=\'32\' height=\'32\' fill=\'%23FAF8F4\'/%3E%3Ccircle cx=\'16\' cy=\'16\' r=\'7\' fill=\'%23C8A97E\'/%3E%3C/svg%3E">'
     + '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
     + '<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">'
@@ -148,7 +148,7 @@ routerAdd("GET", "/fellows/guardian", (e) => {
       + '<h1>This link has expired.</h1>'
       + '<p class="small">Guardian links are single-use and a new one replaces the last. Ask the '
       + 'person who sent it to open their fellowship page and tap <b>Get the link for my parent</b> '
-      + 'again — it takes them a second.</p>'
+      + 'again. It takes them a second.</p>'
       + '<p class="small">Nothing is lost, and nothing is wrong with their account.</p>'
       + '<p class="tiny">If you think you got this in error, write to '
       + '<a href="mailto:hello@anticipy.ai">hello@anticipy.ai</a>.</p>' + FOOT);
@@ -166,7 +166,7 @@ routerAdd("GET", "/fellows/guardian", (e) => {
     + '<span class="eyebrow">One step, about two minutes</span>'
     + '<h1>' + esc(first) + ' joined the Anticipy fellowship.</h1>'
     + '<p>They&rsquo;re learning how short video actually works, and everything in the course is '
-    + 'already open to them. The only thing waiting on you is <b>getting paid</b> — that&rsquo;s '
+    + 'already open to them. The only thing waiting on you is <b>getting paid</b>. That&rsquo;s '
     + 'the law about paying under-18s, not a rule of ours.</p>'
 
     + '<div class="card"><span class="eyebrow">What this is</span>'
@@ -176,7 +176,7 @@ routerAdd("GET", "/fellows/guardian", (e) => {
     + '<div class="row"><b>What they earn.</b> $30 when somebody buys through their link. One '
     + 'payment, 30 days after the purchase, and we never take it back.</div>'
     + '<div class="row"><b>How it arrives.</b> A prepaid Visa card, sent to the email address you '
-    + 'give below. No bank account and no ID is needed from your child — that is the whole '
+    + 'give below. No bank account and no ID is needed from your child. That is the whole '
     + 'reason we pay this way.</div>'
     + '<div class="row"><b>What we don&rsquo;t ask for.</b> No social security number, no bank '
     + 'details, no photo, no address, no school.</div>'
@@ -184,7 +184,7 @@ routerAdd("GET", "/fellows/guardian", (e) => {
 
     + '<label for="g-name">Your full name</label>'
     + '<input type="text" id="g-name" autocomplete="name" placeholder="Alex Rivera">'
-    + '<label for="g-email">Your email — this is where the card is sent</label>'
+    + '<label for="g-email">Your email: this is where the card is sent</label>'
     + '<input type="email" id="g-email" autocomplete="email" inputmode="email" placeholder="you@example.com">'
 
     + '<div class="check"><input type="checkbox" id="g-affirm">'
@@ -206,7 +206,7 @@ routerAdd("GET", "/fellows/guardian", (e) => {
     + 'var n=$("g-name").value.trim(),em=$("g-email").value.trim(),a=$("g-affirm").checked;'
     + 'if(!n)return say("We need your name.","err");'
     + 'if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(em))return say("That email doesn\'t look right.","err");'
-    + 'if(!a)return say("Please tick the box — it\'s the part that actually counts.","err");'
+    + 'if(!a)return say("Please tick the box. It\'s the part that actually counts.","err");'
     + 'var b=this;b.disabled=true;b.textContent="One moment…";say("");'
     + 'fetch("/fellows/guardian",{method:"POST",headers:{"Content-Type":"application/json"},'
     + 'body:JSON.stringify({t:T,guardian_name:n,guardian_email:em,affirm:true})})'
@@ -214,7 +214,7 @@ routerAdd("GET", "/fellows/guardian", (e) => {
     + 'if(!j||!j.ok){b.disabled=false;b.textContent="Try that again";return say((j&&j.message)||"That didn\'t work.","err")}'
     + 'document.querySelector("main").innerHTML='
     + '\'<span class="brand"><span class="dot"></span>Anticipy</span><div class="rule38"></div>\''
-    + '+\'<h1>Done — thank you.</h1><p class="small">\'+j.message+\'</p>\';'
+    + '+\'<h1>Done. Thank you.</h1><p class="small">\'+j.message+\'</p>\';'
     + '}).catch(function(){b.disabled=false;b.textContent="Try that again";say("We couldn\'t reach our end. Try once more.","err")});'
     + '});'
     + '</script>' + FOOT);
@@ -244,7 +244,7 @@ routerAdd("POST", "/fellows/guardian", (e) => {
   // The affirmation is the whole point of the exercise. Without it there is no
   // consent, only a form submission.
   if (body.affirm !== true) {
-    return e.json(200, { ok: false, message: "Please tick the box — it's the part that actually counts." });
+    return e.json(200, { ok: false, message: "Please tick the box. It's the part that actually counts." });
   }
 
   let fellow = null;
@@ -287,7 +287,7 @@ routerAdd("POST", "/fellows/guardian", (e) => {
 
   try { e.app.save(fellow); }
   catch (_) {
-    return e.json(200, { ok: false, message: "We couldn't save that. Nothing's lost — press it once more." });
+    return e.json(200, { ok: false, message: "We couldn't save that. Nothing's lost. Press it once more." });
   }
 
   try {

@@ -196,7 +196,7 @@ routerAdd("POST", "/fellows/payout-method", (e) => {
   if (method === "cash_like" && band !== "18_plus") {
     return e.json(200, { ok: false, field: "method",
       message: "A transfer needs a PayPal or bank account, and a company can't open one of those "
-        + "with someone under 18 — so that option isn't ours to offer yet. The card is the same "
+        + "with someone under 18, so that option isn't ours to offer yet. The card is the same "
         + "$30, by email, and there's nothing to set up." });
   }
 
@@ -209,7 +209,7 @@ routerAdd("POST", "/fellows/payout-method", (e) => {
   if (method === "cash_like" && !($os.getenv("TREMENDOUS_PRODUCT_CASH_LIKE") || "").trim()) {
     return e.json(200, { ok: false, field: "method",
       message: "Transfers aren't switched on yet, so the only thing we could actually send you is the "
-        + "card — and we're not going to say transfer and do something else. It's the same $30, by "
+        + "card, and we're not going to say transfer and do something else. It's the same $30, by "
         + "email, with nothing to set up." });
   }
 
@@ -223,7 +223,7 @@ routerAdd("POST", "/fellows/payout-method", (e) => {
     method: method,
     message: method === "card"
       ? "Done. A prepaid Visa, by email, thirty days after a sale."
-      : "Done. A transfer instead — same $30, it just takes a couple of days longer to land.",
+      : "Done. A transfer instead: same $30, it just takes a couple of days longer to land.",
   });
 });
 
@@ -732,7 +732,7 @@ routerAdd("POST", "/internal/fellows/pay", (e) => {
 
       const status = conv.getString("status");
       if (status === "paid") {
-        return { ok: true, state: "paid", already: true, message: "already paid — nothing was sent" };
+        return { ok: true, state: "paid", already: true, message: "already paid, nothing was sent" };
       }
       if (status === "paying")  return { ok: false, state: "paying", message: "an attempt is already in flight" };
       if (status === "void")    return { ok: false, state: "void", message: "this conversion will never pay" };
@@ -835,7 +835,7 @@ routerAdd("POST", "/internal/fellows/pay", (e) => {
       if (adult && method === "cash_like" && !($os.getenv("TREMENDOUS_PRODUCT_CASH_LIKE") || "").trim()) {
         return hold("This fellow chose a transfer, but no cash-like product is configured "
           + "(TREMENDOUS_PRODUCT_CASH_LIKE is unset), so the only thing this rail could send them is a "
-          + "card they did not ask for. Configure it, or set them back to card and tell them — do not "
+          + "card they did not ask for. Configure it, or set them back to card and tell them. Do not "
           + "just send the card.");
       }
       // ENFORCEMENT ONE OF THE TWO ON THE SEND SIDE. The second is inside
@@ -878,7 +878,7 @@ routerAdd("POST", "/internal/fellows/pay", (e) => {
       const rEmail = String((toGuardian ? fellow.getString("guardian_email") : fellow.getString("email")) || "").trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(rEmail)) {
         return hold("There is no usable address to send " + (toGuardian ? "the guardian's" : "their")
-          + " card to. Confirm it out of band — a bounce is the one failure the vendor will not tell "
+          + " card to. Confirm it out of band. A bounce is the one failure the vendor will not tell "
           + "us about at the time.");
       }
       const fellowFirst = String(fellow.getString("name") || "").trim().split(/\s+/)[0]
@@ -1065,10 +1065,10 @@ routerAdd("POST", "/internal/fellows/pay", (e) => {
         // inside a single "paid" counter.
         logAct(replay ? "fellow.payout_replayed" : "fellow.payout_sent",
           "$" + amount + " to " + (toGuardian ? "a guardian for " : "") + fellowFirst
-          + (replay ? " — the vendor already had this order, so nothing was charged twice" : ""),
+          + (replay ? ", the vendor already had this order, so nothing was charged twice" : ""),
           conv.get("id"));
         return { ok: true, state: "paid", replay: !!replay, message: replay
-          ? "already existed at the vendor — marked paid, nothing was charged again"
+          ? "already existed at the vendor, marked paid, nothing was charged again"
           : "sent" };
       };
       const review = (why) => {
@@ -1632,7 +1632,7 @@ cronAdd("fellow_payout_sweep", "23 * * * *", () => {
 
       const status = conv.getString("status");
       if (status === "paid") {
-        return { ok: true, state: "paid", already: true, message: "already paid — nothing was sent" };
+        return { ok: true, state: "paid", already: true, message: "already paid, nothing was sent" };
       }
       if (status === "paying")  return { ok: false, state: "paying", message: "an attempt is already in flight" };
       if (status === "void")    return { ok: false, state: "void", message: "this conversion will never pay" };
@@ -1735,7 +1735,7 @@ cronAdd("fellow_payout_sweep", "23 * * * *", () => {
       if (adult && method === "cash_like" && !($os.getenv("TREMENDOUS_PRODUCT_CASH_LIKE") || "").trim()) {
         return hold("This fellow chose a transfer, but no cash-like product is configured "
           + "(TREMENDOUS_PRODUCT_CASH_LIKE is unset), so the only thing this rail could send them is a "
-          + "card they did not ask for. Configure it, or set them back to card and tell them — do not "
+          + "card they did not ask for. Configure it, or set them back to card and tell them. Do not "
           + "just send the card.");
       }
       // ENFORCEMENT ONE OF THE TWO ON THE SEND SIDE. The second is inside
@@ -1778,7 +1778,7 @@ cronAdd("fellow_payout_sweep", "23 * * * *", () => {
       const rEmail = String((toGuardian ? fellow.getString("guardian_email") : fellow.getString("email")) || "").trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(rEmail)) {
         return hold("There is no usable address to send " + (toGuardian ? "the guardian's" : "their")
-          + " card to. Confirm it out of band — a bounce is the one failure the vendor will not tell "
+          + " card to. Confirm it out of band. A bounce is the one failure the vendor will not tell "
           + "us about at the time.");
       }
       const fellowFirst = String(fellow.getString("name") || "").trim().split(/\s+/)[0]
@@ -1965,10 +1965,10 @@ cronAdd("fellow_payout_sweep", "23 * * * *", () => {
         // inside a single "paid" counter.
         logAct(replay ? "fellow.payout_replayed" : "fellow.payout_sent",
           "$" + amount + " to " + (toGuardian ? "a guardian for " : "") + fellowFirst
-          + (replay ? " — the vendor already had this order, so nothing was charged twice" : ""),
+          + (replay ? ", the vendor already had this order, so nothing was charged twice" : ""),
           conv.get("id"));
         return { ok: true, state: "paid", replay: !!replay, message: replay
-          ? "already existed at the vendor — marked paid, nothing was charged again"
+          ? "already existed at the vendor, marked paid, nothing was charged again"
           : "sent" };
       };
       const review = (why) => {
@@ -2103,7 +2103,7 @@ cronAdd("fellow_payout_sweep", "23 * * * *", () => {
   const cfg = E.vendor("config", {});
   if (!cfg.configured) {
     E.sayOnce("payout_cfg", "fellow.payout_not_configured",
-      "The payout rail has no key set, so nothing can send. This is not a fault — it is switched off.");
+      "The payout rail has no key set, so nothing can send. This is not a fault. It is switched off.");
     return;
   }
   if (!cfg.ok) {
@@ -2129,7 +2129,7 @@ cronAdd("fellow_payout_sweep", "23 * * * *", () => {
   if (bal.configured && bal.cents >= 0 && bal.cents < needCents) {
     E.sayOnce("payout_fund", "fellow.payout_unfunded",
       "The payout balance is $" + (bal.cents / 100).toFixed(2) + " and $" + (needCents / 100).toFixed(2)
-      + " is due. Nothing was attempted. Top up by ACH, never by card — a card costs 3% for nothing.");
+      + " is due. Nothing was attempted. Top up by ACH, never by card. A card costs 3% for nothing.");
     return;
   }
 
