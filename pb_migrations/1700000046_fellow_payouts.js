@@ -252,7 +252,7 @@ migrate((app) => {
     act.set("action", "fellowship.payout_migration");
     act.set("subject", "Payout rail installed. " + rows.length + " conversion row(s) read"
       + (moved ? "; rewritten: " + moved : "; no status needed rewriting")
-      + (tally["half_paid->needs_review"] ? ". SOMEONE IS OWED $15 BY HAND — see needs_review." : ""));
+      + (tally["half_paid->needs_review"] ? ". SOMEONE IS OWED $15 BY HAND. See needs_review." : ""));
     app.save(act);
   } catch (_) {}
   console.log("fellow payout migration: " + rows.length + " conversions read at " + nowISO

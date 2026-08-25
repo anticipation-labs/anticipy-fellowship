@@ -221,7 +221,7 @@ textarea.field:focus{border-color:var(--accent-ink);border-bottom-color:var(--ac
 .reviewsub{margin-top:14px;font-size:14px;color:var(--ink-2);max-width:32em}
 
 /* ---- acceptance -------------------------------------------------------- */
-.said{border-left:2px solid var(--accent);padding:2px 0 2px 18px;margin-top:22px;
+.said{padding:2px 0 2px 18px;margin-top:22px;
   font:300 18px/1.6 var(--sans);color:var(--ink);max-width:34em}
 .said q{font:400 21px/1.42 var(--serif);letter-spacing:-.015em;quotes:'"' '"'}
 .checklist{margin-top:30px;border-top:1px solid var(--rule-2)}
@@ -271,7 +271,7 @@ hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
 <!-- ===================== S0 — the pitch ===================== -->
 <section class="screen on" id="s0">
   <h1>Learn how growth actually works. On our dime.</h1>
-  <p class="lede">We teach you to make short videos people actually watch — hooks, scripts,
+  <p class="lede">We teach you to make short videos people actually watch: hooks, scripts,
   posting, the lot. You practise on us. If something you make sends us a sale, you get paid for it.</p>
 
   <div class="stack">
@@ -288,7 +288,7 @@ hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
   </div>
 
   <p class="small" style="margin-top:26px">It takes about two minutes to apply.
-  We ask your age and where you live on the next screen — both change how this works,
+  We ask your age and where you live on the next screen. Both change how this works,
   and we'd rather get them right than guess.</p>
   <div class="stack"><button class="btn wide" data-go="s1"><span>Start</span><span class="arw">&#8594;</span></button></div>
 </section>
@@ -296,7 +296,7 @@ hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
 <!-- ===================== S1 — who are you ===================== -->
 <section class="screen" id="s1">
   <h2>First, the boring bit.</h2>
-  <p class="lede">This saves your place. Next come four questions — they take about two minutes
+  <p class="lede">This saves your place. Next come four questions. They take about two minutes
   and there&#39;s no wrong answer to any of them.</p>
   <div class="stack">
     <span class="fwrap"><label class="flab" for="f-name">Your first name</label>
@@ -328,7 +328,7 @@ hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
   <h2 id="stop-h">Come back on your birthday.</h2>
   <p class="lede" id="stop-p"></p>
   <div class="stack"><a class="btn wide" href="https://anticipy.ai">See what we&#39;re building</a>
-  <button class="linkbtn" id="b-notme">This isn&#39;t me — start over</button></div>
+  <button class="linkbtn" id="b-notme">This isn&#39;t me, start over</button></div>
 </section>
 
 <!-- ===================== S3 — pick a fellowship ===================== -->
@@ -387,7 +387,7 @@ hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
     <div class="steps" id="rsteps"><i></i><i></i><i></i></div>
     <div class="reviewline" id="reviewline" role="status">Sending your answers.</div>
     <div class="reviewsub">A person reads these later. Right now it&#39;s a model, and it&#39;s
-    reading your words — not a template.</div>
+    reading your words, not a template.</div>
   </div>
 </section>
 
@@ -401,8 +401,8 @@ hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
     <a class="btn wide" id="b-start" href="/fellowship-growth-learning.html">
       <span>Start lesson one</span><span class="arw">&#8594;</span></a>
     <p class="tiny">Ten minutes. It ends with you being able to explain what this thing is.</p>
-    <p class="small"><a id="b-discord" href="#" target="_blank" rel="noopener noreferrer">Join the community on Discord</a>
-    &mdash; it&#39;s where everyone else in the fellowship is. Nothing is announced anywhere else.</p>
+    <p class="small"><a id="b-discord" href="#" target="_blank" rel="noopener noreferrer">Join the community on Discord</a>.
+    It&#39;s where everyone else in the fellowship is. Nothing is announced anywhere else.</p>
   </div>
   <div id="acc-what"></div>
   <div id="acc-money"></div>
@@ -419,12 +419,12 @@ hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
        students who trusted the institution least. Both halves are required.
        This page never contains "rejected", "declined", "unsuccessful" or
        "unfortunately", because none of them are true here. -->
-  <p>That&#39;s not a no, and it isn&#39;t about experience — nobody here has any. It&#39;s that we
+  <p>That&#39;s not a no, and it isn&#39;t about experience. Nobody here has any. It&#39;s that we
   can&#39;t write you something real from what&#39;s in the box, and sending you a template would be
   worse than asking twice.</p>
   <p class="small">One honest sentence anywhere in there does it. This is the whole bar:</p>
   <div class="said"><q>idk i just want to get better at posting stuff, my videos get like 40 views</q></div>
-  <p class="small">That would get in. It isn&#39;t impressive and it isn&#39;t meant to be — it&#39;s just
+  <p class="small">That would get in. It isn&#39;t impressive and it isn&#39;t meant to be. It&#39;s just
   true, and true is the entire test.</p>
   <div class="stack"><button class="btn wide" id="b-again"><span>Take me back</span><span class="arw">&#8594;</span></button>
   <p class="tiny">Your answers are still there.</p></div>
@@ -582,7 +582,7 @@ $("b-sendcode").addEventListener("click", function(){
     return;
   }
   if (country === "other"){
-    $("stop-h").textContent = "Not where you are — yet.";
+    $("stop-h").textContent = "Not where you are, yet.";
     $("stop-p").textContent = "Right now we can only take fellows in the US and Canada, because that's where we can pay people properly. That will change.";
     show("s1b"); return;
   }
@@ -667,7 +667,7 @@ QSETS.growth = [
     h:"One line. \u201cMake a video that gets past a thousand views\u201d is a completely normal answer.",
     ph:"i want to be able to…" },
   { k:"make",  t:"Tell us about the last thing you made and put somewhere other people could see it.",
-    h:"A post, a school project, a poster for a bake sale, a meme in a group chat. If you've never posted anything, say that \u2014 it's the normal answer here and it changes nothing.",
+    h:"A post, a school project, a poster for a bake sale, a meme in a group chat. If you've never posted anything, say that. It's the normal answer here and it changes nothing.",
     ph:"i made a…" },
   { k:"time",  t:"How much time have you actually got in a week?",
     h:"Small is fine. We build the plan around the real number, so guess low rather than high.",
@@ -675,15 +675,15 @@ QSETS.growth = [
 ];
 
 var TIMEQ = { k:"time", t:"How much time have you actually got in a week?",
-  h:"Small is fine, and honest is better than impressive \u2014 we'd rather know now than find out in a month. Guess low.",
+  h:"Small is fine, and honest is better than impressive. We'd rather know now than find out in a month. Guess low.",
   choices:["Under an hour","1\u20133 hours","3\u20136 hours","More than that"] };
 
 QSETS.software = [
   { k:"built", t:"What's the last thing you built that actually ran?",
-    h:"A script, a mod, a site nobody visited, a bot for a group chat, a thing for school. If it broke halfway and you left it, say that \u2014 half-finished is the normal answer and it changes nothing.",
+    h:"A script, a mod, a site nobody visited, a bot for a group chat, a thing for school. If it broke halfway and you left it, say that. Half-finished is the normal answer and it changes nothing.",
     ph:"i made a little thing that\u2026" },
   { k:"stuck", t:"Tell us about a bug that took you far too long.",
-    h:"What it turned out to be, and how you got out of it \u2014 or that you never did. Giving up on one is a completely normal answer here.",
+    h:"What it turned out to be, and how you got out of it, or that you never did. Giving up on one is a completely normal answer here.",
     ph:"it kept crashing and it turned out\u2026" },
   { k:"want",  t:"What would you want to work on here?",
     h:"Point at something. \u201cThe iPhone app\u201d or \u201cmaking the browser thing less dumb\u201d is plenty. If you don't know yet, say what you'd want to learn instead.",
@@ -693,7 +693,7 @@ QSETS.software = [
 
 QSETS.hardware = [
   { k:"built", t:"What's the last thing you built that you could actually hold?",
-    h:"A circuit, a 3D print, a robot for a class, something you took apart and put back together. If it never worked, that's still the answer \u2014 tell us what went wrong.",
+    h:"A circuit, a 3D print, a robot for a class, something you took apart and put back together. If it never worked, that's still the answer. Tell us what went wrong.",
     ph:"i put together a\u2026" },
   { k:"stuck", t:"Tell us about something you built that didn't work.",
     h:"What it was meant to do, and what actually happened. Whether you fixed it doesn't matter to us.",
@@ -705,14 +705,14 @@ QSETS.hardware = [
 ];
 
 QSETS.technical = [
-  { k:"built", t:"What's the last thing you built \u2014 software or hardware, either one?",
+  { k:"built", t:"What's the last thing you built, software or hardware, either one?",
     h:"Code, a circuit, a print, a mod, a site. If it broke halfway and you left it, say that. Half-finished is the normal answer.",
     ph:"i made a\u2026" },
   { k:"stuck", t:"Tell us about a problem that took you far too long.",
-    h:"What it turned out to be, and how you got out of it \u2014 or that you never did. Giving up on one is completely normal.",
+    h:"What it turned out to be, and how you got out of it, or that you never did. Giving up on one is completely normal.",
     ph:"it took me ages and it turned out\u2026" },
   { k:"want",  t:"Which side pulls you more, and why?",
-    h:"Software is the app, the extension and the brain. Hardware is the pendant. \u201cBoth, honestly\u201d is a real answer \u2014 just say what makes you say it.",
+    h:"Software is the app, the extension and the brain. Hardware is the pendant. \u201cBoth, honestly\u201d is a real answer. Just say what makes you say it.",
     ph:"probably the\u2026 because\u2026" },
   TIMEQ
 ];
@@ -722,8 +722,8 @@ QSETS.technical = [
 var QS = QSETS.growth;
 var TRACK_NAME = { growth:"Growth & Marketing", software:"Software",
                    hardware:"Hardware", technical:"Technical" };
-var BAR_LINE = "Almost everyone who writes a real answer gets in. This isn't a filter \u2014 " +
-               "it's so the thing we send back is about you and not about nobody.";
+var BAR_LINE = "Almost everyone who writes a real answer gets in. This isn't a filter. " +
+               "It's so the thing we send back is about you and not about nobody.";
 var CANT = "can't think of one right now";
 
 function startQuestions(track){
@@ -837,7 +837,7 @@ function submitApplication(){
   var t0 = Date.now(), slow = null, settled = false;
   setTimeout(function(){ if (!settled) rstage(1); }, 900);
   slow = setTimeout(function(){
-    if (!settled) $("reviewline").textContent = "Still reading — it's a slow one today.";
+    if (!settled) $("reviewline").textContent = "Still reading. It's a slow one today.";
   }, 12000);
 
   api("/fellows/apply", { body:{ fellowship:F.track, answers:F.answers, terms:true } })
@@ -847,7 +847,7 @@ function submitApplication(){
   function arrive(j, err){
     settled = true; clearTimeout(slow);
     if (err || !j){
-      $("reviewline").textContent = "We couldn't reach our end. Nothing's lost — try once more.";
+      $("reviewline").textContent = "We couldn't reach our end. Nothing's lost. Try once more.";
       setTimeout(function(){ show("s4"); }, 1800);
       return;
     }
@@ -933,16 +933,16 @@ function paintReceived(message){
   $("rec-said").style.display = quote ? "" : "none";
 
   $("rec-msg").textContent = message
-    || "A person reads this one, not a model \u2014 so it takes a few days rather than a few seconds.";
+    || "A person reads this one, not a model, so it takes a few days rather than a few seconds.";
 
   $("rec-what").innerHTML = '<hr class="sep"><h3>What happens now</h3>'
-    + '<p class="small">One of us reads it. If it looks like a fit we\'ll write to set up a call \u2014 '
+    + '<p class="small">One of us reads it. If it looks like a fit we\'ll write to set up a call, '
     + 'a conversation, not a test, and there is nothing to prepare. If it is not a fit we will still '
     + 'write back and tell you.</p>'
     + '<p class="small">Either way you hear from us, at the address you gave. You do not need to check '
     + 'back here.</p>'
     + '<hr class="sep"><h3>The part people ask about last</h3>'
-    + '<p class="small">This one does not pay. There is no link and no commission in it \u2014 that is the '
+    + '<p class="small">This one does not pay. There is no link and no commission in it. That is the '
     + 'Growth fellowship, which is a different thing. What is here is real work on the product, with '
     + 'people who will answer your questions.</p>'
     + '<p class="small">If getting paid is the point for you, take Growth instead. It is open today, it '
@@ -978,7 +978,7 @@ function paintAccepted(message, noticed){
   // somebody decides whether to open the course.
   $("acc-what").innerHTML = '<hr class="sep"><h3>What Anticipy is, since you\'ll be making videos about it</h3>'
     + '<p class="small">A pendant you wear, an app on your iPhone, and hands in your Chrome browser. '
-    + 'It hears the things you say you\'ll do and quietly does them — the email you meant to send, the '
+    + 'It hears the things you say you\'ll do and quietly does them: the email you meant to send, the '
     + 'trial you swore you\'d cancel. The moment people react to is when it did the thing before they asked.</p>'
     + '<p class="small">The first unit of the course is nothing but this, and it takes five minutes.</p>';
 
@@ -995,7 +995,7 @@ function paintMoney(band, code, active){
     + '<p class="small"><strong>$30</strong> when someone buys through your link. '
     + 'One payment, <strong>30 days after they buy</strong>, and we never take it back.</p>'
     + '<p class="small">It arrives as a prepaid Visa card, by email'
-    + (band !== "18_plus" ? ' — to the address your parent or guardian gives us' : '')
+    + (band !== "18_plus" ? ', to the address your parent or guardian gives us' : '')
     + '. No bank account and no ID needed'
     + (band !== "18_plus" ? ' from you' : '') + '.</p>'
     + '<p class="tiny">The 30 days is the window where a purchase can still be cancelled. '
@@ -1006,7 +1006,7 @@ function paintMoney(band, code, active){
     lines.push('<div class="codebox"><code>' + esc(shown) + '</code>'
       + '<button class="btn sm" data-copy="' + esc(url) + '">Copy</button></div>'
       + '<p class="small">Your link works today and counts clicks today. It can\'t pay until you tap the '
-      + 'link in the email we just sent you — that\'s the money switch, not the login.</p>');
+      + 'link in the email we just sent you. That\'s the money switch, not the login.</p>');
   }
   if (band !== "18_plus"){
     // THIS LINK USED TO POINT AT /setup?f=<code>, AND TWO THINGS WERE WRONG.
@@ -1022,10 +1022,10 @@ function paintMoney(band, code, active){
     // any stranger who saw one declare themselves a child's guardian.
     lines.push('<div class="card" style="margin-top:22px">'
       + '<span class="eyebrow">Under 18</span>'
-      + '<p class="small">Everything here is open to you today — the lessons, your link, your clicks. '
+      + '<p class="small">Everything here is open to you today: the lessons, your link, your clicks. '
       + 'Only the payment waits, and that\'s the law about paying minors rather than a rule of ours.</p>'
       + '<p class="small">A parent or guardian does one two-minute step. It asks them for a name and '
-      + 'an email and nothing else — no bank details, no ID, nothing about you.</p>'
+      + 'an email and nothing else: no bank details, no ID, nothing about you.</p>'
       + '<button class="btn sm" id="b-guardian">Get the link for my parent</button>'
       + '<div id="guardian-out"></div>'
       + '<div class="msg" id="m-guardian" role="status"></div>'
@@ -1086,7 +1086,7 @@ function paintDash(){
     // and would go stale again the next time a lesson is added — this page has
     // no way to know how many lessons the course has, and inventing one would
     // be a second thing to keep in sync. The map itself shows the total.
-    + (doneN ? "Keep going — " + doneN + (doneN === 1 ? " lesson" : " lessons") + " done"
+    + (doneN ? "Keep going, " + doneN + (doneN === 1 ? " lesson" : " lessons") + " done"
              : "Start lesson one") + '</a>',
     '<div class="card"><span class="eyebrow">The community</span>'
     + '<p class="small">Everyone else in the fellowship is in one Discord. Questions get answered '
@@ -1118,7 +1118,7 @@ function paintDash(){
     : "A TikTok, Instagram, YouTube, X or LinkedIn link";
   body.push('<div class="card"><h3>Things you\'ve made</h3>'
     + '<p class="small">If you post something, paste the link and it&#39;s kept here in one place. '
-    + 'Only if you feel like it — posting is optional and it goes on your own account. '
+    + 'Only if you feel like it. Posting is optional and it goes on your own account. '
     + 'Nothing here is required and nothing here pays; the money is the link above.</p>'
     + '<label class="flab" for="sub-url">Paste a link</label>'
     + '<input class="field" id="sub-url" type="url" inputmode="url" autocomplete="off" '
@@ -1165,7 +1165,7 @@ function renderSubs(){
       // LinkedIn and would read as a mark against those platforms; the server
       // never sends it.
       + (s.verify_state === "gone"
-          ? '<div class="tiny">We couldn&#39;t find this one when we checked — has it been taken down?</div>'
+          ? '<div class="tiny">We couldn&#39;t find this one when we checked. Has it been taken down?</div>'
           : "")
       + '<button class="btn sm" data-unsub="' + esc(s.id) + '">Remove</button>'
       + '</li>';
@@ -1276,7 +1276,7 @@ document.addEventListener("click", function(ev){
     if (!j || !j.ok) return say("m-guardian", (j && j.message) || "That didn't work. Try once more?", true);
     if (j.done) return say("m-guardian", j.message, "ok");
     var mail = "mailto:?subject=" + encodeURIComponent("Two minutes, for the Anticipy fellowship")
-      + "&body=" + encodeURIComponent("Hi — I joined the Anticipy Growth Fellowship. All the learning "
+      + "&body=" + encodeURIComponent("Hi, I joined the Anticipy Growth Fellowship. All the learning "
         + "is already open to me; the only thing that needs you is the payout step, because of the law "
         + "about paying under-18s. It asks for your name and an email and nothing else.\n\n"
         + j.url + "\n\nThanks!");
