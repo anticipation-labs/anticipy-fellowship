@@ -1,0 +1,105 @@
+# Merging here actually ships. That is the whole point of this file.
+#
+# Before it existed, a push to this repo changed GitHub and nothing else — the
+# live site was deployed by hand from a laptop. Someone could merge a fix, see
+# a green checkmark, and be looking at a site that had not changed, with no
+# error anywhere. That is the failure this workflow is here to make impossible.
+#
+# The chain: syntax gate -> sync into omize10/anticipy-backend -> Railway
+# rebuilds -> we BYTE-VERIFY the live page and fail if it did not land.
+name: ship
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ship
+  cancel-in-progress: false
+
+jobs:
+  ship:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      # A broken hook does not just break the fellowship — HQ runs in the same
+      # PocketBase and a syntax error takes the whole service down. This is the
+      # cheapest possible way to never do that.
+      - name: Syntax-gate every hook and migration
+        run: |
+          set -e
+          for f in pb_hooks/*.pb.js pb_migrations/*.js; do
+            node --check "$f" || { echo "::error file=$f::syntax error — refusing to ship"; exit 1; }
+          done
+          for f in pb_public/*.html; do
+            node -e '
+              const fs=require("fs");
+              const h=fs.readFileSync(process.argv[1],"utf8");
+              const m=h.match(/<script>([\s\S]*)<\/script>\s*<\/body>/);
+              if (m) new Function(m[1]);
+            ' "$f" || { echo "::error file=$f::page script does not parse — refusing to ship"; exit 1; }
+          done
+          echo "all files parse"
+
+      - name: Sync the fellowship half into the backend repo
+        env:
+          KEY: ${{ secrets.BACKEND_DEPLOY_KEY }}
+        run: |
+          set -e
+          mkdir -p ~/.ssh && echo "$KEY" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
+          git clone --depth 1 git@github.com:omize10/anticipy-backend.git /tmp/backend
+
+          # Only these names. Never a wildcard path from this repo into that one.
+          cp pb_hooks/fellowship*.pb.js       /tmp/backend/pb_hooks/
+          cp pb_public/fellowship*.html       /tmp/backend/pb_public/
+          cp pb_migrations/*.js               /tmp/backend/pb_migrations/
+
+          cd /tmp/backend
+          git config user.email "actions@github.com"
+          git config user.name  "fellowship-sync"
+          if git diff --quiet; then
+            echo "no change to sync — the backend already matches"
+            echo "CHANGED=no" >> "$GITHUB_ENV"
+          else
+            SUBJECT=$(git -C "$GITHUB_WORKSPACE" log -1 --pretty=%s)
+            git add -A
+            git commit -q -m "sync fellowship from ${GITHUB_SHA::7} — $SUBJECT"
+            git push origin main
+            echo "CHANGED=yes" >> "$GITHUB_ENV"
+          fi
+
+      # railway up has reported success while failing before. Trust the bytes on
+      # the live URL, nothing else.
+      - name: Byte-verify the live site
+        if: env.CHANGED == 'yes'
+        run: |
+          set -e
+          echo "waiting for Railway to rebuild and serve the new bytes"
+          for i in $(seq 1 40); do
+            if curl -fsS --max-time 20 https://anticipyfellowship.com/fellowships.html -o /tmp/live.html 2>/dev/null; then
+              if cmp -s /tmp/live.html pb_public/fellowships.html; then
+                echo "MATCH after $((i*15))s — the live page is exactly what this commit contains"
+                exit 0
+              fi
+            fi
+            sleep 15
+          done
+          echo "::error::Ten minutes after the sync the live page still does not match this commit."
+          echo "::error::The code is in omize10/anticipy-backend but Railway has not served it."
+          echo "::error::Check the Railway 'backend' service. DO NOT assume this shipped."
+          exit 1
+
+      - name: Say what happened
+        if: always()
+        run: |
+          if [ "${CHANGED:-no}" = "yes" ]; then
+            echo "### Shipped :rocket:" >> "$GITHUB_STEP_SUMMARY"
+            echo "Synced to \`omize10/anticipy-backend\` and verified byte-for-byte on https://anticipyfellowship.com" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### Nothing to ship" >> "$GITHUB_STEP_SUMMARY"
+            echo "This commit changed no file that reaches the backend." >> "$GITHUB_STEP_SUMMARY"
+          fi
