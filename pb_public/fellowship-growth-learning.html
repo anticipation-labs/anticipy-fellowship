@@ -191,7 +191,7 @@ hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
    ["x", "1 / 7", "", "the app judges..."], which is why someone landing on it
    does not know what page they are on. */
 .pbar{padding:18px var(--gutter) 14px;width:100%}
-.pbar .pinner{max-width:620px;margin:0 auto;width:100%;display:flex;align-items:center;gap:12px}
+.pbar .pinner{max-width:var(--measure);margin:0 auto;width:100%;display:flex;align-items:center;gap:12px}
 .pbar .x{width:44px;height:44px;margin-left:-11px;display:flex;align-items:center;
   justify-content:center;color:var(--ink-2);font-size:22px;border-radius:50%;flex:none}
 .pbar .x:hover{color:var(--ink);background:var(--paper-2)}
@@ -207,7 +207,7 @@ hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
    eyebrow and the first line — could not be reached by any input. */
 .pbody{flex:1;display:flex;align-items:flex-start;padding:24px var(--gutter);overflow-y:auto}
 .pbody > .pinner{margin-block:auto}
-.pinner{max-width:620px;margin:0 auto;width:100%}
+.pinner{max-width:var(--measure);margin:0 auto;width:100%}
 
 /* The footer. The progress rail moved from the top of the screen to just
    above the button — goal-gradient: Kivetz's cafe study showed purchase
@@ -215,7 +215,7 @@ hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
    completed at 34% pre-stamped vs 19% for identical real effort. Put the
    evidence of nearness where the thumb already is. */
 .pfoot{padding:0 var(--gutter) calc(28px + env(safe-area-inset-bottom));width:100%;background:var(--paper)}
-.pfoot .pinner{max-width:620px;margin:0 auto;width:100%}
+.pfoot .pinner{max-width:var(--measure);margin:0 auto;width:100%}
 
 /* --accent on --rule measures 1.68:1 against WCAG 1.4.11's 3:1 floor for
    non-text indicators: the one element that could show progress could not be
