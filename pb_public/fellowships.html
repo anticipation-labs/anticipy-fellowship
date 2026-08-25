@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anticipy Fellowships</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="description" content="Learn how growth and marketing actually works, by doing it. On our dime.">
+<style>
+/* ==========================================================================
+   HIRE_THEME — the palette anticipy.ai already uses for /apply and /ugc.
+   Values taken from src/components/apply/theme.ts, not invented here.
+
+   Two earlier versions of this page got the colour wrong in opposite
+   directions: a petrol accent that appears nowhere in the brand, then the
+   dark marketing ground. The site actually has TWO design systems — the
+   dark marketing pages, and this cream programme surface that every hiring
+   and creator page is written in. A fellowship page is a programme page, so
+   it belongs here, and taking the tokens verbatim means it cannot drift.
+
+   THE RULE THAT IS EASIEST TO BREAK: --accent (gold) is for MARKS ONLY.
+   It measures about 2:1 on cream and fails as text at any size. Anything
+   readable and gold-ish uses --accent-ink (bronze). That split is a
+   documented accessibility decision in the theme file, not a preference.
+   ========================================================================= */
+:root{
+  color-scheme: light;
+  --ink:#171512;          /* all primary text, and the fill of every button */
+  --ink-2:#6B665E;        /* secondary copy, helper text, the quiet action  */
+  --paper:#FAF8F4;        /* the page                                       */
+  --paper-2:#F0EDE6;      /* cards and row hover — the only elevation there is */
+  --rule:#E4DFD6;         /* every 1px border and divider                   */
+  --accent:#C8A97E;       /* gold. MARKS ONLY. never under text.            */
+  --accent-ink:#8A6B44;   /* bronze on --paper. 4.64:1.                     */
+  --accent-ink-2:#7E6140; /* bronze on --paper-2. 4.89:1 — AA inside a card. */
+  --rule-2:#D6D0C4;       /* structural. --rule on --paper is 1.25:1.        */
+  --rule-3:#B6AC99;       /* the edge of something you tap.                  */
+  --danger:#A33A3A;
+  --ok:#2E6B4F;
+  --field:#FFFFFF;
+  --placeholder:#9A948A;
+  --serif:'DM Serif Display', Georgia, 'Times New Roman', serif;
+  --sans:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mono:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--paper); color:var(--ink);
+  /* The light 300 at 17/1.7 is a large part of how the site feels. */
+  font:300 17px/1.7 var(--sans);
+  letter-spacing:.01em;
+  -webkit-font-smoothing:antialiased;
+  display:flex; flex-direction:column; min-height:100%;
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:disabled{opacity:.6;cursor:default}
+input,select,textarea{font:inherit;color:var(--ink)}
+:focus-visible{outline:2px solid var(--accent-ink);outline-offset:3px}
+a{color:var(--accent-ink)}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---- chrome ------------------------------------------------------------ */
+header.top{
+  display:flex;align-items:center;gap:10px;
+  max-width:1000px;margin:0 auto;width:100%;padding:26px 28px 0;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none}
+.brand{font:400 15px/1 var(--serif);letter-spacing:-.01em}
+.topright{margin-left:auto;font:400 13px/1 var(--sans);color:var(--ink-2)}
+
+main{flex:1;width:100%;max-width:620px;margin:0 auto;padding:76px 28px 110px}
+@media (max-width:820px){ main{padding:52px 22px 72px} }
+
+/* The signature: a 38x2 gold rule opens a section. */
+.rule38{width:38px;height:2px;background:var(--accent);margin-bottom:18px}
+
+h1{font:400 clamp(40px,7.4vw,84px)/.96 var(--serif);letter-spacing:-.035em}
+h2{font:400 clamp(26px,3.4vw,36px)/1.06 var(--serif);letter-spacing:-.025em}
+h3{font:400 clamp(20px,2.4vw,24px)/1.15 var(--serif);letter-spacing:-.02em}
+p.lede{font:300 clamp(17px,2vw,20px)/1.55 var(--sans);color:var(--ink);max-width:33em;margin-top:16px}
+p{margin-top:14px;max-width:34em}
+.quiet{color:var(--ink-2);font-size:16px;line-height:1.7}
+.small{font-size:15.5px;color:var(--ink-2);line-height:1.65}
+.tiny{font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent-ink);margin:0 0 16px;display:block}
+
+/* ---- the screen machine ------------------------------------------------ */
+.screen{display:none}
+.screen.on{display:block;animation:pane .14s linear both}
+@keyframes pane{from{opacity:0}to{opacity:1}}
+
+/* ---- fields ------------------------------------------------------------ */
+/* Single line is an underline, not a box — the site's idiom. */
+.field{
+  background:transparent;border:none;border-bottom:1px solid var(--rule-2);
+  color:var(--ink);padding:10px 0 12px;font-size:18px;width:100%;
+  outline:none;border-radius:0;transition:border-color 220ms ease;font-family:inherit;
+}
+.field:focus{border-bottom-color:var(--accent-ink)}
+.field[aria-invalid="true"]{border-bottom-color:var(--danger)}
+textarea.field[aria-invalid="true"]{border-color:var(--danger)}
+/* Five fields and zero <label> elements: aria-label covers a screen reader,
+   but a sighted low-vision user had a 3.01:1 placeholder that vanished the
+   moment they typed, so after picking a birthday the form showed "May" and
+   "2010" with nothing saying what they were. */
+label.flab{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--accent-ink);margin-bottom:6px}
+.fwrap{display:block}
+.field::placeholder{color:var(--placeholder)}
+select.field{
+  appearance:none;padding-right:22px;
+  background-image:linear-gradient(45deg,transparent 50%,var(--ink-2) 50%),
+                   linear-gradient(135deg,var(--ink-2) 50%,transparent 50%);
+  background-position:calc(100% - 12px) 22px,calc(100% - 7px) 22px;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat;
+}
+/* Multi-line is a white box. Never below 16px — iOS zooms on focus. */
+textarea.field{
+  background:var(--field);border:1px solid var(--rule-3);border-radius:8px;
+  padding:13px 14px;font-size:16px;line-height:1.6;min-height:104px;resize:vertical;
+}
+textarea.field:focus{border-color:var(--accent-ink);border-bottom-color:var(--accent-ink)}
+/* At 390x844 the textarea top is y=287 with height 104 and Next spans
+   y=413-463, against an iOS keyboard about 336px tall — so Next sat under the
+   keyboard on all four questions and had to be dismissed each time. */
+.s4foot{position:sticky;bottom:0;background:var(--paper);
+  padding-bottom:calc(16px + env(safe-area-inset-bottom));padding-top:12px}
+.row2{display:flex;gap:18px;flex-wrap:wrap}
+.row2 > *{flex:1;min-width:140px}
+.stack{display:flex;flex-direction:column;gap:22px;margin-top:34px}
+
+/* ---- buttons ----------------------------------------------------------- */
+/* One button. The alternative action is bare text. */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  background:var(--ink);color:var(--paper);border-radius:999px;
+  padding:17px 34px;font:600 16.5px/1 var(--sans);letter-spacing:-.005em;
+  transition:background 160ms ease,transform 160ms ease;
+}
+.btn .arw{transition:transform 160ms ease}
+.btn:hover{background:#000}
+.btn:hover .arw{transform:translateX(3px)}
+.btn:active{transform:translateY(0)}
+.btn:not(:disabled):hover{transform:translateY(-1px)}
+.btn.wide{width:100%}
+.btn.sm{padding:13px 22px;font-size:14.5px}
+.btn{text-decoration:none}   /* <a class="btn"> rendered underlined in the pill */
+.linkbtn{background:none;border:none;color:var(--ink-2);font-size:14px;cursor:pointer;
+  font-family:inherit;padding:12px 0;min-height:44px}
+.linkbtn:hover{color:var(--ink)}
+/* .linkbtn alone is a standalone tap target with no underline, which reads as
+   an orphaned grey sentence when it follows body copy. This variant is for a
+   linkbtn that has to look like an action inside running text. */
+.linkbtn.u{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+
+/* The pill toggle. */
+.choice{padding:11px 22px;font-size:15px;border-radius:999px;border:1px solid var(--rule);
+  color:var(--ink-2);background:transparent;transition:all 200ms ease}
+.choice[aria-pressed="true"],.choice.on{background:var(--ink);color:var(--paper);border-color:var(--ink);font-weight:600}
+.choice:hover:not(.on){border-color:var(--accent)}
+
+/* ---- cards. no shadows anywhere on this surface. ----------------------- */
+.card{padding:34px;border:1px solid var(--rule-2);border-radius:14px;background:var(--paper-2)}
+.card .eyebrow{color:var(--accent-ink-2)}
+@media (max-width:620px){ .card{padding:24px} }
+
+/* Lists are tables, not cards — the dominant idiom on these pages. */
+.rows{border-top:1px solid var(--rule);margin-top:26px}
+.rowitem{display:flex;align-items:center;gap:16px;width:100%;text-align:left;
+  padding:20px 4px;border-bottom:1px solid var(--rule);transition:background 160ms ease}
+.rowitem:hover:not(.soon){background:var(--paper-2)}
+.rowitem.soon{opacity:1;cursor:default;color:var(--ink-2)}
+.rowitem.soon .rname{color:var(--ink-2)}
+/* Both of these were inline, so the two boxes OVERLAPPED — the name ended at
+   y+27 and the description started at y+6 — and the page read
+   "Growth & MarketingShort video, writing...". margin-top does nothing on an
+   inline box, which is why the 4px below had never once applied. */
+.rowitem .rlabel{display:flex;flex-direction:column;gap:4px;min-width:0}
+.rowitem .rname{display:block;font:400 20px/1.2 var(--serif);letter-spacing:-.02em}
+.rowitem .rdesc{display:block;font-size:14.5px;color:var(--ink-2);line-height:1.5}
+.tag{margin-left:auto;flex:none;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--accent-ink)}
+.tag.grey{color:var(--ink-2)}   /* opacity .7 measured 2.92:1 at 10.5px */
+
+.msg{margin-top:8px;font-size:14px;min-height:20px;color:var(--ink-2)}
+.msg.err{color:var(--danger)}
+.msg.ok{color:var(--ok)}
+.nudge{margin-top:8px;font-size:14px;color:var(--ink-2);min-height:20px}
+
+/* progress through the questions.
+   The markup held exactly ONE <i style="width:25%">, the JS looped className
+   over that single child, and .steps i.done had no rule at all — so the bar
+   measured identical at Q1, Q2, Q3 and Q4. The one element that could
+   reassure someone mid-form told them they had not moved. */
+.steps{display:flex;gap:3px;margin-bottom:34px;height:2px;background:transparent}
+.steps i{flex:1;height:2px;background:var(--rule-2);transition:background .32s var(--ease)}
+.steps i.done{background:var(--accent-ink)}
+
+/* ---- the review beat ---------------------------------------------------
+   Buell & Norton's labor illusion, read properly: the transparent condition —
+   a changing list of what was actually being searched — beat a uniform
+   progress bar, M = 5.36 vs 4.96, F(1,212) = 10.68, p < .01. NAMED WORK BEATS
+   A BLIND BAR. But perceived value declines with duration regardless,
+   F(5,212) = 4.47, and our reference class is "an AI is thinking," which in
+   2026 is a few seconds. So there is no floor: each stage carries a short
+   readability minimum so nothing flashes, and nothing else pads.
+   Their own four answers are the visual. There is no spinner on this page,
+   and the last one shipped as a 2px black dot that ran for 18 seconds. */
+.review{padding:40px 0;text-align:left}
+.answers{margin-bottom:34px;display:flex;flex-direction:column;gap:10px}
+.ansrow{background:var(--paper-2);border:1px solid var(--rule-2);border-radius:10px;padding:14px 16px}
+.ansrow b{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent-ink-2);font-weight:400;margin-bottom:5px}
+.ansrow span{font:300 15px/1.55 var(--sans);color:var(--ink-2)}
+.reviewline{margin-top:22px;font:400 clamp(23px,3.1vw,33px)/1.16 var(--serif);letter-spacing:-.02em;min-height:40px}
+.reviewsub{margin-top:14px;font-size:14px;color:var(--ink-2);max-width:32em}
+
+/* ---- acceptance -------------------------------------------------------- */
+.said{border-left:2px solid var(--accent);padding:2px 0 2px 18px;margin-top:22px;
+  font:300 18px/1.6 var(--sans);color:var(--ink);max-width:34em}
+.said q{font:400 21px/1.42 var(--serif);letter-spacing:-.015em;quotes:'"' '"'}
+.checklist{margin-top:30px;border-top:1px solid var(--rule-2)}
+.checkitem{display:flex;gap:16px;align-items:flex-start;padding:18px 0;border-bottom:1px solid var(--rule-2)}
+.checkitem .n{flex:none;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;
+  color:var(--accent-ink);padding-top:4px}
+.codebox{display:block;background:var(--field);border:1px solid var(--rule-2);
+  border-radius:8px;padding:16px;margin-top:12px}
+.codebox code{display:block;font-family:var(--mono);font-size:14px;color:var(--ink);
+  word-break:normal;overflow-wrap:anywhere}
+.codebox .btn{margin-top:14px;width:100%}
+.notebox{border:1px solid var(--rule-2);border-radius:10px;background:var(--field);
+  padding:18px;margin-top:22px;font-size:15.5px;line-height:1.65;color:var(--ink)}
+/* ---- the logbook -------------------------------------------------------- */
+/* A LIST, NEVER A SCOREBOARD. No counter, no rank, no number in the margin,
+   no progress bar. The moment one of those appears, a thing that is optional
+   starts reading as a thing that is owed. */
+.subs{list-style:none;margin:16px 0 0;border-top:1px solid var(--rule-2)}
+.subs li{padding:14px 0;border-bottom:1px solid var(--rule-2);font-size:15.5px;line-height:1.55}
+.subs .meta{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--accent-ink);margin-bottom:5px}
+.subs a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule-3);
+  overflow-wrap:anywhere}
+.subs a:hover{border-bottom-color:var(--accent-ink)}
+.subs .btn{margin-top:10px}
+
+footer.bot{max-width:1000px;margin:0 auto;width:100%;padding:0 28px 44px;
+  font-size:13px;color:var(--ink-2)}
+hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
+
+/* The page renders and sits still. No scroll reveal — that would read as a
+   different site immediately. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0ms !important;transition-duration:0ms !important}
+  .btn:not(:disabled):hover{transform:none}
+}
+
+</style>
+</head>
+<body>
+<header class="top">
+  <span class="dot"></span><span class="brand">Anticipy Fellowships</span>
+  <span class="topright" id="whoami"></span>
+</header>
+<main>
+
+<!-- ===================== S0 — the pitch ===================== -->
+<section class="screen on" id="s0">
+  <h1>Learn how growth actually works. On our dime.</h1>
+  <p class="lede">We teach you to make short videos people actually watch — hooks, scripts,
+  posting, the lot. You practise on us. If something you make sends us a sale, you get paid for it.</p>
+
+  <div class="stack">
+    <div class="card">
+      <h3>What you get</h3>
+      <p class="small">A proper course, written plain. Real feedback loops. Something to point at
+      when someone asks what you've done. And a cut when your work sells something.</p>
+    </div>
+    <div class="card">
+      <h3>What we get</h3>
+      <p class="small">Videos about Anticipy, made by people learning to make them well.
+      That's the whole trade, and we'd rather say it than dress it up.</p>
+    </div>
+  </div>
+
+  <p class="small" style="margin-top:26px">It takes about two minutes to apply.
+  We ask your age and where you live on the next screen — both change how this works,
+  and we'd rather get them right than guess.</p>
+  <div class="stack"><button class="btn wide" data-go="s1"><span>Start</span><span class="arw">&#8594;</span></button></div>
+</section>
+
+<!-- ===================== S1 — who are you ===================== -->
+<section class="screen" id="s1">
+  <h2>First, the boring bit.</h2>
+  <p class="lede">This saves your place. Next come four questions — they take about two minutes
+  and there&#39;s no wrong answer to any of them.</p>
+  <div class="stack">
+    <span class="fwrap"><label class="flab" for="f-name">Your first name</label>
+      <input class="field" id="f-name" placeholder="Maya" autocomplete="given-name"></span>
+    <span class="fwrap"><label class="flab" for="f-email">Your email</label>
+      <input class="field" id="f-email" type="email" placeholder="you@example.com" autocomplete="email" inputmode="email"></span>
+    <div class="row2">
+      <span class="fwrap"><label class="flab" for="f-bm">Month born</label>
+        <select class="field" id="f-bm"><option value="">Month</option></select></span>
+      <span class="fwrap"><label class="flab" for="f-by">Year born</label>
+        <select class="field" id="f-by"><option value="">Year</option></select></span>
+    </div>
+    <span class="fwrap"><label class="flab" for="f-country">Where you live</label>
+    <select class="field" id="f-country">
+      <option value="">Where you live</option>
+      <option value="us">United States</option>
+      <option value="ca">Canada</option>
+      <option value="other">Somewhere else</option>
+    </select></span>
+    <button class="btn wide" id="b-sendcode"><span>Save my place</span><span class="arw">&#8594;</span></button>
+    <div class="msg" id="m-s1" role="status"></div>
+    <p class="tiny">We ask your birthday because some of this works differently under 18, and we'd
+    rather get that right than guess. We don't share it with anyone.</p>
+  </div>
+</section>
+
+<!-- ===================== S1b — the stop ===================== -->
+<section class="screen" id="s1b">
+  <h2 id="stop-h">Come back on your birthday.</h2>
+  <p class="lede" id="stop-p"></p>
+  <div class="stack"><a class="btn wide" href="https://anticipy.ai">See what we&#39;re building</a>
+  <button class="linkbtn" id="b-notme">This isn&#39;t me — start over</button></div>
+</section>
+
+<!-- ===================== S3 — pick a fellowship ===================== -->
+<section class="screen" id="s3">
+  <h2>Which one?</h2>
+  <!-- This used to say "tell us if you want one and we'll write when it opens"
+       under three buttons that stored nothing and called nothing. All four are
+       real now, so the line says what actually differs between them instead of
+       promising a letter nobody could have sent. -->
+  <p class="lede">All four are open. Growth teaches you and you can start today. The other three
+  are an application and then a conversation with one of us.</p>
+  <div class="stack">
+    <button class="rowitem" data-fellowship="growth">
+      <span class="rlabel"><span class="rname">Growth &amp; Marketing</span><span class="rdesc">Short video, writing, posting, and getting people to actually buy. Taught from zero, and it pays when your work sells something.</span></span>
+      <span class="tag">Taught</span>
+    </button>
+    <button class="rowitem" data-fellowship="software">
+      <span class="rlabel"><span class="rname">Software</span><span class="rdesc">The app, the extension, the brain. Real work on the product, unpaid.</span></span>
+      <span class="tag">Apply</span>
+    </button>
+    <button class="rowitem" data-fellowship="hardware">
+      <span class="rlabel"><span class="rname">Hardware</span><span class="rdesc">The pendant. Boards, batteries, enclosures. Real work on the product, unpaid.</span></span>
+      <span class="tag">Apply</span>
+    </button>
+    <button class="rowitem" data-fellowship="technical">
+      <span class="rlabel"><span class="rname">Technical</span><span class="rdesc">Both of the above, for people who want both.</span></span>
+      <span class="tag">Apply</span>
+    </button>
+    <div class="msg" id="m-s3" role="status"></div>
+  </div>
+</section>
+
+<!-- ===================== S4 — the questions ===================== -->
+<section class="screen" id="s4">
+  <div class="steps" id="steps" role="progressbar" aria-valuemin="0" aria-valuemax="4"
+       aria-valuenow="1"><i></i><i></i><i></i><i></i></div>
+  <h2 id="q-title"></h2>
+  <p class="lede" id="q-help"></p>
+  <div class="stack">
+    <textarea class="field" id="q-input" aria-labelledby="q-title" enterkeyhint="next"></textarea>
+    <div id="q-choices" class="row2" style="display:none"></div>
+    <div class="nudge" id="n-s4"></div>
+    <button class="linkbtn" id="b-cant">I can&#39;t think of one</button>
+    <div class="s4foot">
+      <button class="linkbtn" id="b-back">Back</button>
+      <button class="btn wide" id="b-next">Next</button>
+      <div class="msg" id="m-s4" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== S5 — the review ===================== -->
+<section class="screen" id="s5">
+  <div class="review">
+    <div class="answers" id="answers"></div>
+    <div class="steps" id="rsteps"><i></i><i></i><i></i></div>
+    <div class="reviewline" id="reviewline" role="status">Sending your answers.</div>
+    <div class="reviewsub">A person reads these later. Right now it&#39;s a model, and it&#39;s
+    reading your words — not a template.</div>
+  </div>
+</section>
+
+<!-- ===================== S6 — you're in ===================== -->
+<section class="screen accepted" id="s6">
+  <span class="eyebrow">The Growth Fellowship</span>
+  <h2 id="acc-h">You&#39;re in.</h2>
+  <div class="said" id="acc-said"></div>
+  <p class="lede" id="acc-msg"></p>
+  <div class="stack">
+    <a class="btn wide" id="b-start" href="/fellowship-growth-learning.html">
+      <span>Start lesson one</span><span class="arw">&#8594;</span></a>
+    <p class="tiny">Ten minutes. It ends with you being able to explain what this thing is.</p>
+    <p class="small"><a id="b-discord" href="#" target="_blank" rel="noopener noreferrer">Join the community on Discord</a>
+    &mdash; it&#39;s where everyone else in the fellowship is. Nothing is announced anywhere else.</p>
+  </div>
+  <div id="acc-what"></div>
+  <div id="acc-money"></div>
+</section>
+
+<!-- ===================== S6b — one more sentence ===================== -->
+<section class="screen" id="s6b">
+  <span class="eyebrow">One more thing</span>
+  <h2>Not quite yet.</h2>
+  <p class="lede" id="more-msg"></p>
+  <!-- Yeager et al.'s wise feedback: one added sentence — this is a high
+       standard, not a judgement of you, AND I believe you can meet it —
+       raised revision rates and final quality, with the largest effects among
+       students who trusted the institution least. Both halves are required.
+       This page never contains "rejected", "declined", "unsuccessful" or
+       "unfortunately", because none of them are true here. -->
+  <p>That&#39;s not a no, and it isn&#39;t about experience — nobody here has any. It&#39;s that we
+  can&#39;t write you something real from what&#39;s in the box, and sending you a template would be
+  worse than asking twice.</p>
+  <p class="small">One honest sentence anywhere in there does it. This is the whole bar:</p>
+  <div class="said"><q>idk i just want to get better at posting stuff, my videos get like 40 views</q></div>
+  <p class="small">That would get in. It isn&#39;t impressive and it isn&#39;t meant to be — it&#39;s just
+  true, and true is the entire test.</p>
+  <div class="stack"><button class="btn wide" id="b-again"><span>Take me back</span><span class="arw">&#8594;</span></button>
+  <p class="tiny">Your answers are still there.</p></div>
+</section>
+
+<!-- ===================== S6c — application received ===================== -->
+<!-- The technical tracks land here and NOT on S6. S6 says "you're in", links
+     lesson one and prints a referral link; every one of those would be false
+     for somebody whose application is in a queue. The two screens are kept
+     apart on purpose — the moment they share one, somebody edits the shared
+     one and re-tells the lie. -->
+<section class="screen" id="s6c">
+  <span class="eyebrow" id="rec-eyebrow">The fellowship</span>
+  <h2 id="rec-h">We&#39;ve got it.</h2>
+  <div class="said" id="rec-said"></div>
+  <p class="lede" id="rec-msg"></p>
+  <div id="rec-what"></div>
+</section>
+
+<!-- ===================== S7 — the dashboard ===================== -->
+<section class="screen" id="s7">
+  <h2 id="d-hello"></h2>
+  <p class="lede" id="d-line"></p>
+  <div class="stack" id="d-body"></div>
+</section>
+
+</main>
+<footer class="bot">
+  <span>Anticipy Fellowships</span> · <a href="https://anticipy.ai">anticipy.ai</a>
+  · <a href="https://anticipy.ai/privacy">Privacy</a> · <a href="https://anticipy.ai/terms">Terms</a>
+</footer>
+<script>
+"use strict";
+/* ==========================================================================
+   The funnel. Five screens, one at a time, nothing lost between them.
+   ========================================================================= */
+function $(id){ return document.getElementById(id); }
+function esc(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+function lsGet(k, fb){ try { var v = localStorage.getItem(k); return v == null ? fb : v; } catch(e){ return fb; } }
+function lsSet(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
+function lsDel(k){ try { localStorage.removeItem(k); } catch(e){} }
+
+var F = {
+  token: lsGet("fx_token",""),
+  me: null,
+  draft: { name:"", email:"", bm:"", by:"", country:"" },
+  answers: {},
+  qi: 0,
+  track: "growth"
+};
+var LETSGO = "Save my place";
+// The community. ROTATE THIS IN ONE PLACE when the invite changes — and it
+// WILL change: the invite we were handed expires, and a page that will still
+// be up in November cannot depend on a link that dies in September.
+// overnight/fellowship_gate.py leg 2 resolves this against Discord's own API
+// on every run and fails if it has expired or is about to.
+var DISCORD = "https://discord.gg/Cs3FaU3jT";
+/* btn.textContent = "One moment..." then btn.textContent = LETSGO
+   permanently wiped the button's <span class="arw">, which is what made
+   .btn .arw and .btn:hover .arw dead CSS on this page. */
+function setLabel(btn, text){
+  var s = btn.querySelector("span:not(.arw)");
+  if (s) s.textContent = text; else btn.textContent = text;
+}
+
+function show(id){
+  var cur = document.querySelector(".screen.on");
+  if (cur && cur.id === id) return;
+  if (cur) cur.classList.remove("on");
+  var next = $(id);
+  next.classList.add("on");
+  window.scrollTo({ top:0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  var f = next.querySelector("input,textarea,select,button");
+  if (f && !/^(s5|s6)$/.test(id)) setTimeout(function(){ try { f.focus({preventScroll:true}); } catch(e){} }, 340);
+}
+// This wrote className "msg bad", and .msg.bad has never had a rule in this
+// stylesheet. It went unnoticed because .msg itself defaulted to --danger, so
+// errors happened to look right and every NEUTRAL message rendered in error
+// red. Fixing the default inverted the bug and made every error grey, which is
+// how the mismatch finally showed up. Three real states, named:
+//   say(id, text)        neutral
+//   say(id, text, true)  an error
+//   say(id, text, "ok")  something worked
+function say(id, text, tone){
+  var el = $(id);
+  el.textContent = text || "";
+  el.className = "msg" + (text ? (tone === true ? " err" : (tone === "ok" ? " ok" : "")) : "");
+}
+
+function api(path, opts){
+  opts = opts || {};
+  var headers = {};
+  if (opts.body) headers["Content-Type"] = "application/json";
+  if (F.token) headers["X-Fellow-Token"] = F.token;
+  return fetch(path, {
+    method: opts.method || (opts.body ? "POST" : "GET"),
+    headers: headers,
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  }).then(function(r){
+    return r.text().then(function(t){
+      var j = null; try { j = JSON.parse(t); } catch(e){}
+      if (r.status === 401 && j && j.reauth){ lsDel("fx_token"); F.token = ""; F.me = null; }
+      if (!r.ok && !j) throw new Error("Something went wrong at our end. Try again in a moment.");
+      return j || {};
+    });
+  });
+}
+
+/* ---------- the date selects ------------------------------------------- */
+(function(){
+  var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var bm = $("f-bm"), by = $("f-by");
+  MONTHS.forEach(function(m,i){
+    var o = document.createElement("option"); o.value = String(i+1); o.textContent = m; bm.appendChild(o);
+  });
+  // Every year is selectable and nothing on screen hints at the cutoff.
+  // A visible "must be 13+" tells someone exactly which number to type.
+  var thisYear = new Date().getFullYear();
+  for (var y = thisYear; y >= thisYear - 80; y--){
+    var o2 = document.createElement("option"); o2.value = String(y); o2.textContent = String(y); by.appendChild(o2);
+  }
+})();
+
+/* ---------- S0 / S1 ------------------------------------------------------ */
+document.addEventListener("click", function(ev){
+  var g = ev.target.closest("[data-go]");
+  if (g){ show(g.dataset.go); return; }
+});
+
+$("b-sendcode").addEventListener("click", function(){
+  var name = $("f-name").value.trim();
+  var email = $("f-email").value.trim().toLowerCase();
+  var bm = $("f-bm").value, by = $("f-by").value, country = $("f-country").value;
+  // One error at a time, no field highlighted and no focus moved, meant four
+  // round-trips to fill five fields.
+  var miss = [];
+  [["f-name", !name, "your first name"],
+   ["f-email", !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email), "an email that looks like an email"],
+   ["f-bm", !bm, "the month you were born"],
+   ["f-by", !by, "the year you were born"],
+   ["f-country", !country, "where you live"]].forEach(function(f){
+    var el = $(f[0]);
+    if (f[1]){ el.setAttribute("aria-invalid","true"); miss.push(f[2]); }
+    else el.removeAttribute("aria-invalid");
+  });
+  if (miss.length){
+    say("m-s1", "Still need " + (miss.length > 1
+      ? miss.slice(0,-1).join(", ") + " and " + miss[miss.length-1] : miss[0]) + ".", true);
+    var first = document.querySelector('#s1 [aria-invalid="true"]');
+    if (first) first.focus();
+    return;
+  }
+  if (country === "other"){
+    $("stop-h").textContent = "Not where you are — yet.";
+    $("stop-p").textContent = "Right now we can only take fellows in the US and Canada, because that's where we can pay people properly. That will change.";
+    show("s1b"); return;
+  }
+  F.draft = { name:name, email:email, bm:bm, by:by, country:country };
+  var btn = this; btn.disabled = true; setLabel(btn, "One moment…");
+  say("m-s1", "");
+  // ONE STEP. No code, no second screen, no "check your inbox" standing
+  // between a curious sixteen-year-old and the first lesson. That screen is
+  // where most of the people who leave, leave.
+  api("/fellows/start", { body:{ email:email, name:name, birth_month:Number(bm),
+                                 birth_year:Number(by), country:country } })
+    .then(function(j){
+      btn.disabled = false; setLabel(btn, LETSGO);
+      if (j.stop){
+        $("stop-h").textContent = "Come back on your birthday.";
+        $("stop-p").textContent = j.message;
+        // The old gate wrote "blocked" forever, so a twelve-year-old's older
+        // sibling on the same phone was locked out for good. Store the date
+        // it stops applying — their thirteenth birthday — and always offer a
+        // way out on the screen itself.
+        lsSet("fx_gate", String(Number(by) + 13) + "-" + String(Number(bm)).padStart(2,"0"));
+        show("s1b"); return;
+      }
+      if (!j.ok) return say("m-s1", j.message || "That didn't work. Try again?", true);
+      F.token = j.token; lsSet("fx_token", j.token);
+      F.me = j.fellow;
+      paintWho();
+      // THE ONE THAT PRODUCED "it just says you're in". boot() branched on
+      // status and this handler did not, so someone already in who typed
+      // their email again was walked through the picker, four questions and
+      // the wait, and then told "You're in." about an account that was
+      // already in. Same branch, both places, or it comes back.
+      if (F.me && F.me.status === "accepted"){ loadMe().catch(function(){}); show("s7"); return; }
+      if (F.me && F.me.status === "needs_more"){ F.qi = 0; paintQ(); show("s4"); return; }
+      show("s3");
+    })
+    .catch(function(e){ btn.disabled = false; setLabel(btn, LETSGO); say("m-s1", e.message, true); });
+});
+
+/* ---------- S3 — the picker --------------------------------------------- */
+document.addEventListener("click", function(ev){
+  // The data-soon branch is gone with the buttons it served. It threw on
+  // .querySelector(".pname"), and the sentence it fell back to — "we'll email
+  // you when it opens" — was never true, because nothing recorded the tap.
+  var p = ev.target.closest("[data-fellowship]");
+  if (p){ startQuestions(p.getAttribute("data-fellowship")); return; }
+});
+
+/* ---------- S4 — four questions ----------------------------------------
+   Four is right, but not four of the same kind: three open plus one tap.
+   Three open answers give the model at least three quotable spans of the
+   applicant's own words plus redundancy if one comes back thin, which is what
+   makes the acceptance specific instead of a Forer statement. A fifth open
+   question buys worse answers to all five — Krosnick's satisficing: burden
+   pushes respondents to the first merely-acceptable answer.
+
+   Every question here asks for a MEMORY, not a judgement; its answer contains
+   a proper noun; "no" cannot be the whole answer; it reads at about a
+   twelve-year-old's level; the help text carries the escape hatch; and the
+   placeholder sets the bar low, because whatever you show is what they match.
+
+   Q4 is a tap, not a text field. Time is a fact, and facts should be
+   closed-ended — asking someone to type "maybe two or three hours" is pure
+   friction that yields an unparseable string.                              */
+/* FOUR SETS, ONE SHAPE. Every set keeps the growth rules: three open plus one
+   tap; each question asks for a MEMORY rather than a judgement so the answer
+   contains a proper noun; "no" cannot be the whole answer; the help text
+   carries the escape hatch; and the placeholder sets the bar deliberately low,
+   because whatever you show is what people match.
+
+   The technical sets ask what someone BUILT and where they got STUCK, never
+   what they know. A knowledge question is answerable by anyone with a browser
+   open and tells us nothing; "it took me two days and I never fixed it" tells
+   us everything, and it is a sentence a fourteen-year-old can write honestly. */
+var QSETS = {};
+
+QSETS.growth = [
+  { k:"watch", t:"What's the last video you watched twice?",
+    h:"Any video, any reason. A TikTok, an ad, something a friend sent you. If nothing comes to mind, the last one you sent to someone else.",
+    ph:"there's this one about a guy who…" },
+  { k:"want",  t:"What do you want to be able to do in a month that you can't do now?",
+    h:"One line. \u201cMake a video that gets past a thousand views\u201d is a completely normal answer.",
+    ph:"i want to be able to…" },
+  { k:"make",  t:"Tell us about the last thing you made and put somewhere other people could see it.",
+    h:"A post, a school project, a poster for a bake sale, a meme in a group chat. If you've never posted anything, say that \u2014 it's the normal answer here and it changes nothing.",
+    ph:"i made a…" },
+  { k:"time",  t:"How much time have you actually got in a week?",
+    h:"Small is fine. We build the plan around the real number, so guess low rather than high.",
+    choices:["Under an hour","1\u20133 hours","3\u20136 hours","More than that"] }
+];
+
+var TIMEQ = { k:"time", t:"How much time have you actually got in a week?",
+  h:"Small is fine, and honest is better than impressive \u2014 we'd rather know now than find out in a month. Guess low.",
+  choices:["Under an hour","1\u20133 hours","3\u20136 hours","More than that"] };
+
+QSETS.software = [
+  { k:"built", t:"What's the last thing you built that actually ran?",
+    h:"A script, a mod, a site nobody visited, a bot for a group chat, a thing for school. If it broke halfway and you left it, say that \u2014 half-finished is the normal answer and it changes nothing.",
+    ph:"i made a little thing that\u2026" },
+  { k:"stuck", t:"Tell us about a bug that took you far too long.",
+    h:"What it turned out to be, and how you got out of it \u2014 or that you never did. Giving up on one is a completely normal answer here.",
+    ph:"it kept crashing and it turned out\u2026" },
+  { k:"want",  t:"What would you want to work on here?",
+    h:"Point at something. \u201cThe iPhone app\u201d or \u201cmaking the browser thing less dumb\u201d is plenty. If you don't know yet, say what you'd want to learn instead.",
+    ph:"i'd want to\u2026" },
+  TIMEQ
+];
+
+QSETS.hardware = [
+  { k:"built", t:"What's the last thing you built that you could actually hold?",
+    h:"A circuit, a 3D print, a robot for a class, something you took apart and put back together. If it never worked, that's still the answer \u2014 tell us what went wrong.",
+    ph:"i put together a\u2026" },
+  { k:"stuck", t:"Tell us about something you built that didn't work.",
+    h:"What it was meant to do, and what actually happened. Whether you fixed it doesn't matter to us.",
+    ph:"it was supposed to\u2026 but\u2026" },
+  { k:"want",  t:"What would you want to work on here?",
+    h:"The pendant is a board, a battery, an enclosure and a microphone. Point at whichever of those you'd want your hands on, or say what you'd want to learn.",
+    ph:"i'd want to\u2026" },
+  TIMEQ
+];
+
+QSETS.technical = [
+  { k:"built", t:"What's the last thing you built \u2014 software or hardware, either one?",
+    h:"Code, a circuit, a print, a mod, a site. If it broke halfway and you left it, say that. Half-finished is the normal answer.",
+    ph:"i made a\u2026" },
+  { k:"stuck", t:"Tell us about a problem that took you far too long.",
+    h:"What it turned out to be, and how you got out of it \u2014 or that you never did. Giving up on one is completely normal.",
+    ph:"it took me ages and it turned out\u2026" },
+  { k:"want",  t:"Which side pulls you more, and why?",
+    h:"Software is the app, the extension and the brain. Hardware is the pendant. \u201cBoth, honestly\u201d is a real answer \u2014 just say what makes you say it.",
+    ph:"probably the\u2026 because\u2026" },
+  TIMEQ
+];
+
+// The ACTIVE set. Swapped by startQuestions() when a track is chosen, so
+// paintQ, nextQ and the review screen all keep reading one variable.
+var QS = QSETS.growth;
+var TRACK_NAME = { growth:"Growth & Marketing", software:"Software",
+                   hardware:"Hardware", technical:"Technical" };
+var BAR_LINE = "Almost everyone who writes a real answer gets in. This isn't a filter \u2014 " +
+               "it's so the thing we send back is about you and not about nobody.";
+var CANT = "can't think of one right now";
+
+function startQuestions(track){
+  track = QSETS[track] ? track : "growth";
+  // The keys differ between sets ("watch" vs "built"), so answers kept across
+  // a track change would be orphaned data submitted under the wrong labels.
+  if (track !== F.track) F.answers = {};
+  F.track = track;
+  QS = QSETS[track];
+  F.qi = 0; paintQ(); show("s4");
+}
+function paintQ(){
+  var q = QS[F.qi], tap = !!q.choices;
+  $("q-title").textContent = q.t;
+  // Susser, Roessler & Nissenbaum: what makes influence manipulation is that
+  // it is HIDDEN. Disclose the bar before the review and the wait stops
+  // pretending to be a gate.
+  $("q-help").textContent = q.h + (F.qi === 0 ? "  " + BAR_LINE : "");
+  var inp = $("q-input"), box = $("q-choices");
+  inp.style.display = tap ? "none" : "";
+  box.style.display = tap ? "" : "none";
+  $("b-cant").style.display = tap ? "none" : "";
+  if (tap){
+    box.innerHTML = q.choices.map(function(c){
+      return '<button class="choice' + (F.answers[q.k] === c ? " on" : "") + '" data-choice="' +
+        esc(c) + '">' + esc(c) + '</button>';
+    }).join("");
+  } else {
+    inp.placeholder = q.ph;
+    inp.value = F.answers[q.k] || "";
+  }
+  setLabel($("b-next"), F.qi === QS.length - 1 ? "Send it" : "Next");
+  $("b-back").style.display = F.qi === 0 ? "none" : "";
+  var st = $("steps").children;
+  for (var i = 0; i < st.length; i++) st[i].className = i <= F.qi ? "done" : "";
+  $("steps").setAttribute("aria-valuenow", String(F.qi + 1));
+  say("m-s4",""); $("n-s4").textContent = "";
+  inp.removeAttribute("aria-invalid");
+  if (!tap) setTimeout(function(){ try { inp.focus(); } catch(e){} }, 40);
+}
+function nextQ(){
+  if (F.qi < QS.length - 1){ F.qi++; paintQ(); return; }
+  submitApplication();
+}
+$("b-next").addEventListener("click", function(){
+  var q = QS[F.qi];
+  if (q.choices){
+    if (!F.answers[q.k]) return say("m-s4", "Pick the one that's closest.", true);
+    return nextQ();
+  }
+  var v = $("q-input").value.trim();
+  // The old gate was v.length < 2 and it BLOCKED. Blocking is where people
+  // leave. Under about fifteen characters this nudges and the button stays
+  // live; someone who is stuck must never be trapped.
+  if (!v) { $("n-s4").textContent = "a few words is all it takes."; $("q-input").focus(); return; }
+  F.answers[q.k] = v.slice(0, 1200);
+  nextQ();
+});
+$("q-input").addEventListener("input", function(){
+  $("n-s4").textContent = this.value.trim().length && this.value.trim().length < 15
+    ? "a few more words and it'll actually be about you" : "";
+});
+$("q-input").addEventListener("keydown", function(ev){
+  if (ev.key === "Enter" && (ev.metaKey || ev.ctrlKey)){ ev.preventDefault(); $("b-next").click(); }
+});
+$("b-cant").addEventListener("click", function(){
+  // The model prompt is told this exact string is not gibberish.
+  F.answers[QS[F.qi].k] = CANT;
+  nextQ();
+});
+$("b-back").addEventListener("click", function(){
+  if (!QS[F.qi].choices) F.answers[QS[F.qi].k] = $("q-input").value.trim();
+  if (F.qi > 0){ F.qi--; paintQ(); }
+});
+document.addEventListener("click", function(ev){
+  var c = ev.target.closest("[data-choice]");
+  if (!c) return;
+  F.answers[QS[F.qi].k] = c.dataset.choice;
+  paintQ();
+});
+$("b-again").addEventListener("click", function(){ F.qi = 0; paintQ(); show("s4"); });
+
+/* ---------- S5 — the review beat ----------------------------------------
+   Every line here corresponds to something that actually happened. There is
+   no MIN: the old build held the screen for eighteen seconds whatever the
+   server did, in front of an SVG that animated nothing, and a model timeout
+   of 45 could stretch it further. Buell & Norton's Experiment 5 is the
+   finding nobody quotes: for UNFAVOURABLE outcomes, transparency made things
+   worse than instantaneous (15s transparent M = 2.47 vs instantaneous
+   M = 3.24, t(62) = 2.40, p < .05, intensifying at 30s) — so ask_more
+   short-circuits the beat immediately and never completes the rail.       */
+var RSTAGES = [
+  "Sending your answers.",
+  "Reading them.",
+  "Writing you back."
+];
+function rstage(i){
+  $("reviewline").textContent = RSTAGES[i];
+  var st = $("rsteps").children;
+  for (var k = 0; k < st.length; k++) st[k].className = k <= i ? "done" : "";
+}
+function submitApplication(){
+  // Their own words are the visual. Not a ring, not a bar, not a spinner.
+  $("answers").innerHTML = QS.map(function(q){
+    var v = F.answers[q.k] || "";
+    if (!v) return "";
+    return '<div class="ansrow"><b>' + esc(q.t.replace(/\?$/, "")) + '</b><span>' + esc(v) + '</span></div>';
+  }).join("");
+  show("s5");
+  rstage(0);
+  var t0 = Date.now(), slow = null, settled = false;
+  setTimeout(function(){ if (!settled) rstage(1); }, 900);
+  slow = setTimeout(function(){
+    if (!settled) $("reviewline").textContent = "Still reading — it's a slow one today.";
+  }, 12000);
+
+  api("/fellows/apply", { body:{ fellowship:F.track, answers:F.answers, terms:true } })
+    .then(function(j){ arrive(j, null); })
+    .catch(function(e){ arrive(null, e); });
+
+  function arrive(j, err){
+    settled = true; clearTimeout(slow);
+    if (err || !j){
+      $("reviewline").textContent = "We couldn't reach our end. Nothing's lost — try once more.";
+      setTimeout(function(){ show("s4"); }, 1800);
+      return;
+    }
+    if (j.verdict === "ask_more"){
+      // no remaining stages, no rail completion, no delay
+      $("more-msg").textContent = j.message || "";
+      show("s6b"); return;
+    }
+    // A technical application is RECEIVED, not accepted. It goes to its own
+    // screen for the same reason it has its own server branch: S6 promises
+    // lessons and a link, and neither exists on this side.
+    if (j.verdict === "received"){
+      F.me = F.me || {};
+      if (j.fellow){ for (var k2 in j.fellow) F.me[k2] = j.fellow[k2]; }
+      rstage(2);
+      var waitR = Math.max(0, 1200 - (Date.now() - t0 - 900));
+      setTimeout(function(){ paintReceived(j.message); show("s6c"); }, waitR);
+      return;
+    }
+    if (j.already){
+      // Already a member. The server says so now; showing a second acceptance
+      // screen to someone who is already in is the thing that reads as
+      // nonsense.
+      F.me = F.me || {};
+      if (j.fellow){ for (var k in j.fellow) F.me[k] = j.fellow[k]; }
+      if (F.me.status === "applied"){ paintReceived(j.message); show("s6c"); return; }
+      loadMe().catch(function(){});
+      show("s7"); return;
+    }
+    rstage(2);
+    // one short readability floor so the last line does not flash past
+    var wait = Math.max(0, 1200 - (Date.now() - t0 - 900));
+    setTimeout(function(){
+      F.me = F.me || {};
+      if (j.fellow){ for (var k in j.fellow) F.me[k] = j.fellow[k]; }
+      paintAccepted(j.message, j.noticed);
+      show("s6");
+    }, wait);
+  }
+}
+
+/* ---------- S6 — you're in ----------------------------------------------
+   Three jobs: prove it read them, name one action, and set the money
+   expectation honestly — including the part the old build left out.
+
+   THE HEADLINE IS ONLY PERMITTED BECAUSE THE SENTENCE UNDER IT IS VERBATIM
+   THEIRS. Forer handed 39 students the same astrology profile and got a mean
+   accuracy rating of 4.26/5, replicated in the 4.0-4.3 band for seventy-five
+   years: vague warm feedback reliably reads as personal, and collapses the
+   instant two friends compare screens. The quote is what stops this being a
+   Forer statement, so if there is nothing to quote the headline degrades and
+   we quote them mechanically instead.
+
+   The founder's test, and it is the one that matters: two applicants sit next
+   to each other and compare screens. Does anything on either read as a lie?  */
+/* ---------- S6c — application received -----------------------------------
+   Three jobs, and the third is the one that gets skipped: prove a person will
+   read it, say what happens next in real time units, and state that this track
+   does not pay BEFORE they find out somewhere else. The growth screen has a
+   whole money section; the honest equivalent here is the absence of one, said
+   out loud. Somebody who came for the money should be told to go take the
+   other one, on this screen, while they still care.                        */
+function paintReceived(message){
+  var name = (F.draft.name || (F.me && F.me.name) || "").split(/\s+/)[0];
+  // Three ways in, and they disagree. A fresh submit knows the track from the
+  // picker; the server echoes `applied_to` because a growth member who applies
+  // to Software keeps `fellowship: "growth"` on their row; and a returning
+  // applicant has only the row. Take them in that order of certainty, or the
+  // eyebrow names the wrong fellowship on the screen that confirms it.
+  var track = (F.me && F.me.applied_to)
+           || F.track
+           || (F.me && F.me.status === "applied" && F.me.fellowship)
+           || "technical";
+  $("rec-eyebrow").textContent = "The " + (TRACK_NAME[track] || "Technical") + " Fellowship";
+  $("rec-h").textContent = name ? "We've got it, " + name + "." : "We've got it.";
+
+  // Same Forer defence as the acceptance screen: quote their own words, or
+  // print nothing at all. A warm sentence with no quote in it reads as
+  // personal right up until two applicants compare screens.
+  var raw = String(F.answers.built || F.answers.want || "").trim();
+  var quote = (raw && raw !== CANT) ? raw.split(/\s+/).slice(0, 14).join(" ") : "";
+  $("rec-said").innerHTML = quote ? '<q>' + esc(quote) + '</q>' : "";
+  $("rec-said").style.display = quote ? "" : "none";
+
+  $("rec-msg").textContent = message
+    || "A person reads this one, not a model \u2014 so it takes a few days rather than a few seconds.";
+
+  $("rec-what").innerHTML = '<hr class="sep"><h3>What happens now</h3>'
+    + '<p class="small">One of us reads it. If it looks like a fit we\'ll write to set up a call \u2014 '
+    + 'a conversation, not a test, and there is nothing to prepare. If it is not a fit we will still '
+    + 'write back and tell you.</p>'
+    + '<p class="small">Either way you hear from us, at the address you gave. You do not need to check '
+    + 'back here.</p>'
+    + '<hr class="sep"><h3>The part people ask about last</h3>'
+    + '<p class="small">This one does not pay. There is no link and no commission in it \u2014 that is the '
+    + 'Growth fellowship, which is a different thing. What is here is real work on the product, with '
+    + 'people who will answer your questions.</p>'
+    + '<p class="small">If getting paid is the point for you, take Growth instead. It is open today, it '
+    + 'teaches you from zero, and you can start in the next ten minutes.</p>'
+    + '<button class="linkbtn u" id="b-toGrowth">Take me to that one instead</button>';
+
+  var g = $("b-toGrowth");
+  if (g) g.addEventListener("click", function(){ startQuestions("growth"); });
+}
+
+function paintAccepted(message, noticed){
+  var name = (F.draft.name || (F.me && F.me.name) || "").split(/\s+/)[0];
+  // The Google Fonts URL requests DM Serif Display with no ital axis, so <em>
+  // made the browser synthesise a mechanical oblique on a 36px display serif,
+  // on the most emotional word on the page. The name does the work already.
+  $("acc-h").textContent = name ? "It looks like you're a really good fit, " + name + "." : "You're in.";
+
+  var quote = (noticed && noticed.length && String(noticed[0]).trim()) || "";
+  if (!quote){
+    // The fallback must not fake specificity. Echo them mechanically instead:
+    // five lines of code, and it removes the single most likely source of
+    // "it says the same thing to everyone."
+    var raw = (F.answers.watch || F.answers.want || "").trim();
+    if (raw && raw !== CANT) quote = raw.split(/\s+/).slice(0, 12).join(" ");
+    if (!quote && name) $("acc-h").textContent = "You're in, " + name + ".";
+  }
+  $("acc-said").innerHTML = quote ? '<q>' + esc(quote) + '</q>' : "";
+  $("acc-said").style.display = quote ? "" : "none";
+  $("acc-msg").textContent = message || "";
+
+  // "You don't get context on what Anticipy is. It's the most important
+  // part." It was nowhere on this screen, and this is the screen where
+  // somebody decides whether to open the course.
+  $("acc-what").innerHTML = '<hr class="sep"><h3>What Anticipy is, since you\'ll be making videos about it</h3>'
+    + '<p class="small">A pendant you wear, an app on your iPhone, and hands in your Chrome browser. '
+    + 'It hears the things you say you\'ll do and quietly does them — the email you meant to send, the '
+    + 'trial you swore you\'d cancel. The moment people react to is when it did the thing before they asked.</p>'
+    + '<p class="small">The first unit of the course is nothing but this, and it takes five minutes.</p>';
+
+  // Step 3 used to read "Post it on your own account and say it's a paid
+  // thing". Instructing a fifteen-year-old to publish for the company on the
+  // acceptance screen contradicts the course's own binding law, and the 2023
+  // FTC Endorsement Guides obligation is discharged in u3-l4 and the terms,
+  // which is where it belongs.
+  paintMoney((F.me && F.me.age_band) || "18_plus", F.me && F.me.referral_code, F.me && F.me.code_active);
+}
+function paintMoney(band, code, active){
+  var box = $("acc-money");
+  var lines = ['<hr class="sep"><h3>About the money, plainly</h3>'
+    + '<p class="small"><strong>$30</strong> when someone buys through your link. '
+    + 'One payment, <strong>30 days after they buy</strong>, and we never take it back.</p>'
+    + '<p class="small">It arrives as a prepaid Visa card, by email'
+    + (band !== "18_plus" ? ' — to the address your parent or guardian gives us' : '')
+    + '. No bank account and no ID needed'
+    + (band !== "18_plus" ? ' from you' : '') + '.</p>'
+    + '<p class="tiny">The 30 days is the window where a purchase can still be cancelled. '
+    + 'We wait it out once rather than paying you in halves.</p>'];
+  if (code){
+    var url = location.origin + "/r/" + code;
+    var shown = url.replace(/^https?:\/\//, "");
+    lines.push('<div class="codebox"><code>' + esc(shown) + '</code>'
+      + '<button class="btn sm" data-copy="' + esc(url) + '">Copy</button></div>'
+      + '<p class="small">Your link works today and counts clicks today. It can\'t pay until you tap the '
+      + 'link in the email we just sent you — that\'s the money switch, not the login.</p>');
+  }
+  if (band !== "18_plus"){
+    // THIS LINK USED TO POINT AT /setup?f=<code>, AND TWO THINGS WERE WRONG.
+    // pb_public/setup.html is the Chrome extension developer-mode installer —
+    // "Anticipy Claude Version — Set up your browser" — so a parent who
+    // followed it got a page about browser flags. And /setup is not one of the
+    // four paths the anticipy.ai rewrites forward to this backend, so on the
+    // live site it simply 404'd. That link was the only thing standing between
+    // a fifteen-year-old and being paid.
+    //
+    // It is now minted on demand, because the referral code is PUBLIC — it is
+    // in the link they post — and consenting on the strength of it would let
+    // any stranger who saw one declare themselves a child's guardian.
+    lines.push('<div class="card" style="margin-top:22px">'
+      + '<span class="eyebrow">Under 18</span>'
+      + '<p class="small">Everything here is open to you today — the lessons, your link, your clicks. '
+      + 'Only the payment waits, and that\'s the law about paying minors rather than a rule of ours.</p>'
+      + '<p class="small">A parent or guardian does one two-minute step. It asks them for a name and '
+      + 'an email and nothing else — no bank details, no ID, nothing about you.</p>'
+      + '<button class="btn sm" id="b-guardian">Get the link for my parent</button>'
+      + '<div id="guardian-out"></div>'
+      + '<div class="msg" id="m-guardian" role="status"></div>'
+      + '</div>');
+  } else if (!active){
+    // style="color:var(--warn)" — --warn is not a token on this page. Invalid
+    // at computed-value time, so the property unset and it inherited --ink:
+    // the payout warning rendered as ordinary black body text.
+    lines.push('<p class="small" role="status" style="color:var(--accent-ink)">'
+      + 'Your link goes live once we\'ve checked your payout details.</p>');
+  }
+  box.innerHTML = lines.join("");
+}
+
+document.addEventListener("click", function(ev){
+  var c = ev.target.closest("[data-copy]");
+  if (c){
+    var text = c.dataset.copy;
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ c.textContent = "Copied"; setTimeout(function(){ c.textContent = "Copy"; }, 1600); },
+        function(){ c.textContent = "Select it"; });
+    } else c.textContent = "Select it";
+  }
+});
+
+/* ---------- S7 — coming back -------------------------------------------- */
+function paintWho(){
+  var n = (F.me && F.me.name) || F.draft.name || "";
+  $("whoami").textContent = n ? n : "";
+}
+function loadMe(){
+  return api("/fellows/me").then(function(j){
+    if (!j.ok) return;
+    F.me = j.fellow;
+    F.progress = j.progress || [];
+    F.conversions = j.conversions || [];
+    F.submissions = j.submissions || [];
+    paintWho();
+    paintDash();
+  });
+}
+function paintDash(){
+  var me = F.me || {};
+  var name = (me.name || "").split(/\s+/)[0];
+  $("d-hello").textContent = name ? "Hello again, " + name + "." : "Hello again.";
+  var doneN = (F.progress || []).length;
+  $("d-line").textContent = doneN
+    ? doneN + " " + (doneN === 1 ? "lesson" : "lessons") + " done. Pick up where you left off."
+    : "You haven't started the lessons yet. The first one is about ten minutes.";
+  var clicks = me.clicks_total || 0;
+  var earned = (F.conversions || []).reduce(function(a,c){ return a + (c.commission_usd || 0); }, 0);
+  var cleared = (F.conversions || []).filter(function(c){ return c.status === "paid" || c.status === "half_paid"; })
+    .reduce(function(a,c){ return a + (c.commission_usd || 0); }, 0);
+  // "Keep going" never named the lesson, on a page that promised to pick up
+  // where you left off.
+  var body = ['<a class="btn wide" href="/fellowship-growth-learning.html">'
+    // No denominator. It was hard-coded at 29, went stale the day u3-l5 landed,
+    // and would go stale again the next time a lesson is added — this page has
+    // no way to know how many lessons the course has, and inventing one would
+    // be a second thing to keep in sync. The map itself shows the total.
+    + (doneN ? "Keep going — " + doneN + (doneN === 1 ? " lesson" : " lessons") + " done"
+             : "Start lesson one") + '</a>',
+    '<div class="card"><span class="eyebrow">The community</span>'
+    + '<p class="small">Everyone else in the fellowship is in one Discord. Questions get answered '
+    + 'there, and it&#39;s where anything new gets announced.</p>'
+    + '<p class="small"><a class="dc" href="' + esc(DISCORD) + '" target="_blank" rel="noopener noreferrer">'
+    + 'Join the community on Discord</a></p></div>'];
+  if (me.referral_code){
+    body.push('<div class="card"><h3>Your link</h3>'
+      + '<div class="codebox"><code>' + esc((location.origin + "/r/" + me.referral_code).replace(/^https?:\/\//, "")) + '</code>'
+      + '<button class="btn sm" data-copy="' + esc(location.origin + "/r/" + me.referral_code) + '">Copy</button></div>'
+      + '<p class="small" style="margin-top:12px">' + clicks + ' ' + (clicks === 1 ? "click" : "clicks") + ' so far'
+      + (earned ? ' · $' + earned + ' earned, $' + cleared + ' cleared' : ' · nothing sold through it yet')
+      + '</p>'
+      + (me.code_active ? "" : '<p class="small" role="status" style="color:var(--accent-ink)">Your link works, but payouts are waiting on the setup step.</p>')
+      + '</div>');
+  }
+  // THE LOGBOOK. Optional in the copy and optional in the code: nothing counts
+  // these, nothing pays for them, and there is deliberately no target, no
+  // streak and no "3 of 5" anywhere on this card. A programme that requires a
+  // minor to publish work for the company is a different arrangement in law,
+  // and the difference is exactly this sentence.
+  // LINKEDIN IS NOT OFFERED TO A 13-15 FELLOW, because LinkedIn's own minimum
+  // age is 16. A placeholder that names it IS an offer — it reads as the list
+  // of places we expect them to post — and the server refuses a LinkedIn link
+  // from them anyway, so leaving it in would only be a sentence inviting a
+  // thirteen-year-old to go and break a platform's rule and then be told no.
+  var subPlaceholder = me.age_band === "13_15"
+    ? "A TikTok, Instagram, YouTube or X link"
+    : "A TikTok, Instagram, YouTube, X or LinkedIn link";
+  body.push('<div class="card"><h3>Things you\'ve made</h3>'
+    + '<p class="small">If you post something, paste the link and it&#39;s kept here in one place. '
+    + 'Only if you feel like it — posting is optional and it goes on your own account. '
+    + 'Nothing here is required and nothing here pays; the money is the link above.</p>'
+    + '<label class="flab" for="sub-url">Paste a link</label>'
+    + '<input class="field" id="sub-url" type="url" inputmode="url" autocomplete="off" '
+    + 'spellcheck="false" placeholder="' + esc(subPlaceholder) + '">'
+    + '<button class="btn sm" id="b-sub" style="margin-top:14px">Log it</button>'
+    + '<div class="msg" id="m-sub" role="status"></div>'
+    + '<div id="sub-handle"></div>'
+    + '<div id="sub-list"></div>'
+    + '<p class="tiny" style="margin-top:18px">We can&#39;t see your view counts, and we&#39;d rather '
+    + 'say that than show you a dash. Reading them would mean asking you to connect your accounts '
+    + 'to us, and we&#39;d rather not hold that. Your own app already shows you. What we count is '
+    + 'clicks on your link and what sold through it.</p>'
+    + '</div>');
+  $("d-body").innerHTML = body.join("");
+  renderSubs();
+}
+
+/* ---------- the logbook -------------------------------------------------
+   EVERYTHING IN HERE IS ESCAPED ON THE WAY OUT, without exception. `title`
+   is whatever a platform's oEmbed handed us, `note` is whatever the person
+   typed, and `url` is built from what they pasted. All three are rendered as
+   HTML, so all three go through esc() — the href included, even though the
+   server only ever stores a canonical https URL on a known host.
+   ----------------------------------------------------------------------- */
+function renderSubs(){
+  var el = $("sub-list");
+  if (!el) return;
+  var rows = F.submissions || [];
+  if (!rows.length){
+    // Zero is a real state, not an absence, and it is not a verdict on them.
+    el.innerHTML = '<p class="small" style="margin-top:14px">Nothing logged yet, which is exactly '
+      + 'what the start looks like.</p>';
+    return;
+  }
+  var NAME = { tiktok:"TikTok", instagram:"Instagram", youtube:"YouTube", x:"X", linkedin:"LinkedIn" };
+  el.innerHTML = '<ul class="subs">' + rows.map(function(s){
+    var label = s.title || ((NAME[s.platform] || "Post") + (s.kind ? " " + s.kind : ""));
+    return '<li>'
+      + '<span class="meta">' + esc(NAME[s.platform] || s.platform) + '</span>'
+      + '<a href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer">' + esc(label) + '</a>'
+      + (s.note ? '<div class="tiny">' + esc(s.note) + '</div>' : "")
+      // The ONE verification state a fellow ever sees. It is useful to them and
+      // it accuses them of nothing. "unverified" is permanent on Instagram and
+      // LinkedIn and would read as a mark against those platforms; the server
+      // never sends it.
+      + (s.verify_state === "gone"
+          ? '<div class="tiny">We couldn&#39;t find this one when we checked — has it been taken down?</div>'
+          : "")
+      + '<button class="btn sm" data-unsub="' + esc(s.id) + '">Remove</button>'
+      + '</li>';
+  }).join("") + '</ul>';
+}
+
+/* One field, framed as the profile step it already is. It writes through
+   POST /fellows/profile — the route that has always owned handles — rather
+   than inventing a second writer for the same column. */
+function askHandle(platform, why){
+  var FIELD = { tiktok:"tiktok", youtube:"youtube", x:"x_handle" };
+  var NAME = { tiktok:"TikTok", youtube:"YouTube", x:"X" };
+  var box = $("sub-handle");
+  if (!box || !FIELD[platform]) return;
+  box.innerHTML = '<label class="flab" for="h-in">Your ' + esc(NAME[platform]) + ' @</label>'
+    + '<input class="field" id="h-in" type="text" autocomplete="off" spellcheck="false" '
+    + 'placeholder="@yourname" data-field="' + esc(FIELD[platform]) + '">'
+    + '<button class="btn sm" id="b-handle" style="margin-top:14px">Save it</button>';
+  var inp = $("h-in");
+  if (inp) { try { inp.focus({preventScroll:true}); } catch(e){} }
+}
+
+document.addEventListener("click", function(ev){
+  var hb = ev.target.closest("#b-handle");
+  if (hb){
+    var hin = $("h-in");
+    if (!hin) return;
+    var val = (hin.value || "").trim().replace(/^@/, "");
+    if (!val) return say("m-sub", "Type your @ and we'll save it.", true);
+    var patch = {};
+    patch[hin.getAttribute("data-field")] = val;
+    hb.disabled = true; setLabel(hb, "One moment\u2026");
+    api("/fellows/profile", { body: patch }).then(function(j){
+      hb.disabled = false; setLabel(hb, "Save it");
+      if (!j || !j.ok) return say("m-sub", (j && j.message) || "That didn't save. Try once more?", true);
+      $("sub-handle").innerHTML = "";
+      say("m-sub", "Saved. Try that link again.", "ok");
+    }).catch(function(){
+      hb.disabled = false; setLabel(hb, "Try again");
+      say("m-sub", "We couldn't reach our end. Try once more.", true);
+    });
+    return;
+  }
+  var add = ev.target.closest("#b-sub");
+  if (add){
+    var inp = $("sub-url");
+    if (!inp) return;
+    var url = (inp.value || "").trim();
+    if (!url) return say("m-sub", "Paste the link to what you made.", true);
+    add.disabled = true; setLabel(add, "One moment\u2026"); say("m-sub", "");
+    api("/fellows/submissions", { body:{ url:url } }).then(function(j){
+      add.disabled = false; setLabel(add, "Log it");
+      if (!j || !j.ok){
+        // THE ONE REFUSAL THAT HAS SOMETHING TO DO ABOUT IT. The server asks
+        // for a handle before the first TikTok, YouTube or X link, because
+        // without one there is nothing to check the platform's answer
+        // against. A dead-end message here would be the /setup?f= mistake
+        // again: a sentence telling someone to do a thing, with nowhere to do
+        // it. So the field appears right where they are.
+        if (j && j.need_handle) askHandle(j.need_handle, j.message);
+        return say("m-sub", (j && j.message) || "That didn't work. Try once more?", j && j.need_handle ? "" : true);
+      }
+      $("sub-handle").innerHTML = "";
+      inp.value = "";
+      // `already` is their OWN earlier row. It is not an error and it is not
+      // styled as one — they did nothing wrong, they just already did it.
+      // The `!j.submission` half covers the other case the server answers this
+      // way: the row came off the list (they pressed Remove, or HQ did) while
+      // the oEmbed call was still running. There is no row to add and adding
+      // `undefined` to the list would render a broken card.
+      if (j.already || !j.submission) return say("m-sub", j.message || "Logged.", "ok");
+      F.submissions = [j.submission].concat(F.submissions || []);
+      say("m-sub", "Logged.", "ok");
+      renderSubs();
+    }).catch(function(){
+      add.disabled = false; setLabel(add, "Try again");
+      say("m-sub", "We couldn't reach our end. Try once more.", true);
+    });
+    return;
+  }
+  var rm = ev.target.closest("[data-unsub]");
+  if (rm){
+    var id = rm.getAttribute("data-unsub");
+    rm.disabled = true;
+    api("/fellows/submissions/remove", { body:{ id:id } }).then(function(j){
+      if (!j || !j.ok){
+        rm.disabled = false;
+        return say("m-sub", (j && j.message) || "That didn't work. Try once more?", true);
+      }
+      F.submissions = (F.submissions || []).filter(function(s){ return s.id !== id; });
+      say("m-sub", "");
+      renderSubs();
+    }).catch(function(){ rm.disabled = false; });
+  }
+});
+
+/* ---------- boot --------------------------------------------------------- */
+(function(){ var d = $("b-discord"); if (d) d.href = DISCORD; })();
+
+/* ---------- the guardian step ------------------------------------------- */
+document.addEventListener("click", function(ev){
+  if (!ev.target.closest("#b-guardian")) return;
+  var btn = ev.target.closest("#b-guardian");
+  btn.disabled = true; setLabel(btn, "One moment…");
+  say("m-guardian", "");
+  api("/fellows/guardian/link", { body:{} }).then(function(j){
+    btn.disabled = false; setLabel(btn, "Get a fresh link");
+    if (!j || !j.ok) return say("m-guardian", (j && j.message) || "That didn't work. Try once more?", true);
+    if (j.done) return say("m-guardian", j.message, "ok");
+    var mail = "mailto:?subject=" + encodeURIComponent("Two minutes, for the Anticipy fellowship")
+      + "&body=" + encodeURIComponent("Hi — I joined the Anticipy Growth Fellowship. All the learning "
+        + "is already open to me; the only thing that needs you is the payout step, because of the law "
+        + "about paying under-18s. It asks for your name and an email and nothing else.\n\n"
+        + j.url + "\n\nThanks!");
+    $("guardian-out").innerHTML =
+      '<div class="codebox"><code>' + esc(j.url.replace(/^https?:\/\//, "")) + '</code>'
+      + '<button class="btn sm" data-copy="' + esc(j.url) + '">Copy the link for them</button></div>'
+      + '<p class="tiny" style="margin-top:10px"><a href="' + esc(mail) + '">or open an email to them</a></p>'
+      + '<p class="tiny">This link works once. Getting a fresh one replaces it.</p>';
+    say("m-guardian", "");
+  }).catch(function(){
+    btn.disabled = false; setLabel(btn, "Try again");
+    say("m-guardian", "We couldn't reach our end. Try once more.", true);
+  });
+});
+$("b-notme").addEventListener("click", function(){
+  try { localStorage.removeItem("fx_gate"); } catch(e){}
+  show("s1");
+});
+(function boot(){
+  var gate = lsGet("fx_gate","");
+  // "Not this time" reads as a rejection of the person. It never was one.
+  if (gate){
+    var now = new Date().toISOString().slice(0,7);
+    if (gate === "blocked" || gate > now){
+      $("stop-h").textContent = "Come back on your birthday.";
+      $("stop-p").textContent = "You have to be 13 to join this one. We'll still be here.";
+      show("s1b");
+      return;
+    }
+    try { localStorage.removeItem("fx_gate"); } catch(e){}
+  }
+  if (!F.token) return;
+  loadMe().then(function(){
+    if (!F.me) return;
+    if (F.me.status === "accepted") show("s7");
+    // Without this an applicant who comes back sees the picker again and
+    // applies a second time, which is how you get two rows and one person.
+    else if (F.me.status === "applied"){
+      // F.track is still its default here — nobody has touched the picker this
+      // visit — so the row is the only thing that knows which one they applied to.
+      F.track = F.me.fellowship || "technical";
+      paintReceived(""); show("s6c");
+    }
+    else show("s3");
+  }).catch(function(){});
+})();
+</script>
+</body>
+</html>

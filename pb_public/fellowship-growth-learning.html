@@ -1,0 +1,1929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anticipy Growth Fellowship</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23FAF8F4'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23C8A97E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   HIRE_THEME — the palette anticipy.ai already uses for /apply and /ugc.
+   Values taken from src/components/apply/theme.ts, not invented here.
+
+   THE RULE THAT IS EASIEST TO BREAK: --accent (gold) is for MARKS ONLY.
+   It measures about 2:1 on cream and fails as text at any size. Anything
+   readable and gold-ish uses --accent-ink (bronze).
+
+   --rule-2 is the one addition. --rule (#E4DFD6) on --paper (#FAF8F4)
+   measures 1.25:1, so every divider, card border and progress track on this
+   page was technically present and perceptually absent. That is a large part
+   of why a screenshot read as type floating in a void: the grid existed and
+   nobody could see it. Gold cannot be used to fix it (marks only), so
+   STRUCTURAL boundaries take the darker value and decorative ones keep the
+   brand hairline. --rule-2 is a darker value of an existing token, not a new
+   hue.
+
+   TWO LAWS OF THIS PLAYER, and they are load-bearing:
+
+   1. THE RAIL AND THE BUTTON NEVER MOVE. Every card, every state, every
+      screen renders into the same 620px column with the same footer rail
+      underneath, and the tap target is 186x54 in the same place on card 1,
+      on the quiz, on the try-this and on the end-of-lesson screen.
+
+   2. NO ILLUSTRATIONS, AND THAT IS THE CORRECT TRADE. Sundararajan & Adesope
+      (177 effect sizes): decorative illustration measures g = -0.16 on
+      learning while learners REPORT LIKING IT MORE. Signalling — cues that
+      mark structure — measures r = +.17. We decline the intervention that
+      costs money and tests negative and buy the one that costs nothing and
+      tests positive. Do not "fix" this by adding pictures.
+   ========================================================================= */
+:root{
+  color-scheme: light;
+  --ink:#171512;          /* all primary text, and the fill of every button */
+  --ink-2:#6B665E;        /* secondary copy, helper text, the quiet action  */
+  --paper:#FAF8F4;        /* the page                                       */
+  --paper-2:#F0EDE6;      /* cards and row hover — the only elevation there is */
+  --rule:#E4DFD6;         /* decorative hairline — the brand value          */
+  --rule-2:#D6D0C4;       /* structural — dividers, card borders, tracks    */
+  --accent:#C8A97E;       /* gold. MARKS ONLY. never under text.            */
+  --accent-ink:#8A6B44;   /* bronze on --paper. 4.64:1.                     */
+  /* Bronze measures 4.21:1 on --paper-2 and fails AA there, so every eyebrow
+     that sits INSIDE a card needs its own weight. Same hue, two steps down. */
+  --accent-ink-2:#7E6140; /* bronze on --paper-2. 4.89:1.                   */
+  /* --rule-2 is right for a divider and wrong for the edge of something you
+     tap: a white option box on cream is separated from the page by 1.03:1,
+     so at the hairline value the quiz options read as floating text rather
+     than as things you can press. */
+  --rule-3:#B6AC99;       /* the edge of an interactive control.            */
+  --danger:#A33A3A;
+  --ok:#2E6B4F;
+  --field:#FFFFFF;
+  --serif:'DM Serif Display', Georgia, 'Times New Roman', serif;
+  --sans:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mono:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--paper); color:var(--ink);
+  font:300 17px/1.7 var(--sans);
+  letter-spacing:.01em;
+  -webkit-font-smoothing:antialiased;
+  display:flex; flex-direction:column; min-height:100%;
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:disabled{opacity:.6;cursor:default}
+:focus-visible{outline:2px solid var(--accent-ink);outline-offset:3px}
+a{color:var(--accent-ink)}
+
+/* ---- chrome ------------------------------------------------------------ */
+header.top{
+  display:flex;align-items:center;gap:10px;
+  max-width:1000px;margin:0 auto;width:100%;padding:26px 28px 0;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none}
+.brand{font:400 15px/1 var(--serif);letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
+.topright{margin-left:auto;font:400 13px/1 var(--sans);color:var(--ink-2);display:flex;align-items:center}
+/* .streak had no rule at all, so a streak rendered as a raw string colliding
+   with #whoami. */
+.streak{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent-ink)}
+.streak:not(:empty)::after{content:"\00b7";margin:0 8px;color:var(--rule-2)}
+
+main{flex:1;width:100%;max-width:720px;margin:0 auto;padding:76px 28px 110px}
+
+.rule38{width:38px;height:2px;background:var(--accent);margin-bottom:18px}
+h1{font:400 clamp(40px,7.4vw,84px)/.96 var(--serif);letter-spacing:-.035em}
+h2{font:400 clamp(26px,3.4vw,36px)/1.06 var(--serif);letter-spacing:-.025em}
+p.lede{font:300 clamp(17px,2vw,20px)/1.55 var(--sans);color:var(--ink);max-width:33em;margin-top:16px}
+p{margin-top:14px;max-width:34em}
+.small{font-size:15.5px;color:var(--ink-2);line-height:1.65}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent-ink);margin:0 0 16px;display:block}
+
+/* ---- buttons ----------------------------------------------------------- */
+/* One button. The alternative action is bare text. */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  background:var(--ink);color:var(--paper);border-radius:999px;
+  padding:17px 34px;font:600 16.5px/1 var(--sans);letter-spacing:-.005em;
+  text-decoration:none;          /* <a class="btn"> rendered underlined inside the pill */
+  transition:background 160ms ease,transform 160ms ease;
+}
+.btn .arw{transition:transform 160ms ease}
+.btn:hover{background:#000}
+.btn:hover .arw{transform:translateX(3px)}
+.btn:not(:disabled):hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn.sm{padding:13px 22px;font-size:14.5px}
+.linkbtn{background:none;border:none;color:var(--ink-2);font:300 14px/1.4 var(--sans);
+  cursor:pointer;padding:12px 0;min-height:44px;text-align:left}
+.linkbtn:hover{color:var(--ink)}
+a.linkbtn{display:inline-block;text-decoration:none}
+
+.card{padding:34px;border:1px solid var(--rule-2);border-radius:14px;background:var(--paper-2)}
+
+footer.bot{max-width:1000px;margin:0 auto;width:100%;padding:0 28px 44px;
+  font-size:13px;color:var(--ink-2)}
+footer.bot a{color:var(--ink-2)}
+hr.sep{border:0;border-top:1px solid var(--rule-2);margin:38px 0}
+
+@keyframes pane{from{opacity:0}to{opacity:1}}
+
+/* ---- the course map ---------------------------------------------------- */
+/* The continue card. The single highest-leverage element on this page: it
+   answers "start here" and "where was I" with the same component, and it is
+   the ONLY gold-marked element on the map. Nothing else competes. */
+.cont{margin-top:34px;background:var(--paper-2);border:1px solid var(--rule-2);
+  border-left:2px solid var(--accent);border-radius:14px;padding:30px 30px 30px 32px}
+.cont .lname{font:400 clamp(22px,3.4vw,28px)/1.12 var(--serif);letter-spacing:-.03em;margin-top:4px}
+.cont .meta{margin-top:8px;font:300 14.5px/1.6 var(--sans);color:var(--ink-2)}
+.cont .crail{position:relative;height:2px;background:var(--rule-2);margin:22px 0 24px}
+.cont .crail i{position:absolute;top:0;bottom:0;left:0;background:var(--accent-ink);
+  transition:width .32s var(--ease)}
+.cont .btn{margin-top:4px;min-width:186px}
+.contsign{margin-top:16px;font:300 14.5px/1.6 var(--sans);color:var(--ink-2)}
+
+.unit{margin-top:44px}
+.uhead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.uname{font:400 24px/1.1 var(--serif);letter-spacing:-.025em}
+.ublurb{font-size:14.5px;color:var(--ink-2);flex:1 1 260px;line-height:1.5}
+.ucount{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;color:var(--accent-ink);flex:none}
+.ucount.all{color:var(--ok)}
+.uopen{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-2);background:none;border:0;padding:8px 0;margin-left:auto;min-height:44px;cursor:pointer}
+.uopen:hover{color:var(--ink)}
+.unit[data-collapsed] .llist{display:none}
+.llist{margin-top:16px;border-top:1px solid var(--rule-2)}
+.lrow{display:flex;align-items:center;gap:16px;width:100%;text-align:left;min-height:56px;
+  padding:18px 4px;border-bottom:1px solid var(--rule-2);transition:background 160ms ease}
+.lrow:hover{background:var(--paper-2)}
+.lrow[data-next]{box-shadow:inset 2px 0 0 var(--accent);padding-left:14px}
+.lrow[data-next] .lmeta{color:var(--accent-ink)}
+.lrow .tick{flex:none;width:20px;height:20px;border-radius:50%;border:1px solid var(--rule-2);
+  display:flex;align-items:center;justify-content:center;color:transparent;font-size:11px}
+.lrow.done .tick{background:var(--ok);border-color:var(--ok);color:var(--paper)}
+.lrow.done .lname{color:var(--ink-2)}
+.lname{flex:1;min-width:0;font-size:16.5px}
+.lmeta{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-2);flex:none}
+
+/* ==========================================================================
+   THE PLAYER SHELL
+   ========================================================================= */
+#player{display:none;position:fixed;inset:0;height:100dvh;background:var(--paper);
+  z-index:40;flex-direction:column}
+#player.on{display:flex}
+
+/* The top bar is orientation. The lesson name and the unit name never
+   appeared inside the player at all — card 1's entire text was
+   ["x", "1 / 7", "", "the app judges..."], which is why someone landing on it
+   does not know what page they are on. */
+.pbar{padding:18px 28px 14px;width:100%}
+.pbar .pinner{max-width:620px;margin:0 auto;width:100%;display:flex;align-items:center;gap:12px}
+.pbar .x{width:44px;height:44px;margin-left:-11px;display:flex;align-items:center;
+  justify-content:center;color:var(--ink-2);font-size:22px;border-radius:50%;flex:none}
+.pbar .x:hover{color:var(--ink);background:var(--paper-2)}
+.ptitle{flex:1;min-width:0;font:300 13px/1.4 var(--sans);color:var(--ink-2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#punit{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent-ink)}
+#punit:not(:empty)::after{content:" \00b7 "}
+
+/* align-items:center + overflow-y:auto is the classic centred-flex overflow
+   trap: when content exceeds the box the overflow goes ABOVE scrollTop:0 and
+   is physically unreachable. Measured at 390x380, 30px of the card — the
+   eyebrow and the first line — could not be reached by any input. */
+.pbody{flex:1;display:flex;align-items:flex-start;padding:24px 28px;overflow-y:auto}
+.pbody > .pinner{margin-block:auto}
+.pinner{max-width:620px;margin:0 auto;width:100%}
+
+/* The footer. The progress rail moved from the top of the screen to just
+   above the button — goal-gradient: Kivetz's cafe study showed purchase
+   frequency rising ~2.4x approaching the goal, and Nunes & Dreze's car wash
+   completed at 34% pre-stamped vs 19% for identical real effort. Put the
+   evidence of nearness where the thumb already is. */
+.pfoot{padding:0 28px calc(28px + env(safe-area-inset-bottom));width:100%;background:var(--paper)}
+.pfoot .pinner{max-width:620px;margin:0 auto;width:100%}
+
+/* --accent on --rule measures 1.68:1 against WCAG 1.4.11's 3:1 floor for
+   non-text indicators: the one element that could show progress could not be
+   seen. --accent-ink on --rule-2 measures about 3.9:1. */
+.prail{position:relative;height:2px;background:var(--rule-2);margin-bottom:20px}
+.prail i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--accent-ink);
+  transition:width .32s var(--ease)}
+.prail u{position:absolute;top:-4px;width:1px;height:10px;background:var(--rule-2);
+  text-decoration:none}
+.prail u[data-passed]{background:var(--accent-ink)}
+
+.prow{display:flex;align-items:center;gap:14px}
+.pslot{flex:none;min-width:0;min-height:40px;display:flex;align-items:center}
+.pslot .linkbtn{padding:8px 0;min-height:40px}
+.pstate{flex:1;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-2);font-variant-numeric:tabular-nums;text-align:center}
+.pstate.ok{color:var(--ok)}
+.pstate.ask{color:var(--accent-ink)}
+/* .btn.wide made this a 620px banner. A full-rail pill gives the eye no fixed
+   target, so the label reads as floating and every press requires re-aiming. */
+#pnext{flex:none;min-width:186px;height:54px;padding:0 30px}
+
+/* ==========================================================================
+   THE CARD TAXONOMY
+   Eleven authored types and one generated. The point of the taxonomy is that
+   a lesson of nine cards is 4-6 visually distinct screens instead of one
+   screen shown nine times.
+   ========================================================================= */
+.cardwrap{animation:pane .14s linear both}
+@media (prefers-reduced-motion:no-preference){
+  .cardwrap{animation:cardin .14s linear both}
+  @keyframes cardin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+}
+
+/* TYPE 1 — statement. The default. At the 27px cap this is ~49 characters
+   per line, the low end of the 45-75 CPL band and the correct end for short
+   careful reading. Exactly one phrase per card may carry a gold underline,
+   and it sits BELOW the baseline, never behind text, so the gold-is-marks-
+   only rule holds. */
+.c-statement .lead{font:400 clamp(21px,3vw,27px)/1.30 var(--serif);
+  letter-spacing:-.025em;max-width:22em;margin:0}
+.lead mark{background:none;color:inherit;border-bottom:2px solid var(--accent);padding-bottom:1px}
+.c-statement .sub{margin-top:18px;font:300 16.5px/1.7 var(--sans);color:var(--ink-2);max-width:30em}
+
+/* TYPE 2 — num. Every number in this course used to be an inline serif word.
+   A 108px numeral is a free illustration and unambiguously on-brand. */
+.c-num .fig{font:400 clamp(64px,14vw,108px)/.88 var(--serif);letter-spacing:-.045em;
+  font-variant-numeric:tabular-nums}
+.c-num .rule38{margin:14px 0 22px}
+.c-num .lead{font:400 clamp(19px,2.6vw,24px)/1.32 var(--serif);letter-spacing:-.02em;max-width:22em}
+.c-num .sub{margin-top:16px;font:300 16.5px/1.7 var(--sans);color:var(--ink-2);max-width:30em}
+
+/* TYPE 3 — list. The accumulating reveal, and the type that fixes the
+   monotony: it replaces a run of 4-6 identical cards with one card that
+   still takes 4-6 presses. The segmenting benefit is kept (learner-paced
+   segmentation, transfer d = 0.45, the largest cell in Rey's meta-analysis)
+   and structure is gained. Unrevealed rows KEEP THEIR NUMERAL — that is the
+   information gap made literal: you can see four exist and that you have one.
+   inset 2px 0 0 is the ONLY box-shadow on this page. It is a rule, not
+   elevation. The no-shadow law holds. */
+.c-list .lead,.c-vs .lead{font:400 clamp(19px,2.6vw,24px)/1.32 var(--serif);letter-spacing:-.02em;max-width:22em}
+.c-list .rows,.c-rule .rows{margin-top:24px;border-top:1px solid var(--rule-2)}
+.c-list .row{display:grid;grid-template-columns:2.4em 1fr;gap:14px;
+  padding:15px 0 15px 10px;border-bottom:1px solid var(--rule-2);transition:opacity 160ms linear}
+.c-list .row .n{font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+  color:var(--accent-ink);padding-top:6px;font-variant-numeric:tabular-nums}
+.c-list .row .head{font:400 19px/1.34 var(--serif);letter-spacing:-.015em}
+.c-list .row .body{margin-top:5px;font:300 15.5px/1.62 var(--sans);color:var(--ink-2)}
+.c-list .row[data-s="ghost"]{opacity:.32}
+.c-list .row[data-s="ghost"] .head,.c-list .row[data-s="ghost"] .body{visibility:hidden}
+.c-list .row[data-s="live"]{box-shadow:inset 2px 0 0 var(--accent)}
+.c-list .row[data-s="past"] .head{color:var(--ink-2)}
+.c-list .close,.c-vs .close{margin-top:22px;font:300 16px/1.7 var(--sans);color:var(--ink-2)}
+@media (prefers-reduced-motion:no-preference){
+  .c-list .row[data-s="live"] .head,.c-list .row[data-s="live"] .body,
+  .c-rule .row[data-s="live"] > *{animation:rowin 160ms var(--ease) both}
+  @keyframes rowin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+}
+
+/* TYPE 4 — vs. No green: --ok is reserved for answer feedback, and the
+   "yes" panel differs only by the gold rule. */
+.c-vs .pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+.c-vs .pane{background:var(--paper-2);border:1px solid var(--rule-2);border-radius:14px;padding:24px}
+.c-vs .pane .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-2);display:block;margin-bottom:12px}
+.c-vs .pane.yes{border-left:2px solid var(--accent);padding-left:22px}
+.c-vs .pane q{font:400 20px/1.34 var(--serif);letter-spacing:-.02em;quotes:'"' '"'}
+
+/* TYPE 5 — rule. The only place --danger appears outside answer feedback,
+   and the reason it is in the palette. Used in four lessons only, so it
+   stays loud. */
+.c-rule .row{padding:18px 0;border-bottom:1px solid var(--rule-2);transition:opacity 160ms linear}
+.c-rule .row[data-s="ghost"]{opacity:.32}
+.c-rule .row[data-s="ghost"] > *{visibility:hidden}
+.c-rule .claim{font:400 20px/1.32 var(--serif);color:var(--ink-2);letter-spacing:-.02em;
+  text-decoration:line-through;text-decoration-color:var(--danger);text-decoration-thickness:1px}
+.c-rule .lab{display:block;margin-top:12px;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
+.c-rule .truth{margin-top:5px;font:400 20px/1.32 var(--serif);color:var(--ink);letter-spacing:-.02em}
+.c-rule > .eyebrow{color:var(--danger)}
+.c-rule .lead{font:400 clamp(19px,2.6vw,24px)/1.32 var(--serif);letter-spacing:-.02em;max-width:22em}
+
+/* TYPE 6 — bar. The one diagram, used five times. */
+.c-bar .track{position:relative;height:2px;background:var(--rule-2);margin:52px 0 46px}
+.c-bar .seg{position:absolute;top:0;height:2px;background:var(--accent)}
+.c-bar .seg.quiet{background:var(--rule-2)}
+.c-bar .tick{position:absolute;top:-9px;width:1px;height:20px;background:var(--ink)}
+.c-bar .tick b{position:absolute;top:25px;left:0;white-space:nowrap;font-weight:400;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--accent-ink)}
+.c-bar .tick.end b{left:auto;right:0}
+.c-bar .tick.quiet b{color:var(--ink-2)}
+.c-bar .lead{font:400 clamp(19px,2.6vw,24px)/1.32 var(--serif);letter-spacing:-.02em;max-width:22em}
+.c-bar .sub{margin-top:14px;font:300 16px/1.7 var(--sans);color:var(--ink-2);max-width:30em}
+
+/* TYPE 7 — grid. One-off: 3 moments x 8 moves = 24 hooks, taught as a
+   picture instead of a sentence. */
+.c-grid .g{display:grid;gap:0;margin:28px 0 8px;border-top:1px solid var(--rule-2);
+  border-left:1px solid var(--rule-2);max-width:420px}
+.c-grid .cell{aspect-ratio:1;border-right:1px solid var(--rule-2);border-bottom:1px solid var(--rule-2)}
+.c-grid .cell.on{background:var(--accent)}
+.c-grid .lead{font:400 clamp(19px,2.6vw,24px)/1.32 var(--serif);letter-spacing:-.02em;max-width:22em}
+.c-grid .sub{margin-top:16px;font:300 16px/1.7 var(--sans);color:var(--ink-2);max-width:30em}
+
+/* TYPE 8 — keep. The ONLY place 36px serif is allowed. One per unit, nine in
+   the whole course. Scarcity is what makes big type mean anything: big type
+   is right, it was just applied to all 159 cards instead of nine. */
+.c-keep .rule38{margin-bottom:20px}
+.c-keep .line{font:400 clamp(28px,4.4vw,36px)/1.10 var(--serif);letter-spacing:-.035em;max-width:16em}
+.c-keep .end{width:38px;height:2px;background:var(--accent);margin-top:26px}
+.c-keep .attrib{margin-top:16px;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent-ink)}
+
+/* TYPE 9 — def. The context card. Three parts become three visible things
+   instead of a comma list. */
+.c-def .term{font:400 clamp(28px,4.2vw,36px)/1.05 var(--serif);letter-spacing:-.035em}
+.c-def .body{margin-top:16px;font:300 clamp(17px,2.2vw,19px)/1.62 var(--sans);color:var(--ink);max-width:30em}
+.c-def .parts{margin-top:26px;border-top:1px solid var(--rule-2)}
+.c-def .part{display:grid;grid-template-columns:2.4em 1fr;gap:14px;padding:14px 0;
+  border-bottom:1px solid var(--rule-2)}
+.c-def .part .n{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--accent-ink)}
+.c-def .part .p{font:400 18px/1.35 var(--serif);letter-spacing:-.015em}
+
+/* TYPE 10 — check. Roediger & Karpicke: at 5 minutes re-reading beats
+   testing; at 2 days and 1 week the pattern reverses and re-readers are MORE
+   CONFIDENT AND MORE WRONG. A 159-card course with one quiz in it is
+   optimised for the 5-minute test. One check per lesson — the lint enforces
+   exactly that, so the total is however many lessons there are — and it is
+   never gated — "skip this one" always exists, because retrieval only works
+   when the anxiety cost is zero.
+   There is no sound, no confetti and no character. Our per-card reward is the
+   rail moving and the list accumulating; our per-lesson reward is the
+   inventory line. A mascot loop would read as a different site in one press. */
+.c-check .quizq{font:400 clamp(20px,3vw,25px)/1.34 var(--serif);letter-spacing:-.025em;margin-bottom:22px;max-width:24em}
+.qopt{display:block;width:100%;text-align:left;padding:16px 18px;margin-top:12px;
+  background:var(--field);border:1px solid var(--rule-3);border-radius:8px;
+  font:300 16px/1.5 var(--sans);color:var(--ink);transition:border-color 160ms ease}
+.qopt:hover:not(:disabled){border-color:var(--accent-ink)}
+.qopt.right{border-color:var(--ok);border-width:2px;padding:15px 17px}
+.qopt.wrong{border-color:var(--danger);border-width:2px;padding:15px 17px}
+/* the global button:disabled{opacity:.6} took the explanation you most want
+   read down to 4.74:1. The reward for answering was that the answer got
+   harder to read. */
+.qopt:disabled{opacity:1;cursor:default}
+.qwhy{margin-top:18px;font:300 15.5px/1.65 var(--sans);color:var(--ink-2);
+  border-left:2px solid var(--accent);padding-left:16px;display:none}
+.qwhy.on{display:block;animation:pane .2s linear both}
+
+/* TYPE 11 — do. Instruction first, rule, then the guard underneath. The old
+   version put a disclaimer longer than the instruction ABOVE it, which
+   undercuts the ask before it is made. */
+.c-do .panel{background:var(--paper-2);border:1px solid var(--rule-2);border-radius:14px;padding:34px}
+.c-do .text{font:400 clamp(21px,3.1vw,27px)/1.30 var(--serif);letter-spacing:-.025em;max-width:20em}
+.c-do hr{border:0;border-top:1px solid var(--rule-2);margin:24px 0 16px}
+.c-do .note{font:300 13.5px/1.62 var(--sans);color:var(--ink-2);max-width:32em}
+
+/* TYPE 12 — land. Generated, never authored. Renders into the same inner
+   rail; #pfoot never hides; the button never moves. */
+.c-land > .eyebrow{margin-top:16px}
+.c-land .donetitle{margin-top:18px;font:400 clamp(30px,4.6vw,42px)/1.05 var(--serif);letter-spacing:-.035em}
+.c-land .carry{margin-top:16px;font:400 clamp(19px,2.6vw,23px)/1.32 var(--serif);
+  letter-spacing:-.02em;max-width:22em}
+.c-land .inv{margin-top:26px}
+.c-land .inv .eyebrow{margin-bottom:8px}
+/* every eyebrow that sits on a --paper-2 ground */
+.cont .eyebrow,.c-land .make .eyebrow,.card .eyebrow{color:var(--accent-ink-2)}
+.c-vs .pane.yes .lab{color:var(--accent-ink-2)}
+.c-land .inv p{margin:0;font:300 15.5px/1.7 var(--sans);font-variant-numeric:tabular-nums;max-width:32em}
+/* MAKE ONE. The founder's line: "it should be showing, after every lesson,
+   that you should make a video." Every lesson, above the fold at 390px, and
+   the only gold-marked block on the screen. Lesson-specific and never
+   generic: generic nagging gets ignored, a one-step ask built from the thing
+   you just made does not. */
+.c-land .make{margin-top:26px;background:var(--paper-2);border:1px solid var(--rule-2);
+  border-left:2px solid var(--accent);border-radius:14px;padding:24px 24px 24px 26px}
+.c-land .make .ask{font:400 21px/1.32 var(--serif);letter-spacing:-.02em;max-width:22em}
+.c-land .make .guard{margin-top:12px;font:300 13.5px/1.6 var(--sans);color:var(--ink-2)}
+.c-land .next{margin-top:24px;font:300 15.5px/1.7 var(--sans);color:var(--ink-2)}
+/* The end-of-unit moment. Nine times in the whole course, and the largest
+   permitted motion in the product — still cream, ink and gold. */
+.c-land .unitrule{height:2px;background:var(--accent);width:38px}
+.c-land.unit .unitrule{animation:grow 420ms var(--ease) 120ms both}
+@keyframes grow{from{width:38px}to{width:100%}}
+
+/* ---- mobile at 390px --------------------------------------------------- */
+@media (max-width:640px){
+  main{padding:44px 22px 64px}
+  /* .ublurb was flex:1;min-width:0 — flex-basis:0% means the hypothetical
+     size is 0, so flex-wrap NEVER fires, and min-width:0 removes the
+     min-content floor. Measured at 390px: "what to make about anticipy"
+     rendered its blurb in a SEVEN PIXEL column, one letter per line, nine
+     lines tall, with the count badge orphaned 210px below the unit name. It
+     also pushed scrollWidth to 400 against a 390 client width, so the whole
+     page rocked sideways. */
+  .uhead{display:block}
+  .ucount{float:right;margin-left:12px}
+  .uopen{float:right;margin-left:14px}
+  .ublurb{display:block;margin-top:6px;max-width:none}
+
+  .c-statement .lead{font-size:21px;line-height:1.32}
+  .c-num .fig{font-size:64px}
+  .c-keep .line{font-size:28px}
+  .c-land .donetitle{font-size:30px}
+  .c-vs .pair{grid-template-columns:1fr}
+  .card,.c-do .panel{padding:24px}
+  .c-land .make{padding:20px 20px 20px 22px}
+  .cont{padding:24px 24px 24px 26px}
+  .cont .btn{width:100%}
+
+  .prow{flex-wrap:wrap;gap:10px}
+  #pnext{order:1;flex-basis:100%;width:100%;min-width:0}
+  .pslot{order:2;flex:1}
+  .pstate{order:3;flex:none;text-align:right}
+  .prail{margin-bottom:16px}
+}
+
+/* The page renders and sits still — that has always meant no scroll reveal,
+   no entrance choreography and no ambient motion. It has never meant no
+   feedback. Everything in the budget is confirmatory, never informational,
+   so nothing is lost here. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0ms !important;animation-delay:0ms !important;
+    transition-duration:0ms !important}
+  .btn:not(:disabled):hover{transform:none}
+  .c-land.unit .unitrule{width:100%}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <span class="dot"></span><a class="brand" href="https://anticipy.ai">Anticipy &middot; Growth Fellowship</a>
+  <span class="topright">
+    <span class="streak" id="streak"></span>
+    <span id="whoami"></span>
+  </span>
+</header>
+
+<main>
+  <div id="intro">
+    <h1>Everything we know about making things people watch.</h1>
+    <p class="lede">Nine units. It starts with what Anticipy actually is, because you&#39;ll be
+    making videos about it. Every lesson ends with one thing you could film in under a minute.
+    Nobody marks any of it.</p>
+  </div>
+  <div id="cont"></div>
+  <div id="map"></div>
+</main>
+
+<footer class="bot">
+  <hr class="sep">
+  Anticipy &middot; <a href="https://anticipy.ai">anticipy.ai</a> &middot;
+  <a href="https://anticipy.ai/privacy">Privacy</a> &middot;
+  <a href="https://anticipy.ai/terms">Terms</a> &middot;
+  <a href="mailto:hello@anticipy.ai">hello@anticipy.ai</a>
+</footer>
+
+<div id="player" role="dialog" aria-modal="true" aria-labelledby="ptitle" tabindex="-1">
+  <div class="pbar"><div class="pinner">
+    <button class="x" id="pclose" aria-label="Close this lesson">&times;</button>
+    <h2 class="ptitle" id="ptitle"><span id="punit"></span><span id="plesson"></span></h2>
+  </div></div>
+  <div class="pbody"><div class="pinner">
+    <div id="pbody" role="region" aria-live="polite" aria-atomic="true"></div>
+  </div></div>
+  <div class="pfoot" id="pfoot"><div class="pinner">
+    <div class="prail" id="prail" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+         aria-valuenow="0" aria-valuetext="card 1"><i></i></div>
+    <div class="prow">
+      <div class="pslot" id="pslot"></div>
+      <div class="pstate" id="pstate"></div>
+      <button class="btn" id="pnext"><span>Next</span><span class="arw">&#8594;</span></button>
+    </div>
+  </div></div>
+</div>
+<script>
+/* ==========================================================================
+   THE COURSE.
+   Card voice, and it is binding: lowercase, short words, one idea a card,
+   10-40 words, numbers instead of adjectives, concrete nouns instead of
+   categories. Banned outright: leverage, optimize, content strategy,
+   engagement, brand awareness, journey, unlock, discover, game-changer.
+   No emojis. It should read like a founder texting a smart 16-year-old he
+   respects — not like a company talking to a demographic.
+
+   Every lesson ends in "try this", and it is OPTIONAL, and it is for THEIR
+   own account. Finishing a lesson is pressing next. It is never posting.
+   That is not a UX preference — a programme that requires minors to publish
+   work for the company is a different kind of arrangement in law, and we are
+   not building that one.
+
+   SEQUENCING RULES, checked by the lint at #lint:
+     1. never three cards of the same type in a row
+     2. every lesson opens on a card that names the gap
+     3. every lesson has at least one non-prose card (>=5 cards: two)
+     4. exactly one check per lesson, at 60-75% depth
+     5. one keep per unit, nine in the course
+     6. rule cards in four lessons only, plus the u4-l2 drill
+   Marks: wrap a phrase in ‹angle quotes› for a gold underline. One per card.
+   ========================================================================= */
+var COURSE = [
+{
+  id:"u0", name:"the thing itself",
+  blurb:"five minutes. after this you can explain anticipy to a friend, without notes.",
+  lessons:[
+
+  { id:"u0-l1", name:"the thing you said you'd do", cards:[
+
+    "you said out loud you'd cancel that trial. you meant it. on the 3rd it took ‹$12.99› again.",
+
+    "it's not that you're lazy. the thought turned up while your hands were full, and nobody wrote it down.",
+
+    { t:"def", term:"anticipy",
+      body:"an AI that's just with you. it catches the stuff you say you'll do, and quietly does it.",
+      parts:["a pendant you wear","an app on your iphone","hands inside your chrome browser"] },
+
+    { t:"list", lead:"three parts, one job.", rows:[
+      { head:"the pendant hears you", body:"you say you'll do a thing. out loud, to anyone, in passing." },
+      { head:"the phone works out what you meant", body:"not the words. the thing behind the words." },
+      { head:"the hands in chrome go and do it", body:"and they ask you first, every time it can't be undone." }
+    ], close:"that's the whole machine. there is no fourth part." },
+
+    "the moment people remember: you open your laptop and the email you meant to write is ‹already sitting there›, waiting for you to press send.",
+
+    { t:"check", q:"what's the moment people actually react to?",
+      a:["that it has a 6-hour battery","that it already did the thing before you asked"], right:1,
+      why:"the feeling is the product. the specs are just how it's built.",
+      whyWrong:"the battery is true, and nobody in history has shared a video about a battery." },
+
+    { t:"keep", line:"it's not a gadget. it's the end of \"oh no, i forgot.\"" },
+
+    { t:"do", mins:3, kind:"film",
+      text:"film 10 seconds of yourself saying the last thing you forgot. no setup. that's a real video, and it's the exact problem this thing fixes." }
+  ]},
+
+  { id:"u0-l2", name:"the six things you never say", cards:[
+
+    "now the part that protects you. the last three AI gadgets died of ‹over-claiming›, not of bad hardware.",
+
+    "one comment saying \"this is fake\" under your video costs you more than the video earned, and you can't delete your way out of it.",
+
+    { t:"rule", lead:"six things you never say. the true version is next to each one.", rows:[
+      { claim:"it's out now",                 truth:"it's a preorder. it ships late 2026, US and canada." },
+      { claim:"nothing ever leaves your device", truth:"the pendant's audio goes to a transcriber to become text. your phone's own mic doesn't." },
+      { claim:"it works on android",          truth:"iphone and chrome. that's it for now." },
+      { claim:"it knows who's talking",       truth:"it doesn't do voices yet." },
+      { claim:"it makes phone calls",         truth:"it doesn't." },
+      { claim:"it just does things on its own", truth:"it asks before anything it can't undo." }
+    ]},
+
+    "notice the last one. ‹it asks first›. that isn't a limit you apologise for — it's the reason a stranger believes the rest.",
+
+    { t:"check", q:"a stranger comments \"so it records everything and ships it to a server?\" which reply can you still defend next week?",
+      a:["nothing ever leaves my device","the pendant sends audio off to be turned into text — that part does leave"], right:1,
+      why:"it's the one that's actually true, and true is the only thing that survives someone checking.",
+      whyWrong:"it sounds stronger and it isn't true. that trade is exactly what killed the last three of these." },
+
+    { t:"do", mins:2, kind:"film",
+      text:"say the preorder line out loud once, in your own words. film it if you want. the point is that it stops sounding like a disclaimer." }
+  ]},
+
+  { id:"u0-l3", name:"your one sentence", cards:[
+
+    "almost every video you make will need you to explain this thing. write the sentence ‹once, now›, and you'll reuse it for a year.",
+
+    "the way in: it's like a friend who was in the room. they heard you say it, so they can just do it. and they check with you first.",
+
+    { t:"bar", lead:"fifteen seconds, three beats. that's the whole shape.",
+      segs:[{a:0,b:27,tone:"gold"},{a:27,b:73,tone:"quiet"},{a:73,b:100,tone:"gold"}],
+      ticks:[{at:0,label:"what goes wrong"},{at:27,label:"what it did"},{at:73,label:"the catch",end:true}],
+      sub:"the catch at the end is not a hedge. it's the thing that makes the middle believable." },
+
+    { t:"list", lead:"three that work. steal one, then make it yours.", rows:[
+      { head:"i forget things i say i'll do. anticipy is a pendant that hears me say it. i opened my laptop and the email was already written. it's a preorder, late 2026.",
+        body:"the safe one. four flat sentences, nothing to fumble." },
+      { head:"i said out loud i'd cancel a trial. next morning my laptop had it open, asking if i wanted to. that's anticipy. preorder, late 2026.",
+        body:"one real morning. the product isn't named until second nine, so nobody's thumb reads it as an ad." },
+      { head:"i thought AI necklaces were a joke. mine heard me say i'd email my boss. by the time i opened my laptop it was written. it asks first. ships late 2026.",
+        body:"the flip. half a beat of silence before \"it asks first.\"" }
+    ]},
+
+    { t:"check", q:"someone asks when it ships. what do you say?",
+      a:["it's out now","it's a preorder, late 2026, US and canada"], right:1,
+      why:"saying it early is what makes everything before it believable.",
+      whyWrong:"it isn't out. one person checking is all it takes, and they always check." },
+
+    "all three name a real thing that went wrong, and all three admit it isn't out yet. ‹that admission is the whole trick›.",
+
+    { t:"do", mins:4, kind:"film",
+      text:"film your sentence. one take, 15 seconds, phone in hand. if you stumble, the sentence is wrong, not your mouth. keep the file." }
+  ]}
+]},
+
+{
+  id:"u1", name:"the game", blurb:"how videos actually spread, and why you can win from zero",
+  lessons:[
+
+  { id:"u1-l1", name:"nobody follows you (and that's good)", cards:[
+
+    "here's the secret big brands don't get: nobody sees your video because they ‹follow you›.",
+
+    "the app shows your video to a small test group of strangers. a few hundred people.",
+
+    { t:"bar", lead:"if those strangers watch it, it goes to more strangers. that's the whole game.",
+      segs:[{a:0,b:8,tone:"gold"},{a:8,b:34,tone:"gold"},{a:34,b:100,tone:"quiet"}],
+      ticks:[{at:0,label:"a few hundred"},{at:34,label:"a few thousand"},{at:100,label:"millions",end:true}],
+      sub:"nobody hands you the second step. the first few hundred strangers do." },
+
+    "so followers barely matter. every video gets its own shot at millions. starting from zero.",
+
+    { t:"num", fig:"0", lead:"that's how many followers you need to beat a brand with a million.",
+      sub:"not as encouragement. as a description of how the thing is built." },
+
+    { t:"check", q:"a brand with 2 million followers posts the same day you do. who has the better shot at a million views?",
+      a:["the brand, obviously","either of you — the first few hundred strangers decide"], right:1,
+      why:"the test group doesn't know or care who posted it. that's the part that's good for you.",
+      whyWrong:"followers get the brand a slightly bigger first room. after that it's the same fight, and their video usually looks like an ad." },
+
+    { t:"do", mins:4,
+      text:"open tiktok. find a video from a tiny account, under 1,000 followers, with over 100k views. save the link. that's proof the game is real." }
+  ]},
+
+  { id:"u1-l2", name:"the four numbers", cards:[
+
+    "the app judges your video on four things, in this exact order. ‹likes are not one of them›.",
+
+    { t:"list", lead:"the four numbers, biggest first.", start:1, rows:[
+      { head:"did people watch to the end?", body:"the biggest one by far. everything else is a rounding error next to it." },
+      { head:"did they watch it twice?", body:"loops are rocket fuel. the second watch is nearly free and it counts fully." },
+      { head:"did they comment?", body:"real sentences, not a fire emoji. a sentence means someone stopped." },
+      { head:"did they send it to a friend?", body:"one share in DMs is worth about 3 to 5 likes." }
+    ], close:"notice what's missing." },
+
+    { t:"vs", lead:"same video, two ways of reading it.",
+      noLab:"what everyone chases", no:"1,200 likes",
+      yesLab:"what the app counts", yes:"68% watched to the end",
+      close:"likes are nice. likes decide nothing. stop chasing them." },
+
+    { t:"check", q:"your video gets 900 likes and 22% of people watch to the end. what happened?",
+      a:["it did well — 900 likes is a lot","it died — the ending number is the one that matters"], right:1,
+      why:"under about 30% finishing, the app stops showing it. the likes came from the few who stayed.",
+      whyWrong:"900 people liking it feels great and it isn't the number that buys you the next room." },
+
+    { t:"do", mins:4,
+      text:"watch your saved video 3 times. write one sentence: why did people finish it? keep it. that's the start of your idea bank." }
+  ]},
+
+  { id:"u1-l3", name:"probes, not masterpieces", cards:[
+
+    "here's how people actually go viral: they don't make one perfect video.",
+
+    { t:"num", fig:"20", lead:"they make 20 quick ones. each one is a test. a probe.",
+      sub:"that's your season one. twenty little experiments. nobody can be embarrassed by an experiment." },
+
+    { t:"list", lead:"what twenty probes actually looks like.", start:1, rows:[
+      { head:"most get a few thousand views", body:"that's normal. that's the plan working, not the plan failing." },
+      { head:"one takes off", body:"and then you make three more just like it, while the app is still warm." },
+      { head:"none of them get deleted", body:"a flop isn't failure, it's the one piece of information you paid for." }
+    ], close:"nobody scrolls back through your page. only you do that." },
+
+    { t:"check", q:"video 7 gets 400 views. what do you do?",
+      a:["delete it so your page looks better","leave it up and make video 8"], right:1,
+      why:"nobody scrolls back through your page. the only thing a flop costs you is four minutes.",
+      whyWrong:"deleting it changes nothing for anyone watching, and it deletes the one bit of information you paid for." },
+
+    { t:"do", mins:2,
+      text:"write down the number 20 somewhere you'll see it. that's your season one. twenty little experiments." }
+  ]},
+
+  { id:"u1-l4", name:"your phone beats a film crew", cards:[
+
+    "bad news for ad agencies: polished ads lose now.",
+
+    { t:"num", fig:"4×", lead:"videos that look like a friend made them get about 4x more clicks than slick brand ads.",
+      sub:"people trust people. nobody trusts a commercial." },
+
+    "perfect lighting, perfect teeth, a logo in the corner? the app smells ‹ad› and buries it.",
+
+    { t:"list", lead:"three things that feel true and cost you money.", start:1, rows:[
+      { head:"you need good lighting", body:"you need a window. sit facing it. that's the entire lighting lesson." },
+      { head:"you need a microphone", body:"your phone's mic is fine indoors. it has never been the reason a video failed." },
+      { head:"you need to edit it", body:"one take beats a cut, most of the time, and it takes four minutes less." }
+    ]},
+
+    { t:"check", q:"you've got a shaky one-take clip and a smooth edited one. which do you post?",
+      a:["the shaky one-take","the smooth edited one"], right:0,
+      why:"it looks like a person, so the app and the viewer both treat it like one.",
+      whyWrong:"smooth reads as an ad, and an ad gets skipped in the first second before anyone judges the quality." },
+
+    { t:"keep", line:"the polished, perfect look is dead.", attrib:"the boss of instagram, out loud" },
+
+    { t:"do", mins:3, kind:"film",
+      text:"film 10 seconds of yourself saying anything. phone in hand. no setup. watch it back. that quality is enough." }
+  ]},
+
+  { id:"u1-l5", name:"your three real moments", cards:[
+
+    "you already have the sentence from unit 0. now you need the ‹raw material› to point it at.",
+
+    "the best anticipy videos are not about anticipy. they're about a thing that fell out of your head and cost you something.",
+
+    { t:"list", lead:"this is the whole bar. three of these and you have a month.", start:1, rows:[
+      { head:"the trial you meant to cancel", body:"$12.99, three months running, and you said it out loud twice." },
+      { head:"the message you never sent back", body:"and then enough time passed that sending it got weird." },
+      { head:"the thing you promised in a group chat", body:"everyone else remembered. that's the part that stings." }
+    ]},
+
+    { t:"check", q:"where do your first three video ideas come from?",
+      a:["what anticipy does","what you forgot this week"], right:1,
+      why:"the video is about the person watching. the product is the last five seconds.",
+      whyWrong:"nobody watches a video about a product. they watch a video about themselves." },
+
+    { t:"do", mins:5,
+      text:"write 3 real moments from your week where you forgot something and it cost you. those are your first 3 video ideas. save them. everything in unit 2 is built from these." }
+  ]}
+]},
+{
+  id:"u2", name:"the first two seconds", blurb:"the only part of a video most people ever see",
+  lessons:[
+
+  { id:"u2-l1", name:"the 1.5 second rule", cards:[
+
+    { t:"num", fig:"1.5", lead:"people decide to skip you in about 1.5 seconds.",
+      sub:"faster than a blink and a half. that's the whole audition." },
+
+    { t:"bar", lead:"here is a 30-second video, and here is the part that decides it.",
+      segs:[{a:0,b:5,tone:"gold"},{a:5,b:100,tone:"quiet"}],
+      ticks:[{at:5,label:"1.5s"},{at:100,label:"30s",end:true,quiet:true}],
+      sub:"that gold sliver is 80% of the work. this is the picture to keep." },
+
+    { t:"bar", lead:"and here's how the app reads what happened next.",
+      segs:[{a:0,b:30,tone:"quiet"},{a:30,b:70,tone:"quiet"},{a:70,b:100,tone:"gold"}],
+      ticks:[{at:30,label:"under 30% — it dies"},{at:70,label:"over 70% — viral zone",end:true}],
+      sub:"the percentage of people who stop to watch instead of scrolling past." },
+
+    "so the first moment is most of the work. we're going to obsess over it.",
+
+    "a hook is not \"something interesting at the start.\" it's one of ‹8 specific moves›. you're about to learn all 8.",
+
+    { t:"rule", lead:"and three bans. forever, no exceptions.", rows:[
+      { claim:"hey guys",              truth:"start on the thing. the greeting is a warm-up nobody waits through." },
+      { claim:"a logo in second one",  truth:"your face, or a screen, or a mess. anything that isn't branding." },
+      { claim:"today i'm gonna",       truth:"just do the thing you were going to announce." }
+    ]},
+
+    { t:"check", q:"which opening survives 1.5 seconds?",
+      a:["hey guys, today i'm testing an AI pendant","look at this email i didn't write"], right:1,
+      why:"it starts inside the interesting bit. there's nothing to sit through.",
+      whyWrong:"by the time that sentence finishes, the 1.5 seconds are gone and so is the viewer." },
+
+    { t:"do", mins:5,
+      text:"scroll your feed for 5 minutes. every time you DON'T skip, screenshot second one. collect 5. that's your hook museum." }
+  ]},
+
+  { id:"u2-l2", name:"hook moves 1 to 4", cards:[
+
+    { t:"list", lead:"the first four moves. one per video, never stacked.", start:1, rows:[
+      { head:"talk to one person", body:"\"this is for anyone who forgets to cancel free trials.\" the right person freezes mid-scroll." },
+      { head:"flip a belief", body:"\"i thought AI pendants were dumb. mine just saved me $400.\"" },
+      { head:"open a question you don't answer yet", body:"\"why do i keep opening my phone and forgetting why.\"" },
+      { head:"start on proof", body:"a screen. a message. a receipt. \"look at this email i didn't send.\"" }
+    ], close:"see the pattern?" },
+
+    "every one of those makes the brain need the ‹next second›. that's the only thing a hook does.",
+
+    "one move per video. never stack three. stacked hooks cancel each other out.",
+
+    { t:"check", q:"which one is a real hook?",
+      a:["hey guys, today i'm testing an AI pendant","i thought AI pendants were dumb. mine just saved me $400."], right:1,
+      why:"it flips a belief and puts a number in your face. two seconds, both jobs done.",
+      whyWrong:"that's a warm-up, and nobody waits through a warm-up. it also breaks two of the three bans." },
+
+    { t:"keep", line:"every move makes the brain need the next second." },
+
+    { t:"do", mins:5,
+      text:"write one anticipy hook in each move. four lines. use your real moments from unit 1. save them." }
+  ]},
+
+  { id:"u2-l3", name:"hook moves 5 to 8", cards:[
+
+    { t:"list", lead:"four more. you'll end this lesson owning all eight.", start:5, rows:[
+      { head:"say the quiet thing out loud", body:"\"i talk to my AI more than my group chat. it's fine.\"" },
+      { head:"lead with a number", body:"eyes catch numbers before words. every time." },
+      { head:"open on a mistake", body:"burnt toast. a missed bus. people have to watch the disaster finish." },
+      { head:"be quiet when everyone's loud", body:"your face, a beat of silence, one calm sentence. use it rarely. it hits hard." }
+    ]},
+
+    { t:"num", fig:"$47", lead:"\"i spent $47 this month on subscriptions i don't use.\"",
+      sub:"that's move 6. the number does the stopping, and it took you four words." },
+
+    { t:"check", q:"which of these is move 8, the quiet one?",
+      a:["shouting the price over a trending song","your face, two seconds of silence, then one sentence"], right:1,
+      why:"in a feed where everything is loud, the quiet thing is the strange thing. strange stops thumbs.",
+      whyWrong:"that's what everyone else is already doing, which is exactly why it stops nobody." },
+
+    { t:"do", mins:5,
+      text:"write 4 more hooks, one per move. you now own 8 anticipy hooks. that's a real asset and we use every one of them." }
+  ]},
+
+  { id:"u2-l4", name:"hook killers", cards:[
+
+    "these openings kill videos on sight. ‹burn them into your brain›.",
+
+    { t:"rule", lead:"five ways to lose before you've started.", rows:[
+      { claim:"hey guys, so today...",                 truth:"open inside the story. no runway." },
+      { claim:"a logo in the first 2 seconds",         truth:"the app tags it as an ad and buries it." },
+      { claim:"\"subscribe\" or \"link in bio\" said out loud", truth:"the link lives in your bio. the video never mentions it." },
+      { claim:"on-screen text longer than 8 words",    truth:"nobody reads a paragraph at a scroll. eight words, maximum." },
+      { claim:"introducing / discover / game-changer", truth:"that's brand-speak. you're a person. say it how you'd text it." }
+    ]},
+
+    { t:"check", q:"your hook is \"introducing the AI pendant that changes everything.\" what's wrong with it?",
+      a:["nothing, it's punchy","it's brand-speak, and the app and the viewer both read it as an ad"], right:1,
+      why:"every word in it is a word a company would use. none of them are words you would use.",
+      whyWrong:"read it out loud to a friend. you'd never say it, and that's the test." },
+
+    { t:"do", mins:6,
+      text:"check your 8 hooks against this list. fix any that break a rule. rewriting is the work." }
+  ]},
+
+  { id:"u2-l5", name:"the hook grid", cards:[
+
+    "pros don't write one hook. they write a ‹grid›.",
+
+    { t:"grid", lead:"down the side, your three real moments. across the top, the eight moves.",
+      cols:8, rows:3, marks:[[0,1],[0,5],[1,3],[2,0],[2,6]],
+      sub:"the gold ones are the five you'd actually say out loud. that's the only sorting that matters." },
+
+    { t:"num", fig:"24", lead:"3 moments x 8 moves = 24 hooks, from three little stories from your own week.",
+      sub:"most will be weak. good. you only ever need a few strong ones." },
+
+    "you will never again sit down and wonder what to make. that's what the grid is for.",
+
+    { t:"check", q:"you build the grid and 19 of the 24 are bad. what does that mean?",
+      a:["you're bad at this","it's working — you only needed five"], right:1,
+      why:"the grid exists to produce the five. the nineteen are how you found them.",
+      whyWrong:"nobody writes 24 good hooks. writing 24 and keeping 5 is what the professionals are doing too." },
+
+    { t:"do", mins:8,
+      text:"build your grid. cross out the weak ones. circle your top 5. keep it — it feeds every video you'll ever make." }
+  ]},
+
+  { id:"u2-l6", name:"film the hook test", cards:[
+
+    "time to point the camera at yourself. just hooks. ‹nothing else›.",
+
+    { t:"list", lead:"the whole test, three steps.", start:1, rows:[
+      { head:"film your top 3", body:"one take each. 5 seconds each. phone in hand, zero setup." },
+      { head:"watch them back", body:"which one would stop YOUR thumb? be honest, it's only you watching." },
+      { head:"can't pick? ask one friend", body:"send all 3: \"which one makes you want the rest?\" don't explain them." }
+    ]},
+
+    "you just did what most people who call themselves marketers never do. you tested before you built.",
+
+    { t:"check", q:"all three of your hooks feel a bit embarrassing to watch back. what's the read?",
+      a:["they're bad, start over","that's what everyone's first three feel like — pick the least bad and move"], right:1,
+      why:"the cringe is you watching yourself, not the viewer watching you. it fades around clip nine.",
+      whyWrong:"starting over is how people spend a month making nothing. the fix is volume, not another rewrite." },
+
+    { t:"do", mins:6, kind:"film",
+      text:"film your top 3 hooks, 5 seconds each. keep the winning clip — next unit we build your first full video on top of it." }
+  ]}
+]},
+{
+  id:"u3", name:"the whole video", blurb:"what happens after the hook, and how to end",
+  lessons:[
+
+  { id:"u3-l1", name:"the shape of 30 seconds", cards:[
+
+    { t:"num", fig:"3", lead:"every short video that works has the same three parts.",
+      sub:"hook, turn, land. that's it. that's the shape you'll use for a year." },
+
+    { t:"bar", lead:"where they sit in half a minute.",
+      segs:[{a:0,b:5,tone:"gold"},{a:5,b:88,tone:"quiet"},{a:88,b:100,tone:"gold"}],
+      ticks:[{at:0,label:"hook"},{at:30,label:"turn"},{at:88,label:"land",end:true}],
+      sub:"the two gold bits are seconds you write. the middle is seconds you talk." },
+
+    "the turn is the middle. ‹one thing changes›. a problem shows up, or a fix does.",
+
+    "the land is the last 2 seconds. it either loops back to the start, or it stops dead on the best frame.",
+
+    { t:"vs", lead:"two ways to end the same video.",
+      noLab:"the giving-up ending", no:"so yeah, that's basically it",
+      yesLab:"the land", yes:"the same shot you opened on",
+      close:"one of those gets a second watch. the other one tells people it wasn't worth the first." },
+
+    { t:"check", q:"your video ends with \"...so yeah, that's basically it.\" what happens?",
+      a:["nothing, people already watched it","the last thing they feel is you losing interest, and they don't rewatch"], right:1,
+      why:"the ending is what decides the second watch, and the second watch is the cheapest number you own.",
+      whyWrong:"they watched, and then the ending told them it wasn't worth watching. that reads back onto the whole thing." },
+
+    { t:"do", mins:5,
+      text:"take your winning hook. write the turn in one sentence and the land in one sentence. three lines is a script." }
+  ]},
+
+  { id:"u3-l2", name:"write it out loud", cards:[
+
+    { t:"list", lead:"four steps, and the first one isn't writing.", start:1, rows:[
+      { head:"talk it into voice notes", body:"one take. don't stop to fix it. don't plan it first." },
+      { head:"play it back and write only the words you'd say to a friend", body:"everything else was you performing." },
+      { head:"read it out", body:"anywhere you stumble is a place the writing is wrong, not your mouth." },
+      { head:"cut every long word", body:"\"i forgot\" beats \"i experienced a lapse.\" every time, in every video." }
+    ]},
+
+    { t:"vs", lead:"same idea, written two ways.",
+      noLab:"written first", no:"i experienced a lapse in my subscription management",
+      yesLab:"said first, written after", yes:"i forgot to cancel it. again.",
+      close:"the second one took less time to make and does more work." },
+
+    { t:"check", q:"you read your script out loud and stumble on the same line three times. what do you do?",
+      a:["practise the line until you can say it","rewrite the line"], right:1,
+      why:"a line you can't say is a line nobody would say. that's the whole signal.",
+      whyWrong:"you can drill it into shape, and it'll sound drilled. the stumble was information." },
+
+    { t:"keep", line:"you don't write a script. you say it, then write down what you said." },
+
+    { t:"do", mins:6,
+      text:"voice-note your first video idea. write it down. read it out. fix the stumbles. that's your first real script." }
+  ]},
+
+  { id:"u3-l3", name:"the loop", cards:[
+
+    "a loop is when the end sets up the beginning again, so people watch twice ‹without noticing›.",
+
+    { t:"bar", lead:"the second watch costs you nothing and counts fully.",
+      segs:[{a:0,b:48,tone:"gold"},{a:52,b:100,tone:"gold"}],
+      ticks:[{at:0,label:"watch one"},{at:52,label:"watch two"},{at:100,label:"both counted",end:true}],
+      sub:"it's the cheapest way there is to double your best number." },
+
+    { t:"list", lead:"two loops that always work.", start:1, rows:[
+      { head:"end on the same shot you opened on", body:"the eye reads it as the start again before the brain catches up." },
+      { head:"end mid-sentence", body:"so the first line finishes the thought. slightly evil. very effective." }
+    ]},
+
+    { t:"check", q:"why does a loop beat just making the video better?",
+      a:["it doesn't, it's a trick","the second watch is counted the same as the first and it's nearly free"], right:1,
+      why:"you already made the video. the loop is a rewrite of two seconds that doubles one of the four numbers.",
+      whyWrong:"it is a trick, and it's a trick that shows people your video twice. those are the same thing here." },
+
+    { t:"do", mins:6, kind:"film",
+      text:"add a loop to your script. film it. watch it twice on purpose and see if the seam shows." }
+  ]},
+
+  { id:"u3-l4", name:"your video is legally an ad", cards:[
+
+    "important, and nobody tells you this: the second you can earn from a video, it's ‹an ad in law›.",
+
+    { t:"rule", lead:"five things people get wrong, and what the rule actually is.", rows:[
+      { claim:"disclose it in the hashtags", truth:"say it where a person actually reads it. caption top, or on camera." },
+      { claim:"#ad on its own is enough",    truth:"plain words. \"anticipy is paying me\" or \"paid partnership.\"" },
+      { claim:"it's the company's problem",  truth:"the rule falls on the person who posted it. that's you." },
+      { claim:"trending sounds are fine",    truth:"the license on a viral song doesn't stretch to something you earn from." },
+      { claim:"i need a trending sound to do numbers", truth:"your voice converts better. that's a finding, not a consolation prize." }
+    ]},
+
+    "so use your own voice, original audio, or a sound marked commercial-safe. a muted video sells nothing anyway.",
+
+    { t:"check", q:"where does the disclosure go?",
+      a:["in the hashtag block at the bottom","in the first line of the caption, or said on camera"], right:1,
+      why:"the test is whether a normal person actually sees it. a hashtag wall fails that test.",
+      whyWrong:"nobody reads hashtags, which is exactly why that placement doesn't count." },
+
+    { t:"do", mins:3,
+      text:"write your disclosure line once, in your own words. keep it. you'll paste it on every video from here." }
+  ]},
+
+  { id:"u3-l5", name:"editing, in five moves", cards:[
+
+    "you have clips on your phone and nothing done to them. the whole job is ‹five moves› in one free app. eight minutes the first time, two after that.",
+
+    { t:"def", term:"capcut",
+      body:"a free editor, on iphone and android. its own rules say you have to be 13. most of what you stopped on this week was cut in it.",
+      parts:["the free tier does all five moves","new project, then pick your clips","if capcut ever goes: edits, by instagram"] },
+
+    { t:"list", lead:"five moves, in this order. nothing else.", start:1, rows:[
+      { head:"trim the front", body:"drag the left edge of the clip right, until the first word is the first frame." },
+      { head:"cut the middle out", body:"playhead on the gap, tap split, tap the dead bit, delete. that is every cut you will ever make." },
+      { head:"captions on", body:"text, then auto captions. then read every line back." },
+      { head:"words to the middle", body:"the app's own buttons sit over the bottom and the right edge." },
+      { head:"export", body:"1080p, 30. delete the last clip first — the one that says capcut." }
+    ], close:"that is the whole app. everything else in it is optional." },
+
+    "the subtitles it writes are nearly right, and the bit it gets wrong is always a name. it spells what it heard. ‹anticipy› comes out \"anticipate\" until you tap that line and fix it.",
+
+    { t:"num", fig:"9:16", lead:"the aspect ratio. tall, whole screen, 1080 by 1920.",
+      sub:"capcut asks you once, at the top of a new project. get it wrong and there are grey bars down the sides and it reads as reposted." },
+
+    { t:"vs", lead:"same caption, two places on the screen.",
+      noLab:"where beginners put it", no:"the bottom of the frame",
+      yesLab:"where it survives", yes:"the middle third",
+      close:"the bottom quarter is the app's own caption bar and the right edge is the like button. words there are covered on every phone." },
+
+    "export the file, then upload the file. never screen-record it, and never save a video off tiktok and hand that to instagram — it carries a watermark and gets buried.",
+
+    { t:"check", q:"you finish the edit and your caption sits at the bottom of the frame. what happens when you upload it?",
+      a:["it's fine, that's where captions go","the app's own buttons sit on top of it and nobody reads it"], right:1,
+      why:"the bottom quarter belongs to the app, on every phone. your words have to live in the middle.",
+      whyWrong:"that is where it looks right in the editor, and the editor doesn't have the buttons on it." },
+
+    { t:"do", mins:8, kind:"film",
+      text:"open capcut. take the clip you already filmed and run the five moves on it. eight minutes. you end up with a finished file, and it's yours whether it ever goes anywhere." }
+  ]}
+]},
+
+{
+  id:"u4", name:"what to make about anticipy", blurb:"five lanes, and the things you must never claim",
+  lessons:[
+
+  { id:"u4-l1", name:"the five lanes", cards:[
+
+    "you don't need the product in your hand to make good videos about it. ‹four of these five› need nothing.",
+
+    { t:"def", term:"a lane",
+      body:"a shape you can make a video in over and over without thinking of a new idea. you pick one and it's yours for months.",
+      parts:["it fits your face","you can film it today","it survives being made twenty times"] },
+
+    { t:"list", lead:"the five lanes.", start:1, rows:[
+      { head:"what i forgot this week", body:"you, talking, listing things that fell out of your head. it's funny because it's everyone." },
+      { head:"quiet-life POV", body:"no talking. a morning that goes smoothly. text on screen." },
+      { head:"i thought this was dumb", body:"you against the idea, then walking it back. people trust a person who changed their mind." },
+      { head:"receipts", body:"real screens from the demo pack we give you. proof beats adjectives." },
+      { head:"it did it before i asked", body:"the magic moment, from the demo pack. this is the one that gets shared." }
+    ], close:"lane 1 is where almost everyone should start." },
+
+    { t:"num", fig:"5", lead:"pick one. not five.",
+      sub:"a person who made twenty videos in one lane is a channel. a person who made four in each of five lanes is a stranger." },
+
+    { t:"check", q:"you don't have a pendant yet. which lanes can you film today?",
+      a:["none of them, you need the product","lanes 1, 2 and 3 — none of them need the object"], right:1,
+      why:"three of the five are about you and the problem. the product turns up in the last five seconds, if at all.",
+      whyWrong:"waiting for the object is how people make nothing for six months. the object is not the video." },
+
+    { t:"keep", line:"proof beats adjectives." },
+
+    { t:"do", mins:5,
+      text:"pick the lane that sounds most like you. write two ideas in it. lane 1 is where almost everyone should start." }
+  ]},
+
+  { id:"u4-l2", name:"the never-claim list", cards:[
+
+    "you met these in unit 0. here they are again, because this is the ‹one list› that can end your account.",
+
+    { t:"rule", lead:"the six, and the true version of each.", rows:[
+      { claim:"it's shipping now",            truth:"it's a preorder. late 2026, US and canada." },
+      { claim:"it does things on its own",    truth:"it asks before anything it can't undo." },
+      { claim:"it works on android or safari", truth:"iphone and chrome." },
+      { claim:"nothing ever leaves your device", truth:"the pendant's audio goes to a transcriber to become text. your phone's own mic doesn't." },
+      { claim:"it knows who's talking",       truth:"it doesn't do voices yet." },
+      { claim:"it makes phone calls",         truth:"it doesn't." }
+    ]},
+
+    "why so strict? because a comment saying \"this is fake\" under your video costs you more than the video earned.",
+
+    { t:"check", q:"you're filming and you can't remember whether it does speaker ID. what do you say?",
+      a:["say it does — you can correct it in a comment later","leave it out of the video entirely"], right:1,
+      why:"nothing you don't say can be screenshotted. a correction in the comments never catches the video.",
+      whyWrong:"the comment gets 40 views and the video gets 40,000. that trade never works." },
+
+    { t:"do", mins:5, kind:"film",
+      text:"write your honest line: what it is, and what it isn't, in two sentences a stranger would believe. this is the clip you'll reuse the most." }
+  ]}
+]},
+{
+  id:"u5", name:"posting without burning out", blurb:"the system, so it isn't a heroic effort every time",
+  lessons:[
+
+  { id:"u5-l1", name:"batch, don't grind", cards:[
+
+    "the people who post daily aren't filming daily. ‹that's the trick›.",
+
+    { t:"num", fig:"90 min", lead:"they sit down once a week and film six things in ninety minutes.",
+      sub:"same shirt, same corner, same light. nobody notices, and it costs you nothing." },
+
+    "then posting is a two-minute job, not a whole evening. that's the difference between week three and quitting in week three.",
+
+    { t:"check", q:"you filmed six videos on sunday in the same shirt. someone notices. what happens?",
+      a:["they think you're lazy","nothing — nobody watches your videos back to back except you"], right:1,
+      why:"your feed is a wall to you and a single video to everyone else. they see one, days apart.",
+      whyWrong:"the only person who'll ever scroll your page in one sitting is you, at midnight, being unkind to yourself." },
+
+    { t:"do", mins:3,
+      text:"put one 90-minute block in your calendar this week. that's your studio. it's a corner of your room." }
+  ]},
+
+  { id:"u5-l2", name:"one idea, many cuts", cards:[
+
+    { t:"list", lead:"one good idea is five videos. here they are.", start:1, rows:[
+      { head:"the talking head", body:"you, saying it. the default, and the fastest to make." },
+      { head:"the POV with text", body:"same script, no talking. text on screen over the thing happening." },
+      { head:"the reply to a comment", body:"someone doubted it. you answer. free hook, written by a stranger." },
+      { head:"the part 2", body:"the bit you cut out of the first one. it was always there." },
+      { head:"same script, different hook", body:"your grid already gave you eight openings for this." }
+    ], close:"this is why the grid was worth building." },
+
+    "five cuts from one idea is a week of posting from ‹one evening of thinking›.",
+
+    { t:"check", q:"your best video did well. what's the fastest next video?",
+      a:["a completely new idea","the same script with a different hook off your grid"], right:1,
+      why:"the app just learned who that video is for. a new idea throws that away.",
+      whyWrong:"a new idea is another evening of thinking, and it starts the learning over from nothing." },
+
+    { t:"keep", line:"one good idea is not one video. it's five." },
+
+    { t:"do", mins:5,
+      text:"take your best idea. write down five ways to cut it. you just planned a week." }
+  ]},
+
+  { id:"u5-l3", name:"your plan, for you", cards:[
+
+    "pick a number you can actually hit on your ‹worst› week. not your best week.",
+
+    { t:"vs", lead:"two plans, made on the same monday.",
+      noLab:"the ambitious one", no:"seven a week",
+      yesLab:"the one that survives", yes:"two a week",
+      close:"two a week that you actually post beats seven a week that you quit in nine days." },
+
+    "nobody here checks. there's no quota and there's no deadline. this is your plan, for you.",
+
+    { t:"check", q:"you miss a week entirely. what's the correct response?",
+      a:["double up next week to catch up","post one when you can, and carry on"], right:1,
+      why:"there's nothing to catch up to. the plan was always a floor, not a debt.",
+      whyWrong:"catching up is how a hobby becomes a chore, and a chore is what you quit." },
+
+    { t:"do", mins:2,
+      text:"write your number down somewhere you'll see it. that's the whole exercise." }
+  ]}
+]},
+
+{
+  id:"u6", name:"getting people to actually buy", blurb:"views are not the job. the job is a person deciding.",
+  lessons:[
+
+  { id:"u6-l1", name:"why most UGC sells nothing", cards:[
+
+    "a million views and zero sales is completely normal, and it's a ‹fixable mistake›.",
+
+    { t:"vs", lead:"the same product, two first lines.",
+      noLab:"about the thing", no:"this pendant has a 6-hour battery",
+      yesLab:"about the person", yes:"i stopped forgetting to call my mum",
+      close:"one of those is a spec. the other one is a tuesday someone recognises." },
+
+    "lead with the problem you both have. the product is the last five seconds, not the first.",
+
+    { t:"check", q:"your video got 900k views and sold nothing. what's the most likely cause?",
+      a:["the audience was wrong","the video was about the product instead of the person"], right:1,
+      why:"900k people watched it, so the hook worked. they just never saw themselves in it.",
+      whyWrong:"an audience that big always contains buyers. something in the video stopped them being one." },
+
+    { t:"keep", line:"views are not the job. the job is a person deciding." },
+
+    { t:"do", mins:4,
+      text:"look at your best idea. is it about the thing, or about the person? rewrite the first line so it's about the person." }
+  ]},
+
+  { id:"u6-l2", name:"where the link goes", cards:[
+
+    "never put the link in the video. saying \"link in bio\" out loud gets you ‹buried›.",
+
+    { t:"list", lead:"so where does it live, and what is it actually for.", start:1, rows:[
+      { head:"the link lives in your bio", body:"the video makes them want to look for it. that's the whole system." },
+      { head:"the link is yours", body:"it's how anything you sell gets counted to you, and to nobody else." },
+      { head:"your buyers are in the US and canada", body:"don't spend your best video on an audience that can't buy." }
+    ]},
+
+    { t:"check", q:"your video is about to end. do you say \"link in bio\"?",
+      a:["yes, otherwise how do they find it","no — saying it gets the video buried, and they'll look anyway"], right:1,
+      why:"the app treats it as an ad the moment you say it. a buried video sells nothing to nobody.",
+      whyWrong:"people who want the thing go to your profile without being told. that's what a profile is for." },
+
+    { t:"do", mins:2,
+      text:"put your anticipy link in your bio now. it takes ten seconds and nothing counts until it's there." }
+  ]}
+]},
+
+{
+  id:"u7", name:"the money, plainly", blurb:"exactly how you get paid, with nothing hidden",
+  lessons:[
+
+  { id:"u7-l1", name:"how a sale becomes $30", cards:[
+
+    { t:"num", fig:"$30", lead:"someone taps your link and buys within 7 days. that's $30 to your name.",
+      sub:"flat, and it lands 30 days later. not a percentage you have to work out, and not a number that changes quietly." },
+
+    { t:"def", term:"why you wait 30 days",
+      body:"one payment, 30 days after they buy. not two halves, and never taken back.",
+      parts:["people cancel, and refunds happen","30 days is the window where that's still possible","after that it's yours and we never take it back"] },
+
+    { t:"bar", lead:"the whole thing, on a real calendar.",
+      segs:[{a:0,b:78,tone:"quiet"},{a:78,b:100,tone:"gold"}],
+      ticks:[{at:0,label:"they buy"},{at:78,label:"$30 · 30 days",end:true}],
+      sub:"one date. we'd rather wait the window out once than pay you in halves." },
+
+    "you can see every click and every sale on your page.",
+
+    { t:"check", q:"someone buys through your link today. when do you get the $30?",
+      a:["straight away","30 days later, in one go"], right:1,
+      why:"30 days is how long a purchase can still be cancelled. we wait it out, then it's yours for good.",
+      whyWrong:"nobody pays out the same day — that's how you end up being asked for money back." },
+
+    { t:"keep", line:"we don't get to change those numbers quietly." },
+
+    { t:"do", mins:2,
+      text:"open your fellowship page and look at your click count. it's probably zero. that's fine — it's a real number and it's yours." }
+  ]},
+
+  { id:"u7-l2", name:"getting the money out", cards:[
+
+    "it arrives as a ‹prepaid visa card›, by email. no bank account, no app to sign up for, nothing to connect.",
+
+    { t:"list", lead:"three facts, and one of them is about the law.", start:1, rows:[
+      { head:"there's nothing for you to set up", body:"you can't open a bank account at 15, so we don't ask you to. a card just turns up." },
+      { head:"under 18? a parent or guardian does the five-minute setup", body:"the law about paying minors is theirs to satisfy, not ours to ignore." },
+      { head:"everything else stays open the whole time", body:"the lessons, your link, your clicks. only the payment waits." }
+    ]},
+
+    "send them the guide. it's short and it's written for someone who has never heard of any of this.",
+
+    { t:"check", q:"you're 16. what's locked until a parent does the setup?",
+      a:["the lessons and your link","only the payment"], right:1,
+      why:"you can learn, post, and collect clicks today. the money is the only thing that waits.",
+      whyWrong:"nothing about the learning is gated. the gate is on money and money only." },
+
+    { t:"do", mins:5,
+      text:"if you're under 18, send your parent the setup link from your fellowship page. do it now and it's done." }
+  ]}
+]},
+
+{
+  id:"u8", name:"reading what happened", blurb:"the only numbers worth looking at, and what to do next",
+  lessons:[
+
+  { id:"u8-l1", name:"what to look at after you post", cards:[
+
+    "don't look for two hours. seriously. it tells you nothing and it ‹feels awful›.",
+
+    { t:"num", fig:"30%", lead:"look the next day at one number: what percent watched to the end.",
+      sub:"under 30%, the hook was wrong. that's it. that's the whole read." },
+
+    "good ending number but no clicks? the video was fine and the last five seconds weren't.",
+
+    { t:"check", q:"you post at 8pm. when do you look?",
+      a:["every twenty minutes until bed","tomorrow, once"], right:1,
+      why:"the app is still finding the first few hundred strangers. the number at 8:20pm is noise.",
+      whyWrong:"it feels like monitoring and it's actually just a bad evening. the number isn't real yet." },
+
+    { t:"do", mins:2,
+      text:"next time you post — whenever that is — look once, the next day, and write down that one number. that's your whole analytics practice." }
+  ]},
+
+  { id:"u8-l2", name:"what to do with a winner", cards:[
+
+    "when one takes off, don't celebrate and move on. that's the ‹most common mistake there is›.",
+
+    { t:"list", lead:"three things, in this order, while it's still warm.", start:1, rows:[
+      { head:"make three more with the same hook move", body:"different story, same opening shape. the app has just learned who this is for." },
+      { head:"read the comments properly", body:"not for the compliments. for the questions." },
+      { head:"take the top comment", body:"it's usually your next video, written for you by a stranger." }
+    ]},
+
+    { t:"check", q:"a video does 300k. what's the next thing you make?",
+      a:["something completely different while you're hot","three more with the same hook move"], right:1,
+      why:"the app just worked out who your audience is. that knowledge has a shelf life of about a week.",
+      whyWrong:"the moment is the audience, not your momentum. something different sends it to a different room." },
+
+    { t:"keep", line:"the top comment is usually your next video, written for you by a stranger." },
+
+    { t:"do", mins:4, kind:"film",
+      text:"film three versions of your winner's hook back to back. that's next week done in four minutes." }
+  ]}
+]}
+];
+
+/* The MAKE ONE line for every lesson. The founder's ask — "it should be
+   showing, after every lesson, that you should make a video" — and it is
+   lesson-specific on purpose. Generic nagging gets ignored; a one-step ask
+   built from the thing you just made does not. Each line names an artefact
+   that exists BECAUSE of the lesson just finished.
+
+   u7-l2 is a deliberate exception and stays that way. One block that names
+   itself as the exception is what makes the other twenty-eight credible. */
+var MAKEONE = {
+"u0-l1":"you just described a thing you forgot. that's a video. film it saying it out loud, 10 seconds, no setup.",
+"u0-l2":"say the preorder line to camera once. if it sounds like a disclaimer, say it again until it sounds like you.",
+"u0-l3":"you have your sentence. film it. one take, 15 seconds. that file is the opening of your first ten videos.",
+"u1-l1":"film 10 seconds saying \"nobody follows me and i can still beat a brand.\" you'll believe it more once you've said it.",
+"u1-l2":"film yourself reading the four numbers off your hand. it's a real video and it took you nine seconds.",
+"u1-l3":"film the number 20 written on paper and say what it's for. that's probe one of twenty.",
+"u1-l4":"the 10 seconds you just filmed is postable. unlisted counts. nothing has to happen to it.",
+"u1-l5":"pick the worst of your three moments and say it out loud to camera. the worst one is the funniest one.",
+"u2-l1":"film your five hook-museum screenshots on your screen and say which one got you. 12 seconds.",
+"u2-l2":"you have four hooks. film the one you'd say out loud without cringing. 5 seconds. no rest of the video.",
+"u2-l3":"you now have eight. film two more. eight takes under a minute if you don't stop to fix anything.",
+"u2-l4":"film the fixed version of the hook you had to rewrite. say the broken one first. that's a video by itself.",
+"u2-l5":"film your circled top five back to back, one take. that's your audition tape and it's for you.",
+"u2-l6":"you have a 5-second clip that works. that is a post. it doesn't need the rest of the video to exist.",
+"u3-l1":"film hook, turn, land in one 20-second take. it will be bad. it is also your first whole video.",
+"u3-l2":"film the script you just fixed. read it out loud once first, then put the paper down.",
+"u3-l3":"film the loop. watch it twice on purpose. if you can't see the seam, post it.",
+"u3-l4":"film your disclosure line once so you know how it sounds in your mouth. it should sound like nothing.",
+"u3-l5":"you have a finished file now. film a second clip and run the same five moves — the second one takes two minutes.",
+"u4-l1":"pick lane 1 and film two of the things you forgot this week. that's a video and you already wrote it.",
+"u4-l2":"film your honest line: what it is, what it isn't. two sentences. this is the clip you'll reuse the most.",
+"u5-l1":"film one thing in the corner you just picked. now the corner is a studio, because you used it once.",
+"u5-l2":"film cut number two of your best idea. same script, different hook. it takes 40 seconds.",
+"u5-l3":"film your number and say it out loud. saying it is what makes it a plan instead of a wish.",
+"u6-l1":"film the rewritten first line — the one about the person, not the pendant. 6 seconds.",
+"u6-l2":"film a 10-second video that never says \"link in bio.\" notice how much room that leaves you.",
+"u7-l1":"film yourself saying the $30 split in your own words. people ask. now you can answer in one take.",
+"u7-l2":"film nothing this time. do the five-minute setup instead. it's the only lesson where admin beats filming.",
+"u8-l1":"film your read of your own last video's ending number. one sentence, to yourself, on camera.",
+"u8-l2":"film three versions of your winner's hook back to back. that's next week done in four minutes."
+};
+
+/* What you can say about yourself at the end of each unit. Nine of these,
+   and they are the only time the course tells you that you got better. */
+var CARRY = {
+"u0":"you can explain this thing to a friend now, without notes. that was the whole unit.",
+"u1":"you know how the game works. most people making videos do not.",
+"u2":"you own the first two seconds now.",
+"u3":"you can write a whole video, land it, and cut it into a file you'd actually send someone.",
+"u4":"you know what to make, and you know what you must never say.",
+"u5":"you have a system, so it isn't a heroic effort every time.",
+"u6":"you know the difference between a view and a person deciding.",
+"u7":"you know exactly how you get paid, and when, and why it's split.",
+"u8":"that's the whole course. you have twenty probes to make and everything you need to make them."
+};
+</script>
+<script>
+"use strict";
+/* ==========================================================================
+   The player. Press next, one idea a screen.
+
+   IT WORKS SIGNED OUT. The page is not behind a login, on purpose: someone
+   who found the link should be able to read the first unit and decide whether
+   we're worth their evening. Progress is kept locally and pushed up the
+   moment they do have an account, so nothing they did is lost by having
+   arrived early.
+
+   THE MOTION BUDGET, and it is a ceiling, not a target:
+     card swap ....................... 140ms   every press
+     list / rule row reveal .......... 160ms   ~40x per course
+     check border resolve ............ 160ms   29x
+     .qwhy in ........................ 200ms   29x
+     progress rail width ............. 320ms   every press
+     unit rule 38px -> 100% .......... 420ms   9x per course
+   Nothing may exceed 420ms and no more than two things animate at once. The
+   rail is deliberately SLOWER than the card that caused it, so the eye
+   catches it after the text has already landed — content under 200ms
+   (Doherty), reward slow enough to see (Nielsen).
+   ========================================================================= */
+function $(id){ return document.getElementById(id); }
+function esc(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+/* Marks are authored as ‹angle quotes› and converted AFTER escaping, so no
+   HTML ever enters the course array. */
+function mk(s){ return esc(s).replace(/‹/g,"<mark>").replace(/›/g,"</mark>"); }
+function lsGet(k, fb){ try { var v = localStorage.getItem(k); return v == null ? fb : v; } catch(e){ return fb; } }
+function lsSet(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
+function lsJSON(k, fb){ try { var v = JSON.parse(localStorage.getItem(k)); return v == null ? fb : v; } catch(e){ return fb; } }
+
+var L = {
+  token: lsGet("fx_token",""),
+  me: null,
+  done: lsJSON("fx_done", {}),      // lesson_id -> ISO
+  days: lsJSON("fx_days", []),      // YYYY-MM-DD of days with any lesson finished
+  todo: lsJSON("fx_todo", []),      // the things they saved. this is the inventory.
+  cur: null, unit: null, ci: 0, rv: 0, ans: null, finished: null, prevFocus: null
+};
+
+/* Bare strings and the two legacy object shapes still render, so the course
+   array never had to be rewritten in one go. */
+function norm(c){
+  if (typeof c === "string") return { t:"statement", lead:c };
+  if (c.t) return c;
+  if (c.try)  return { t:"do", text:c.try, mins:c.mins || 3, kind:c.kind || "" };
+  if (c.quiz) return { t:"check", q:c.quiz.q, a:c.quiz.a, right:c.quiz.right,
+                       why:c.quiz.why, whyWrong:c.quiz.whyWrong || c.quiz.why };
+  return { t:"statement", lead:String(c) };
+}
+function cards(){ return L.cur.cards.map(norm); }
+/* A list or rule card takes one press per row. That is the point: the
+   segmenting benefit of six cards, in one screen that gains structure. */
+function cardSteps(c){ return (c.t === "list" || c.t === "rule") ? c.rows.length : 1; }
+function totalSteps(cs){ return cs.reduce(function(a,c){ return a + cardSteps(c); }, 0); }
+function stepsBefore(cs, i){ var n = 0; for (var k = 0; k < i; k++) n += cardSteps(cs[k]); return n; }
+
+function allLessons(){
+  var out = [];
+  COURSE.forEach(function(u){ u.lessons.forEach(function(l){ out.push({ u:u, l:l }); }); });
+  return out;
+}
+function isDone(id){ return !!L.done[id]; }
+function todayISO(){
+  var d = new Date();
+  return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+}
+
+/* ---------- streak: counts SHOWING UP, never posting -------------------- */
+function streakCount(){
+  if (!L.days.length) return 0;
+  var days = L.days.slice().sort().reverse();
+  var n = 0, cur = new Date(todayISO() + "T00:00:00");
+  var first = new Date(days[0] + "T00:00:00");
+  if (Math.round((cur - first) / 86400000) > 1) return 0;
+  cur = first;
+  for (var i = 0; i < days.length; i++){
+    var d = new Date(days[i] + "T00:00:00");
+    var diff = Math.round((cur - d) / 86400000);
+    if (diff === 0){ if (i === 0) n = 1; continue; }
+    if (diff === 1){ n++; cur = d; continue; }
+    break;
+  }
+  return n;
+}
+/* Rendered from 1, not 2. The day someone STARTS is the day they most need a
+   reason to come back, and the old build showed them nothing. */
+function paintStreak(){
+  var n = streakCount();
+  $("streak").textContent = n >= 2 ? n + " days in a row" : (n === 1 ? "day 1" : "");
+}
+
+/* ---------- the map ------------------------------------------------------ */
+function firstUndone(){
+  var list = allLessons();
+  for (var i = 0; i < list.length; i++) if (!isDone(list[i].l.id)) return { hit:list[i], i:i };
+  return null;
+}
+function paintCont(){
+  var list = allLessons(), doneN = list.filter(function(x){ return isDone(x.l.id); }).length;
+  var nx = firstUndone();
+  if (!nx){
+    $("cont").innerHTML = '<div class="cont"><span class="eyebrow">all thirty done</span>'
+      + '<div class="lname">' + esc(CARRY.u8) + '</div>'
+      + '<div class="meta">go back into any of it whenever you want. nothing locks.</div></div>';
+    return;
+  }
+  var u = nx.hit.u, l = nx.hit.l, cs = l.cards.map(norm);
+  var head = doneN === 0
+    ? "start here"
+    : "where you were · " + (doneN) + " of " + list.length;
+  var meta = "unit " + COURSE.indexOf(u) + " · " + esc(u.name) + " · " + cs.length + " cards";
+  if (doneN === 0) meta = "unit 0 · " + u.lessons.length + " lessons · about five minutes";
+  var rail = doneN === 0 ? "" :
+    '<div class="crail"><i style="width:' + Math.round(doneN / list.length * 100) + '%"></i></div>';
+  var sign = (!L.token && doneN === 0)
+    ? '<div class="contsign">you can read all of this without an account.</div>' : "";
+  $("cont").innerHTML = '<div class="cont"><span class="eyebrow">' + esc(head) + '</span>'
+    + '<div class="lname">' + esc(l.name) + '</div>'
+    + '<div class="meta">' + meta + '</div>'
+    + rail
+    + '<button class="btn" data-lesson="' + esc(l.id) + '"><span>'
+    + (doneN === 0 ? "Start" : "Continue") + '</span><span class="arw">&#8594;</span></button>'
+    + sign + '</div>';
+}
+function paintMap(){
+  var nx = firstUndone(), nextId = nx ? nx.hit.l.id : "";
+  $("map").innerHTML = COURSE.map(function(u, ui){
+    var doneN = u.lessons.filter(function(l){ return isDone(l.id); }).length;
+    var all = doneN === u.lessons.length;
+    // A completed unit collapses to one row. Eight collapsed units is a page
+    // you can see the end of; eight expanded ones is a wall.
+    var collapsed = all ? " data-collapsed=\"1\"" : "";
+    return '<section class="unit" id="sec-' + esc(u.id) + '" aria-labelledby="h-' + esc(u.id) + '"' + collapsed + '>'
+      + '<div class="uhead"><h2 class="uname" id="h-' + esc(u.id) + '">' + esc(u.name) + '</h2>'
+      + '<span class="ucount' + (all ? " all" : "") + '">' + (all ? "✓ " : "") + doneN + '/' + u.lessons.length + '</span>'
+      + (all ? '<button class="uopen" data-unit="' + esc(u.id) + '">open</button>' : "")
+      + '<span class="ublurb">' + esc(u.blurb) + '</span></div>'
+      + '<div class="llist">'
+      + u.lessons.map(function(l){
+          var isNext = l.id === nextId;
+          return '<button class="lrow' + (isDone(l.id) ? " done" : "") + '"'
+            + (isNext ? ' data-next="1"' : "") + ' data-lesson="' + esc(l.id) + '">'
+            + '<span class="tick" aria-hidden="true">&#10003;</span>'
+            + '<span class="lname">' + esc(l.name) + '</span>'
+            + '<span class="lmeta">' + (isNext ? "next" : l.cards.length + ' cards') + '</span></button>';
+        }).join("")
+      + '</div></section>';
+  }).join("");
+  paintCont();
+  paintStreak();
+}
+
+/* ---------- the card renderers ------------------------------------------ */
+function eyebrow(t){ return '<span class="eyebrow">' + esc(t) + '</span>'; }
+function rowState(i, rv){ return i > rv ? "ghost" : (i === rv ? "live" : "past"); }
+
+function renderCard(c, rv){
+  if (c.t === "num"){
+    return '<div class="cardwrap c-num">'
+      + '<div class="fig">' + esc(c.fig) + '</div><div class="rule38"></div>'
+      + '<div class="lead">' + mk(c.lead) + '</div>'
+      + (c.sub ? '<div class="sub">' + mk(c.sub) + '</div>' : "") + '</div>';
+  }
+  if (c.t === "list"){
+    var start = c.start || 1;
+    return '<div class="cardwrap c-list">'
+      + '<div class="lead">'
+      + mk(c.lead) + '</div><div class="rows">'
+      + c.rows.map(function(r, i){
+          var n = ("0" + (start + i)).slice(-2);
+          return '<div class="row" data-s="' + rowState(i, rv) + '">'
+            + '<span class="n">' + n + '</span><div><div class="head">' + mk(r.head) + '</div>'
+            + (r.body ? '<div class="body">' + mk(r.body) + '</div>' : "") + '</div></div>';
+        }).join("")
+      + '</div>'
+      + (c.close && rv >= c.rows.length - 1 ? '<div class="close">' + mk(c.close) + '</div>' : "")
+      + '</div>';
+  }
+  if (c.t === "rule"){
+    return '<div class="cardwrap c-rule">' + eyebrow("never say this")
+      + '<div class="lead">' + mk(c.lead) + '</div><div class="rows">'
+      + c.rows.map(function(r, i){
+          return '<div class="row" data-s="' + rowState(i, rv) + '">'
+            + '<div class="claim">' + mk(r.claim) + '</div>'
+            + '<span class="lab">say instead</span>'
+            + '<div class="truth">' + mk(r.truth) + '</div></div>';
+        }).join("")
+      + '</div></div>';
+  }
+  if (c.t === "vs"){
+    return '<div class="cardwrap c-vs">'
+      + '<div class="lead">'
+      + mk(c.lead) + '</div><div class="pair">'
+      + '<div class="pane"><span class="lab">' + esc(c.noLab) + '</span><q>' + esc(c.no) + '</q></div>'
+      + '<div class="pane yes"><span class="lab">' + esc(c.yesLab) + '</span><q>' + esc(c.yes) + '</q></div>'
+      + '</div>' + (c.close ? '<div class="close">' + mk(c.close) + '</div>' : "") + '</div>';
+  }
+  if (c.t === "bar"){
+    var segs = c.segs.map(function(s){
+      return '<span class="seg' + (s.tone === "quiet" ? " quiet" : "") + '" style="left:' + s.a
+        + '%;width:' + (s.b - s.a) + '%"></span>';
+    }).join("");
+    var ticks = c.ticks.map(function(t){
+      return '<span class="tick' + (t.end ? " end" : "") + (t.quiet ? " quiet" : "")
+        + '" style="left:' + t.at + '%"><b>' + esc(t.label) + '</b></span>';
+    }).join("");
+    return '<div class="cardwrap c-bar"><div class="lead">' + mk(c.lead) + '</div>'
+      + '<div class="track">' + segs + ticks + '</div>'
+      + (c.sub ? '<div class="sub">' + mk(c.sub) + '</div>' : "") + '</div>';
+  }
+  if (c.t === "grid"){
+    var cells = "";
+    for (var r = 0; r < c.rows; r++) for (var col = 0; col < c.cols; col++){
+      var on = (c.marks || []).some(function(m){ return m[0] === r && m[1] === col; });
+      cells += '<span class="cell' + (on ? " on" : "") + '"></span>';
+    }
+    return '<div class="cardwrap c-grid"><div class="lead">' + mk(c.lead) + '</div>'
+      + '<div class="g" style="grid-template-columns:repeat(' + c.cols + ',1fr)" aria-hidden="true">'
+      + cells + '</div>'
+      + (c.sub ? '<div class="sub">' + mk(c.sub) + '</div>' : "") + '</div>';
+  }
+  if (c.t === "keep"){
+    return '<div class="cardwrap c-keep"><div class="rule38"></div>'
+      + '<div class="line">' + esc(c.line) + '</div><div class="end"></div>'
+      + (c.attrib ? '<div class="attrib">' + esc(c.attrib) + '</div>' : "") + '</div>';
+  }
+  if (c.t === "def"){
+    return '<div class="cardwrap c-def">' + eyebrow("what it is")
+      + '<div class="term">' + esc(c.term) + '</div>'
+      + '<div class="body">' + mk(c.body) + '</div><div class="parts">'
+      + c.parts.map(function(p, i){
+          return '<div class="part"><span class="n">' + ("0" + (i + 1)).slice(-2) + '</span>'
+            + '<div class="p">' + esc(p) + '</div></div>';
+        }).join("")
+      + '</div></div>';
+  }
+  if (c.t === "check"){
+    // Ungated on purpose, and the eyebrow says so. Retrieval only works when
+    // the anxiety cost is zero.
+    return '<div class="cardwrap c-check">' + eyebrow("nobody is marking this")
+      + '<div class="quizq">' + mk(c.q) + '</div>'
+      + c.a.map(function(o, i){ return '<button class="qopt" data-opt="' + i + '">' + esc(o) + '</button>'; }).join("")
+      + '<div class="qwhy" id="qwhy"></div></div>';
+  }
+  if (c.t === "do"){
+    return '<div class="cardwrap c-do">'
+      + eyebrow("try this · " + (c.mins || 3) + " min" + (c.kind === "film" ? " · filming one" : ""))
+      + '<div class="panel"><div class="text">' + mk(c.text) + '</div><hr>'
+      + '<div class="note">optional, and it&#39;s for your own account. finishing the lesson is pressing '
+      + 'the button — nobody checks whether you did it.</div></div></div>';
+  }
+  return '<div class="cardwrap c-statement"><p class="lead">' + mk(c.lead) + '</p>'
+    + (c.sub ? '<div class="sub">' + mk(c.sub) + '</div>' : "") + '</div>';
+}
+
+/* ---------- the player --------------------------------------------------- */
+function setLabel(text){
+  $("pnext").innerHTML = '<span>' + esc(text) + '</span><span class="arw">&#8594;</span>';
+}
+function setSlot(html){ $("pslot").innerHTML = html; }
+function setState(text, tone){
+  var el = $("pstate");
+  el.textContent = text;
+  el.className = "pstate" + (tone ? " " + tone : "");
+}
+function openLesson(id){
+  var hit = allLessons().filter(function(x){ return x.l.id === id; })[0];
+  if (!hit) return;
+  L.cur = hit.l; L.unit = hit.u; L.ci = 0; L.rv = 0; L.ans = null; L.finished = null;
+  $("punit").textContent = "unit " + COURSE.indexOf(hit.u);
+  $("plesson").textContent = hit.l.name;
+  // Focus never entered the player: after opening, activeElement was still
+  // the lesson row behind the overlay, with 27 focusable elements behind it
+  // against 4 inside. A keyboard user had to Tab 27 times to reach Next.
+  L.prevFocus = document.activeElement;
+  var m = document.querySelector("main");
+  try { m.inert = true; } catch(e){ m.setAttribute("aria-hidden","true"); }
+  $("player").classList.add("on");
+  $("player").focus();
+  document.body.style.overflow = "hidden";
+  // Without this the Android back gesture and the iOS back-swipe LEAVE THE
+  // SITE instead of closing the lesson.
+  try { history.pushState({ player:id }, "", "#" + id); } catch(e){}
+  paintCard();
+}
+function closePlayer(){
+  $("player").classList.remove("on");
+  var m = document.querySelector("main");
+  try { m.inert = false; } catch(e){ m.removeAttribute("aria-hidden"); }
+  document.body.style.overflow = "";
+  L.cur = null; L.finished = null;
+  if (L.prevFocus && L.prevFocus.focus) { try { L.prevFocus.focus(); } catch(e){} }
+  paintMap();
+}
+function paintRail(){
+  var cs = cards(), total = totalSteps(cs);
+  var pressed = stepsBefore(cs, L.ci) + L.rv + 1;
+  var pct = Math.round(pressed / total * 100);
+  var ticks = cs.slice(1).map(function(c, i){
+    var at = stepsBefore(cs, i + 1) / total * 100;
+    return '<u style="left:' + at + '%"' + (at <= pct ? ' data-passed="1"' : "") + '></u>';
+  }).join("");
+  $("prail").innerHTML = '<i style="width:' + pct + '%"></i>' + ticks;
+  $("prail").setAttribute("aria-valuenow", String(pct));
+  $("prail").setAttribute("aria-valuetext", "card " + (L.ci + 1) + " of " + cs.length);
+}
+function paintCard(){
+  var cs = cards(), c = cs[L.ci], last = L.ci === cs.length - 1;
+  $("pbody").innerHTML = renderCard(c, L.rv);
+  paintRail();
+
+  var midReveal = (c.t === "list" || c.t === "rule") && L.rv < c.rows.length - 1;
+  var nextIsDo  = !last && cs[L.ci + 1].t === "do";
+
+  setSlot("");
+  if (c.t === "check"){
+    if (L.ans == null){
+      setState("pick one", "ask");
+      // never gated. skip lives here and the button says why it is off.
+      setSlot('<button class="linkbtn" id="pskip">skip this one</button>');
+      $("pnext").disabled = true;
+    } else {
+      setState(L.ans.ok ? "you got it" : "read the why", L.ans.ok ? "ok" : "");
+      $("pnext").disabled = false;
+    }
+  } else {
+    $("pnext").disabled = false;
+    if (midReveal) setState((L.rv + 1) + " of " + c.rows.length + " · keep going");
+    else if (last) setState("last one");
+    else if (c.t === "do") setState("optional");
+    else setState((L.ci + 1) + " / " + cs.length);
+  }
+  if (c.t === "do"){
+    var saved = L.todo.some(function(x){ return x.lesson === L.cur.id; });
+    setSlot('<button class="linkbtn" id="psave">' + (saved ? "saved ✓" : "save this") + '</button>');
+  }
+  // Announcing the try one card early is the small honest gap that gets
+  // people over the last card.
+  setLabel(midReveal ? "Reveal" : (last ? "Finish" : (nextIsDo ? "Try this" : "Next")));
+
+  // the arrow-key hint, on the first two cards of the first lesson only
+  if (L.cur.id === COURSE[0].lessons[0].id && L.ci < 2 && !midReveal) setState("press →");
+}
+function advance(){
+  var cs = cards(), c = cs[L.ci];
+  if ((c.t === "list" || c.t === "rule") && L.rv < c.rows.length - 1){ L.rv++; paintCard(); return; }
+  if (L.ci < cs.length - 1){ L.ci++; L.rv = 0; L.ans = null; paintCard(); return; }
+  finishLesson();
+}
+function back(){
+  var cs = cards();
+  if (L.rv > 0){ L.rv--; paintCard(); return; }
+  if (L.ci > 0){ L.ci--; L.rv = cardSteps(cs[L.ci]) - 1; L.ans = null; paintCard(); }
+}
+
+/* ---------- the end of a lesson ----------------------------------------- */
+function inventory(){
+  if (!L.todo.length) return "nothing saved yet — the try above takes four minutes.";
+  var films = L.todo.filter(function(x){ return x.kind === "film"; }).length;
+  return L.todo.length + (L.todo.length === 1 ? " thing saved" : " things saved")
+    + (films ? " · " + films + " of them on camera" : "");
+}
+function finishLesson(){
+  var id = L.cur.id, u = L.unit;
+  var fresh = !L.done[id];
+  L.done[id] = new Date().toISOString();
+  lsSet("fx_done", JSON.stringify(L.done));
+  var t = todayISO();
+  if (L.days.indexOf(t) < 0){ L.days.push(t); lsSet("fx_days", JSON.stringify(L.days)); }
+  pushProgress([id]);
+
+  var list = allLessons();
+  var idx = list.findIndex(function(x){ return x.l.id === id; });
+  var next = list[idx + 1];
+  var doneN = Object.keys(L.done).length;
+  var lastOfUnit = u.lessons[u.lessons.length - 1].id === id;
+
+  var head = lastOfUnit
+    ? "unit " + COURSE.indexOf(u) + " complete · " + u.name
+    : "lesson " + (idx + 1) + " of " + list.length + " · unit " + COURSE.indexOf(u);
+
+  var body = '<div class="cardwrap c-land' + (lastOfUnit ? " unit" : "") + '">'
+    + '<div class="unitrule"></div>'
+    + '<span class="eyebrow">' + esc(head) + '</span>'
+    + (lastOfUnit
+        ? '<div class="carry">' + esc(CARRY[u.id] || "") + '</div>'
+        : '<div class="donetitle">' + (fresh ? "done." : "done again.") + '</div>')
+    + '<div class="inv"><span class="eyebrow">you now have</span><p>' + esc(inventory()) + '</p></div>'
+    + '<div class="make"><span class="eyebrow">make one</span>'
+    + '<div class="ask">' + esc(MAKEONE[id] || "film ten seconds of the thing you just wrote down.") + '</div>'
+    + '<div class="guard">nobody here checks. no quota, no deadline.</div></div>'
+    + (next ? '<div class="next">next: ' + esc(next.l.name) + '</div>'
+            : '<div class="next">that was the last one.</div>');
+
+  body += '</div>';
+
+  $("pbody").innerHTML = body;
+  L.finished = next ? { go: next.l.id } : { close: true };
+  setLabel(next ? "Next lesson" : "Back to the map");
+  $("pnext").disabled = false;
+  // The ask to sign in fires where it has been earned, not on arrival — and
+  // it lives in the footer slot rather than on the card. As a block on the
+  // card it measured 102px and sat 98px BELOW the fold at 375px: an ask
+  // nobody sees, which also pushed the make-one card into scrolling. The slot
+  // is always visible and costs no height, and "back to the map" was already
+  // redundant with the close button two inches above it.
+  var askJoin = !L.token && (idx === 0 || idx === 3);
+  setSlot(askJoin
+    ? '<a class="linkbtn" href="/fellowships.html" id="pjoin">sign in to keep these</a>'
+    : '<button class="linkbtn" id="pmap">back to the map</button>');
+  var streak = streakCount();
+  setState(streak >= 2 ? streak + " days in a row" : "lesson " + (idx + 1) + " of " + list.length);
+  $("prail").innerHTML = '<i style="width:100%"></i>';
+  $("prail").setAttribute("aria-valuenow","100");
+  $("prail").setAttribute("aria-valuetext","lesson complete");
+  paintStreak();
+}
+
+/* ---------- input -------------------------------------------------------- */
+$("pnext").addEventListener("click", function(){
+  // One handler, three states: advance, finish, or carry on to the next
+  // lesson. A second listener here is how the end of a lesson fires twice.
+  if (L.finished){
+    var f = L.finished; L.finished = null;
+    if (f.go) openLesson(f.go); else closePlayer();
+    return;
+  }
+  if (!L.cur) return;
+  advance();
+});
+document.addEventListener("click", function(ev){
+  var o = ev.target.closest("[data-opt]");
+  if (o && L.cur && !L.finished){
+    var c = cards()[L.ci];
+    if (!c || c.t !== "check" || L.ans != null) return;
+    var i = parseInt(o.dataset.opt, 10);
+    L.ans = { pick:i, ok:i === c.right };
+    // Nobody leaves a check without seeing the right answer, and the wrong
+    // option is never punished twice: a --danger border, and a state line in
+    // ink-2 rather than in red.
+    [].forEach.call(document.querySelectorAll(".qopt"), function(b, bi){
+      if (bi === c.right) b.classList.add("right");
+      else if (bi === i) b.classList.add("wrong");
+      b.disabled = true;
+    });
+    var w = $("qwhy");
+    w.textContent = L.ans.ok ? c.why : (c.whyWrong || c.why);
+    w.classList.add("on");
+    setState(L.ans.ok ? "you got it" : "read the why", L.ans.ok ? "ok" : "");
+    var cs = cards(), last = L.ci === cs.length - 1;
+    setLabel(last ? "Finish" : (cs[L.ci + 1].t === "do" ? "Try this" : "Next"));
+    setSlot("");
+    $("pnext").disabled = false;
+    return;
+  }
+  if (ev.target.closest("#pskip")){ L.ans = { pick:-1, ok:false, skipped:true }; advance(); return; }
+  if (ev.target.closest("#psave")){
+    var c2 = cards()[L.ci];
+    if (c2 && c2.t === "do" && !L.todo.some(function(x){ return x.lesson === L.cur.id; })){
+      L.todo.push({ lesson:L.cur.id, text:c2.text, kind:c2.kind || "", at:new Date().toISOString() });
+      lsSet("fx_todo", JSON.stringify(L.todo));
+    }
+    setSlot('<button class="linkbtn" id="psave">saved ✓</button>');
+    return;
+  }
+  if (ev.target.closest("#pmap")){ closePlayer(); return; }
+  var uo = ev.target.closest("[data-unit]");
+  if (uo){
+    var sec = $("sec-" + uo.dataset.unit);
+    if (sec.hasAttribute("data-collapsed")){ sec.removeAttribute("data-collapsed"); uo.textContent = "hide"; }
+    else { sec.setAttribute("data-collapsed","1"); uo.textContent = "open"; }
+    return;
+  }
+  var l = ev.target.closest("[data-lesson]");
+  if (l){ openLesson(l.dataset.lesson); return; }
+});
+$("pclose").addEventListener("click", closePlayer);
+window.addEventListener("popstate", function(){
+  if ($("player").classList.contains("on")) closePlayer();
+});
+document.addEventListener("keydown", function(ev){
+  if (!$("player").classList.contains("on")) return;
+  // Without this guard, holding Enter fires through an entire lesson in under
+  // a second and marks it done.
+  if (ev.repeat) return;
+  if (ev.key === "Escape"){ closePlayer(); return; }
+  if (ev.key === "ArrowLeft" && !L.finished){ ev.preventDefault(); back(); return; }
+  if (ev.key === "Enter" || ev.key === " " || ev.key === "ArrowRight"){
+    if ($("pnext").disabled) return;
+    ev.preventDefault(); $("pnext").click(); return;
+  }
+  if (/^[1-4]$/.test(ev.key)){
+    var o = document.querySelectorAll(".qopt")[parseInt(ev.key, 10) - 1];
+    if (o && !o.disabled) o.click();
+  }
+});
+
+/* ---------- progress sync ------------------------------------------------ */
+function pushProgress(ids){
+  if (!L.token) return;                  // signed out: it keeps locally, that's fine
+  fetch("/fellows/progress", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json", "X-Fellow-Token": L.token },
+    body: JSON.stringify({ lessons: ids })
+  }).catch(function(){});
+}
+function boot(){
+  paintMap();
+  if (!L.token) return;
+  fetch("/fellows/me", { headers:{ "X-Fellow-Token": L.token } })
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      if (!j || !j.ok) return;
+      L.me = j.fellow;
+      $("whoami").textContent = (j.fellow.name || "").split(/\s+/)[0] || "";
+      var server = j.progress || [];
+      server.forEach(function(id){ if (!L.done[id]) L.done[id] = "synced"; });
+      lsSet("fx_done", JSON.stringify(L.done));
+      var mine = Object.keys(L.done).filter(function(id){ return server.indexOf(id) < 0; });
+      if (mine.length) pushProgress(mine.slice(0, 60));
+      paintMap();
+    })
+    .catch(function(){});
+}
+boot();
+
+/* ==========================================================================
+   THE SEQUENCING LINT. Ships, never runs for a user — it is behind #lint.
+   The rules it enforces are the difference between a course and 159 slides.
+   ========================================================================= */
+if (location.hash === "#lint") (function(){
+  var bad = [], keeps = {}, rules = 0, ruleLessons = [];
+  var banned = /\b(leverage|optimize|optimise|engagement|journey|unlock|discover|game-changer)\b/i;
+  COURSE.forEach(function(u){
+    u.lessons.forEach(function(l){
+      var cs = l.cards.map(norm), n = cs.length, id = l.id;
+      var checks = cs.filter(function(c){ return c.t === "check"; }).length;
+      if (checks !== 1) bad.push(id + ": " + checks + " check cards, want exactly 1");
+      var ci = cs.findIndex(function(c){ return c.t === "check"; });
+      if (ci >= 0){ var d = (ci + 1) / n; if (d < 0.5 || d > 0.9) bad.push(id + ": check at " + Math.round(d*100) + "% depth"); }
+      if (cs[cs.length-1].t !== "do") bad.push(id + ": does not end on a do card");
+      if (!MAKEONE[id]) bad.push(id + ": no MAKE ONE line");
+      var prose = cs.filter(function(c){ return c.t === "statement"; }).length;
+      var nonprose = n - prose - 1 - 1;                 // minus the check and the do
+      if (nonprose < (n >= 7 ? 2 : 1)) bad.push(id + ": only " + nonprose + " non-prose cards");
+      for (var i = 2; i < n; i++){
+        if (cs[i].t === cs[i-1].t && cs[i].t === cs[i-2].t) bad.push(id + ": three " + cs[i].t + " in a row at card " + (i+1));
+      }
+      cs.forEach(function(c, i){
+        var txt = JSON.stringify(c.t === "rule" ? c.rows.map(function(r){ return r.truth; }) : c);
+        if (banned.test(txt)) bad.push(id + " card " + (i+1) + ": banned word");
+        if (/[\u{1F300}-\u{1FAFF}]/u.test(txt)) bad.push(id + " card " + (i+1) + ": emoji");
+        var marks = (String(c.lead||"").match(/‹/g)||[]).length;
+        if (marks > 1) bad.push(id + " card " + (i+1) + ": " + marks + " marks, want at most 1");
+        if (c.t === "keep") keeps[u.id] = (keeps[u.id]||0) + 1;
+        if (c.t === "rule" && ruleLessons.indexOf(id) < 0){ rules++; ruleLessons.push(id); }
+      });
+    });
+  });
+  COURSE.forEach(function(u){ if (keeps[u.id] !== 1) bad.push(u.id + ": " + (keeps[u.id]||0) + " keep cards, want exactly 1"); });
+  if (rules > 5) bad.push("rule cards in " + rules + " lessons (" + ruleLessons.join(", ") + "), want at most 5");
+  var lessons = allLessons().length;
+  console.log("LINT: " + lessons + " lessons, " + COURSE.length + " units, " + bad.length + " violations");
+  bad.forEach(function(b){ console.warn("  " + b); });
+})();
+</script>
+</body>
+</html>
