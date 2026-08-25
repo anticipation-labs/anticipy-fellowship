@@ -34,7 +34,7 @@ fellowship URLs here.
 
 ---
 
-## THIS REPOSITORY IS NOT DEPLOYABLE ON ITS OWN. Read this part.
+## How this ships, and why HQ is not here
 
 The fellowship and **HQ** — the team's private workspace — run inside **one
 PocketBase instance, on one database, on purpose**. Every application writes a
@@ -46,9 +46,28 @@ phone numbers, the expense log, the password vault) is deliberately absent —
 that is the whole reason this repo exists separately, so somebody can work on
 the fellowship without being handed all of that.
 
-**To deploy, these files are composed over the full backend tree.** See
-`deploy.sh`. If you do not have the backend tree, you can still develop and
-run the tests against production; you cannot ship. Ask Omar.
+### Merging to `main` ships. You do not deploy by hand.
+
+`.github/workflows/ship.yml` runs on every push to `main`:
+
+1. **Syntax gate** — every hook, migration and page script must parse. A broken
+   hook does not just break the fellowship; HQ runs in the same PocketBase and
+   would go down with it.
+2. **Sync** — the fellowship files are copied into the private
+   `omize10/anticipy-backend` repo, which holds the other half (HQ). You do not
+   need access to that repo, and you will not be given it.
+3. **Railway rebuilds** from that push.
+4. **Byte-verify** — the workflow then fetches
+   `https://anticipyfellowship.com/fellowships.html` and compares it byte for
+   byte against this commit. If it does not match within ten minutes the run
+   **fails loudly**.
+
+That last step exists because `railway up` has reported success while failing.
+A green check here means the bytes on the live site are the bytes in this
+commit. Nothing less counts.
+
+`deploy.sh` is still here for deploying from a laptop that has the backend
+tree, but you should not need it.
 
 ---
 
