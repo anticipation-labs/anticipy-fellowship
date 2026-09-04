@@ -419,8 +419,9 @@ const YEAR_10 = new Date().getUTCFullYear() - 10;
   const mail = JSON.parse(mails[0].body);
   check("and only now does anything say you're in", /you're in/i.test(mail.subject + mail.text),
     mail.subject);
-  check("the welcome states the money split, never a bare $30",
-    /\$30/.test(mail.text) && /half/i.test(mail.text) && /ships/i.test(mail.text));
+  check("the welcome states the one-payment timing, never a bare $30",
+    /\$30/.test(mail.text) && /30 days/i.test(mail.text) &&
+    /one payment/i.test(mail.text) && /never take it back/i.test(mail.text));
   check("the confirm link is described as unlocking MONEY, not learning",
     /ready to get paid/i.test(mail.text) && !/confirm.*to start|verify.*before you/i.test(mail.text));
   // the raw confirm token must appear in the email and NOWHERE in the row

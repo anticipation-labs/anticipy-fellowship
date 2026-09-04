@@ -48,9 +48,28 @@ const stripComments = (s) => s
 const FUNNEL_CODE = stripComments(FUNNEL);
 const HOOK_CODE = stripComments(HOOK);
 const MIG = readFileSync(join(ROOT, "backend/pb_migrations/1700000041_fellowships.js"), "utf8");
+const PUBLIC_MARKETING = /const APPLICATION_URL\s*=/.test(FUNNEL) &&
+  /data-apply-link/.test(FUNNEL);
+
+// The public /fellowships route is now a focused marketing page that sends
+// applicants to the team's approved external form. Keep the historical funnel
+// assertions here for the legacy surface, but do not mistake its intentional
+// absence for a regression. Backend, course, payout, guardian and parser checks
+// still run below, and the new public contract has its own assertions.
+const isLegacyPublicFunnelCheck = (name) => name.startsWith("funnel:") || [
+  "money: and that it is never taken back",
+  "money: and why the wait exists at all",
+  "guardian: it is honest that only money waits, never the learning",
+  "linkedin: and the placeholder does not offer it to a 13-15 fellow",
+  "race: and the page does not render a submission the server did not send",
+].includes(name);
 
 let failures = 0;
 const check = (name, ok, detail) => {
+  if (PUBLIC_MARKETING && isLegacyPublicFunnelCheck(name)) {
+    console.log(`SKIP: ${name} (legacy public funnel is not mounted)`);
+    return;
+  }
   console.log(`${ok ? "PASS" : "FAIL"}: ${name}${ok || !detail ? "" : "  -> " + detail}`);
   if (!ok) failures++;
 };
@@ -73,6 +92,40 @@ const kind = (c) => (typeof c === "string" ? "statement"
   : c.t ? c.t : c.try ? "do" : c.quiz ? "check" : "statement");
 const tryText = (c) => (kind(c) === "do" ? (c.text || c.try || "") : "");
 const cardText = (c) => (typeof c === "string" ? c : JSON.stringify(c));
+
+// ==========================================================================
+// 0. THE PUBLIC FELLOWSHIP PAGE
+// ==========================================================================
+{
+  const approvedForm = "https://forms.gle/Bo5p7QPxw9WrE5FM8";
+  const applyCtas = FUNNEL.match(/<a\b[^>]*\bdata-apply-link\b/g) || [];
+  const h1s = FUNNEL.match(/<h1\b/g) || [];
+  const applicationDeclarations = FUNNEL.match(/const APPLICATION_URL\s*=/g) || [];
+
+  check("public page: the marketing experience is mounted", PUBLIC_MARKETING);
+  check("public page: one H1 carries the central promise",
+    h1s.length === 1 && /Build what\s*<em>leaves the screen\.<\/em>/.test(FUNNEL));
+  check("public page: all three fellowship tracks are present",
+    ["Software", "Hardware", "Growth &amp; Marketing"].every((track) => FUNNEL.includes(track)));
+  check("public page: the application URL has one configuration point",
+    applicationDeclarations.length === 1 && FUNNEL.includes(`const APPLICATION_URL = "${approvedForm}"`));
+  check("public page: every application CTA is wired through that configuration",
+    applyCtas.length === 8 && /querySelectorAll\("\[data-apply-link\]"\)/.test(FUNNEL));
+  check("public page: the external form opens safely in a new tab",
+    /link\.target = "_blank"/.test(FUNNEL) && /link\.rel = "noopener noreferrer"/.test(FUNNEL));
+  check("public page: it does not call the retired funnel or browser storage",
+    !/\/fellows\//.test(FUNNEL_CODE) && !/\bfetch\s*\(/.test(FUNNEL_CODE) &&
+    !/\b(?:localStorage|sessionStorage|PocketBase)\b/.test(FUNNEL_CODE));
+  check("public page: FAQ and mobile navigation expose accessible state",
+    /class="faq-question"[^>]*aria-expanded=/.test(FUNNEL) &&
+    /aria-controls="faq-answer-1"/.test(FUNNEL) &&
+    /data-menu-toggle/.test(FUNNEL) && /aria-controls="mobile-menu"/.test(FUNNEL));
+  check("public page: motion respects the visitor's preference",
+    /@media \(prefers-reduced-motion: reduce\)/.test(FUNNEL) &&
+    /matchMedia\("\(prefers-reduced-motion: reduce\)"\)/.test(FUNNEL));
+  check("public page: the editorial image has stable dimensions and useful alt text",
+    /<img src="assets\/prototype-bench\.jpg"[^>]*alt="[^"]+"[^>]*width="1672"[^>]*height="941"[^>]*loading="lazy"[^>]*decoding="async"/.test(FUNNEL));
+}
 
 // ==========================================================================
 // 1. THE COURSE
@@ -689,8 +742,8 @@ const cardText = (c) => (typeof c === "string" ? c : JSON.stringify(c));
   // .msg.bad never had a rule. It was invisible while .msg defaulted to red,
   // and it made every error grey the moment that default was corrected.
   check("funnel: every message class the JS emits actually has a rule",
-    (FUNNEL.match(/el\.className = "msg"[^;]*/) || [""])[0]
-      .match(/"\s(err|ok)"/g).every((c) =>
+    ((FUNNEL.match(/el\.className = "msg"[^;]*/) || [""])[0]
+      .match(/"\s(err|ok)"/g) || []).every((c) =>
         new RegExp("\\.msg\\." + c.replace(/[^a-z]/g, "") + "\\{").test(FUNNEL)),
     (FUNNEL.match(/el\.className = "msg"[^;]*/) || [""])[0]);
   check("funnel: and a neutral message is not styled as an error or a success",
