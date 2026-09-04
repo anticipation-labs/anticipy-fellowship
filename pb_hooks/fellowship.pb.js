@@ -1474,7 +1474,7 @@ routerAdd("POST", "/fellows/submissions", (e) => {
       // nothing. (b) $http.send follows redirects and exposes neither the
       // final URL nor an intermediate Location header, so a hook cannot read a
       // redirect target without downloading the destination page into a bot
-      // wall from Railway's IP. (c) TikTok's own oEmbed returns 400 for every
+      // wall from the server's IP. (c) TikTok's own oEmbed returns 400 for every
       // short form, so even a resolved link buys no verification.
       //
       // And it matters beyond tidiness: TikTok mints a FRESH vm code every

@@ -817,7 +817,7 @@ const cardText = (c) => (typeof c === "string" ? c : JSON.stringify(c));
   check("gate: it cleans up the row it creates",
     /internal\/fellows\/remove/.test(gate) &&
     /cannot be removed/.test(gate), "a gate that leaves rows in a table of minors is not trustworthy");
-  // /internal/* is answered by the site itself, never forwarded to Railway.
+  // /internal/* is refused on the public host, never exposed through the edge.
   check("gate: internal calls go straight at the backend",
     /ANTICIPY_BACKEND_URL/.test(gate) && /BACKEND\}\/internal/.test(gate));
 }

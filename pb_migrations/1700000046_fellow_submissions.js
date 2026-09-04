@@ -141,7 +141,7 @@ migrate((app) => {
   } catch (_) {}
 
   // The oEmbed meter, same two-field hour/calls shape as 'email' and 'llm'.
-  // It caps our GLOBAL outbound rate so a burst cannot get our Railway egress
+  // It caps our GLOBAL outbound rate so a burst cannot get our shared egress
   // IP rate-limited by TikTok. Over the ceiling the submission still saves as
   // unverified: a meter must never stop someone logging their own work.
   try {

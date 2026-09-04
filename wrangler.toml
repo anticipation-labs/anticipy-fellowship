@@ -1,0 +1,26 @@
+name = "anticipy-fellowships"
+main = "cloudflare/index.js"
+compatibility_date = "2026-09-02"
+workers_dev = true
+preview_urls = true
+keep_vars = true
+send_metrics = false
+
+[assets]
+directory = "./pb_public"
+binding = "ASSETS"
+html_handling = "none"
+not_found_handling = "none"
+run_worker_first = false
+
+[vars]
+ANTICIPY_FELLOWSHIP_URL = "https://anticipyfellowship.com"
+ANTICIPY_SITE_URL = "https://anticipy.ai"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "anticipy-fellowship"
+database_id = "2f2abfae-9618-45f2-b53d-d302274bcb52"
+
+[triggers]
+crons = ["23 * * * *"]

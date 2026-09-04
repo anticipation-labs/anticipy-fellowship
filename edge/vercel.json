@@ -6,11 +6,11 @@
     { "source": "/internal.html", "destination": "/_blocked" },
     { "source": "/fellows/hq", "destination": "/_blocked" },
 
-    { "source": "/", "destination": "https://backend-production-61e0a.up.railway.app/fellowships.html" },
-    { "source": "/fellowships", "destination": "https://backend-production-61e0a.up.railway.app/fellowships.html" },
-    { "source": "/fellowship-growth-learning", "destination": "https://backend-production-61e0a.up.railway.app/fellowship-growth-learning.html" },
+    { "source": "/", "destination": "https://anticipy-fellowships.omar-114.workers.dev/fellowships.html" },
+    { "source": "/fellowships", "destination": "https://anticipy-fellowships.omar-114.workers.dev/fellowships.html" },
+    { "source": "/fellowship-growth-learning", "destination": "https://anticipy-fellowships.omar-114.workers.dev/fellowship-growth-learning.html" },
 
-    { "source": "/:path*", "destination": "https://backend-production-61e0a.up.railway.app/:path*" }
+    { "source": "/:path*", "destination": "https://anticipy-fellowships.omar-114.workers.dev/:path*" }
   ],
   "headers": [
     {

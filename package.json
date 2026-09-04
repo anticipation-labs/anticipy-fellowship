@@ -1,0 +1,12 @@
+{
+  "name": "anticipy-fellowship",
+  "private": true,
+  "scripts": {
+    "check": "bash scripts/check.sh",
+    "deploy:cloudflare": "wrangler deploy --no-bundle --strict",
+    "deploy:cloudflare:dry-run": "wrangler deploy --no-bundle --strict --dry-run"
+  },
+  "devDependencies": {
+    "wrangler": "4.84.0"
+  }
+}

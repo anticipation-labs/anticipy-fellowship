@@ -15,13 +15,14 @@ browser
   -> anticipyfellowship.com          DNS at Porkbun (A -> Vercel)
   -> Vercel project "anticipy-fellowship"   edge/vercel.json in this repo
   -> catch-all rewrite /:path*
-  -> Railway service "backend"        PocketBase, project anticipy-production
-  -> pb_hooks/*.pb.js  +  pb_public/*.html  +  pb_public/assets/*   this repo
+  -> Cloudflare Worker "anticipy-fellowships"
+  -> cloudflare/index.js + D1 + pb_public/*   this repo
 ```
 
 The Vercel project is a front door and nothing else: it terminates TLS, maps
-three pretty URLs onto the `.html` files PocketBase actually serves, denies
-four HQ paths, and forwards everything else untouched.
+three pretty URLs onto the `.html` files the Worker serves, denies four HQ
+paths, and forwards everything else untouched. The public DNS zone is not in
+the Anticipy Cloudflare account yet, which is why this thin layer still exists.
 
 The forwarding is a **catch-all**, deliberately. Adding a `/fellows/*` route
 needs no change at the edge. The marketing site's enumerated rewrite list has
@@ -34,40 +35,31 @@ fellowship URLs here.
 
 ---
 
-## How this ships, and why HQ is not here
+## How this ships
 
-The fellowship and **HQ** — the team's private workspace — run inside **one
-PocketBase instance, on one database, on purpose**. Every application writes a
-row into HQ's activity feed, and the fellows admin route reads both sides.
-Splitting the database would break that.
+The fellowship now runs on the `anticipy-fellowships` Cloudflare Worker. Static
+pages and images come from `pb_public/`; application state lives in the
+`anticipy-fellowship` D1 database. The `DB` and `ASSETS` bindings are declared
+in `wrangler.toml`.
 
-So this repo holds the fellowship half only. HQ (`internal_hq.pb.js`, team
-phone numbers, the expense log, the password vault) is deliberately absent —
-that is the whole reason this repo exists separately, so somebody can work on
-the fellowship without being handed all of that.
+HQ remains deliberately absent. Team phone numbers, expenses, credentials and
+other private workspace data do not belong in this repository or Worker.
 
 ### Merging to `main` ships. You do not deploy by hand.
 
-`.github/workflows/ship.yml` runs on every push to `main`:
+Cloudflare Builds is connected to this repository and deploys `main` using the
+pinned Wrangler configuration. `.github/workflows/ship.yml` then independently:
 
-1. **Syntax gate** — every hook, migration and page script must parse. A broken
-   hook does not just break the fellowship; HQ runs in the same PocketBase and
-   would go down with it.
-2. **Sync** — the fellowship files are copied into the private
-   `omize10/anticipy-backend` repo, which holds the other half (HQ). You do not
-   need access to that repo, and you will not be given it.
-3. **Railway rebuilds** from that push.
-4. **Byte-verify** — the workflow then fetches
-   `https://anticipyfellowship.com/fellowships.html` and its local image assets,
-   and compares them byte for byte against this commit. If they do not match
-   within ten minutes the run **fails loudly**.
+1. runs every local syntax and behavioral check;
+2. validates the Wrangler deployment without publishing it;
+3. byte-verifies the Worker page and assets against the commit; and
+4. byte-verifies the same files through `anticipyfellowship.com`.
 
-That last step exists because `railway up` has reported success while failing.
-A green check here means the bytes on the live site are the bytes in this
-commit. Nothing less counts.
+A green `ship` check means the Cloudflare origin and public domain contain the
+exact bytes in the commit. Nothing less counts.
 
-`deploy.sh` is still here for deploying from a laptop that has the backend
-tree, but you should not need it.
+`deploy.sh` is an explicit manual fallback. It runs the local suite before a
+Wrangler deployment and should not normally be needed.
 
 ---
 
@@ -84,8 +76,17 @@ tree, but you should not need it.
 | `pb_public/fellowship-growth-learning.html` | the course. 9 units, 30 lessons. |
 | `pb_migrations/` | schema. 8 collections. Migrations run at boot and are additive. |
 | `gate/fellowship_gate.py` | the scoreboard. Start here. |
-| `edge/` | the Vercel front door |
-| `tests/` | node test suites, run against a live origin |
+| `cloudflare/index.js` | the deployed Worker entrypoint recovered from the current production version |
+| `wrangler.toml` | Worker assets, D1 binding, public variables, and cron schedule |
+| `edge/` | the temporary Vercel front door while the domain remains outside Cloudflare |
+| `scripts/check.sh` | local-only syntax and behavioral checks |
+| `tests/` | local behavioral test suites |
+
+The Worker entrypoint is currently a generated bundle. The readable PocketBase
+hook files remain useful as the behavioral source and test fixture, but changing
+a hook does **not** rebuild `cloudflare/index.js`. Restore or document the
+adapter build pipeline before making backend feature changes; otherwise a
+green source diff could omit the runtime change.
 
 ### One rule that will bite you
 
@@ -107,6 +108,9 @@ Eight legs over the whole journey a fellow actually walks — get in, find the
 community, learn what this is, learn to make one, make one, log it, see what
 you are owed, get paid. It measures the **live site**, writes one real row and
 removes it, and prints one line: `DONE`, or `NOT DONE - first failing leg: N`.
+
+Do not run the scoreboard against production without explicit approval;
+`npm run check` is the safe local suite.
 
 A leg that cannot be tested **fails**. It never passes by default.
 
@@ -135,10 +139,26 @@ Do not discover these the hard way:
 
 ---
 
+## Local development
+
+Install Node.js 24, then:
+
+```bash
+npm ci
+npm run check
+npm run deploy:cloudflare:dry-run
+```
+
+For a static preview, serve `pb_public/` from any local HTTP server. Do not use
+production credentials or point the scoreboard at the live Worker while
+developing. Put local-only Worker values in `.dev.vars`; it is gitignored.
+
+---
+
 ## Configuration
 
 No secrets live in this repo, and none should. Everything is read from the
-environment by name, on the Railway `backend` service:
+environment by name on the Cloudflare Worker:
 
 `ANTICIPY_FELLOWSHIP_URL` (this domain) · `ANTICIPY_SITE_URL` (the shop, where
 `?ref=` goes) · `ANTICIPY_INTERNAL_KEY` · `RESEND_API_KEY` ·
@@ -148,3 +168,10 @@ and the `ANTICIPY_FELLOW_*` ceilings, which all have sane defaults.
 The two URL variables are **different on purpose** and one email legitimately
 contains both: the confirm link and the lessons are the fellowship; the
 referral link is the shop.
+
+Only the two public URL values belong in `wrangler.toml`. Supply secrets through
+Cloudflare's encrypted secret settings, never Git: `ANTICIPY_INTERNAL_KEY`,
+`RESEND_API_KEY`, `OPENROUTER_API_KEY`, `ANTICIPY_FELLOW_SALT`, and—only when
+the team is ready to test payouts—the `TREMENDOUS_*` values. The
+`ANTICIPY_FELLOW_*` ceilings are optional plain configuration because safe
+defaults exist.

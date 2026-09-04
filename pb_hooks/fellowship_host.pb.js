@@ -24,12 +24,11 @@ routerUse((e) => {
   // Go puts the authority in Request.Host, not in the header map, but read
   // both — a guard that silently fails open because a field was named
   // differently is worse than no guard, because it looks like one.
-  // THREE PLACES, because the answer depends on the topology and the topology
-  // has already changed once today. Pointed straight at Railway, the hostname
-  // is in Request.Host. Behind the Vercel front door, Request.Host is the
-  // RAILWAY hostname and the real one is in X-Forwarded-Host — so a guard that
-  // read only Request.Host would silently stop guarding the moment a proxy
-  // appeared, which is the failure mode that looks exactly like working.
+  // THREE PLACES, because the answer depends on the topology. At the origin,
+  // the hostname is in Request.Host. Behind a front door, Request.Host can be
+  // the origin hostname and the public one is in X-Forwarded-Host — so a guard
+  // that read only Request.Host could silently stop guarding when a proxy is
+  // introduced, which is the failure mode that looks exactly like working.
   let host = "";
   try { host = String(e.request.header.get("X-Forwarded-Host") || ""); } catch (_) {}
   if (!host) { try { host = String(e.request.host || ""); } catch (_) {} }

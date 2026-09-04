@@ -53,15 +53,14 @@ ROOT = os.path.dirname(HERE)
 
 VERBOSE = "--verbose" in sys.argv or "-v" in sys.argv
 
-SITE = (os.environ.get("ANTICIPY_SITE_URL") or "https://www.anticipy.ai").rstrip("/")
+SITE = (os.environ.get("ANTICIPY_SITE_URL") or "https://anticipyfellowship.com").rstrip("/")
 
-# /internal/* NEVER reaches Railway through anticipy.ai. The site answers those
-# paths itself with "Internal area. Pass the gate at /api/internal-gate first."
-# — which is the correct posture for an internal area and also means every
-# internal call has to go straight at the backend. The gate found this by
-# leaving a live row behind on its first run.
+# /internal/* is intentionally refused on the public hostname. The scoreboard
+# therefore needs a separate, explicit origin for its internal cleanup call.
+# Never run it against production unless the team has authorized its real-row
+# write and supplied the internal key.
 BACKEND = (os.environ.get("ANTICIPY_BACKEND_URL")
-           or "https://backend-production-61e0a.up.railway.app").rstrip("/")
+           or "https://anticipy-fellowships.omar-114.workers.dev").rstrip("/")
 INTERNAL_KEY = os.environ.get("ANTICIPY_INTERNAL_KEY") or ""
 
 PUBLIC = os.path.join(ROOT, "backend", "pb_public")
