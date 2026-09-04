@@ -91,10 +91,9 @@ jobs:
       # railway up has reported success while failing before. Trust the bytes on
       # the live URL, nothing else.
       - name: Byte-verify the live site
-        if: env.CHANGED == 'yes'
         run: |
           set -e
-          echo "waiting for Railway to rebuild and serve the new bytes"
+          echo "waiting for the live origin to serve this commit's bytes"
           for i in $(seq 1 40); do
             if curl -fsS --max-time 20 https://anticipyfellowship.com/fellowships.html -o /tmp/live.html 2>/dev/null; then
               if cmp -s /tmp/live.html pb_public/fellowships.html; then
@@ -120,12 +119,11 @@ jobs:
           exit 1
 
       - name: Say what happened
-        if: always()
         run: |
           if [ "${CHANGED:-no}" = "yes" ]; then
             echo "### Shipped :rocket:" >> "$GITHUB_STEP_SUMMARY"
             echo "Synced to \`omize10/anticipy-backend\` and verified byte-for-byte on https://anticipyfellowship.com" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "### Nothing to ship" >> "$GITHUB_STEP_SUMMARY"
-            echo "This commit changed no file that reaches the backend." >> "$GITHUB_STEP_SUMMARY"
+            echo "### Verified :white_check_mark:" >> "$GITHUB_STEP_SUMMARY"
+            echo "The backend already matched, and the live page plus assets were verified byte-for-byte on https://anticipyfellowship.com" >> "$GITHUB_STEP_SUMMARY"
           fi
