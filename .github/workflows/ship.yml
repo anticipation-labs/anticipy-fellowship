@@ -69,6 +69,9 @@ jobs:
           # Only these names. Never a wildcard path from this repo into that one.
           cp pb_hooks/fellowship*.pb.js       /tmp/backend/pb_hooks/
           cp pb_public/fellowship*.html       /tmp/backend/pb_public/
+          mkdir -p /tmp/backend/pb_public/assets
+          cp pb_public/assets/favicon.png     /tmp/backend/pb_public/assets/
+          cp pb_public/assets/prototype-bench.jpg /tmp/backend/pb_public/assets/
           cp pb_migrations/*.js               /tmp/backend/pb_migrations/
 
           cd /tmp/backend
@@ -95,13 +98,23 @@ jobs:
           for i in $(seq 1 40); do
             if curl -fsS --max-time 20 https://anticipyfellowship.com/fellowships.html -o /tmp/live.html 2>/dev/null; then
               if cmp -s /tmp/live.html pb_public/fellowships.html; then
-                echo "MATCH after $((i*15))s — the live page is exactly what this commit contains"
-                exit 0
+                ASSETS_MATCH=yes
+                for asset in favicon.png prototype-bench.jpg; do
+                  if ! curl -fsS --max-time 20 "https://anticipyfellowship.com/assets/$asset" -o "/tmp/$asset" 2>/dev/null ||
+                     ! cmp -s "/tmp/$asset" "pb_public/assets/$asset"; then
+                    ASSETS_MATCH=no
+                    break
+                  fi
+                done
+                if [ "$ASSETS_MATCH" = "yes" ]; then
+                  echo "MATCH after $((i*15))s — the live page and assets are exactly what this commit contains"
+                  exit 0
+                fi
               fi
             fi
             sleep 15
           done
-          echo "::error::Ten minutes after the sync the live page still does not match this commit."
+          echo "::error::Ten minutes after the sync the live page or its assets still do not match this commit."
           echo "::error::The code is in omize10/anticipy-backend but Railway has not served it."
           echo "::error::Check the Railway 'backend' service. DO NOT assume this shipped."
           exit 1

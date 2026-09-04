@@ -16,7 +16,7 @@ browser
   -> Vercel project "anticipy-fellowship"   edge/vercel.json in this repo
   -> catch-all rewrite /:path*
   -> Railway service "backend"        PocketBase, project anticipy-production
-  -> pb_hooks/*.pb.js  +  pb_public/*.html   this repo
+  -> pb_hooks/*.pb.js  +  pb_public/*.html  +  pb_public/assets/*   this repo
 ```
 
 The Vercel project is a front door and nothing else: it terminates TLS, maps
@@ -58,9 +58,9 @@ the fellowship without being handed all of that.
    need access to that repo, and you will not be given it.
 3. **Railway rebuilds** from that push.
 4. **Byte-verify** — the workflow then fetches
-   `https://anticipyfellowship.com/fellowships.html` and compares it byte for
-   byte against this commit. If it does not match within ten minutes the run
-   **fails loudly**.
+   `https://anticipyfellowship.com/fellowships.html` and its local image assets,
+   and compares them byte for byte against this commit. If they do not match
+   within ten minutes the run **fails loudly**.
 
 That last step exists because `railway up` has reported success while failing.
 A green check here means the bytes on the live site are the bytes in this
@@ -79,7 +79,8 @@ tree, but you should not need it.
 | `pb_hooks/fellowship_payouts.pb.js` | the money rail. Read its header before touching it. |
 | `pb_hooks/fellowship_guardian.pb.js` | parental consent for under-18s |
 | `pb_hooks/fellowship_host.pb.js` | refuses HQ paths when the host is the fellowship domain |
-| `pb_public/fellowships.html` | the funnel: pitch, identity, track picker, questions, dashboard |
+| `pb_public/fellowships.html` | public fellowship story, three tracks, FAQ, and external application link |
+| `pb_public/assets/` | the fellowship page's versioned image and favicon assets |
 | `pb_public/fellowship-growth-learning.html` | the course. 9 units, 30 lessons. |
 | `pb_migrations/` | schema. 8 collections. Migrations run at boot and are additive. |
 | `gate/fellowship_gate.py` | the scoreboard. Start here. |

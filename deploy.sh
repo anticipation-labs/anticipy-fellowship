@@ -17,6 +17,9 @@ mkdir -p "$STAGE"
 cp -R "$BACKEND"/. "$STAGE"/
 cp "$HERE"/pb_hooks/*.pb.js        "$STAGE/pb_hooks/"
 cp "$HERE"/pb_public/*.html        "$STAGE/pb_public/"
+mkdir -p "$STAGE/pb_public/assets"
+cp "$HERE/pb_public/assets/favicon.png" "$STAGE/pb_public/assets/"
+cp "$HERE/pb_public/assets/prototype-bench.jpg" "$STAGE/pb_public/assets/"
 cp "$HERE"/pb_migrations/*.js      "$STAGE/pb_migrations/"
 
 echo "staged at $STAGE"
@@ -25,3 +28,5 @@ echo "syntax ok. now: cd $STAGE && railway up"
 echo
 echo "AFTER DEPLOY, BYTE-VERIFY. railway up has reported success while failing:"
 echo "  curl -s https://anticipyfellowship.com/fellowships.html | cmp - $HERE/pb_public/fellowships.html && echo MATCH"
+echo "  curl -s https://anticipyfellowship.com/assets/favicon.png | cmp - $HERE/pb_public/assets/favicon.png && echo MATCH"
+echo "  curl -s https://anticipyfellowship.com/assets/prototype-bench.jpg | cmp - $HERE/pb_public/assets/prototype-bench.jpg && echo MATCH"
