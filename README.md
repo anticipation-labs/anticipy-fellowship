@@ -12,21 +12,15 @@ repository.
 
 ```
 browser
-  -> anticipyfellowship.com          DNS at Porkbun (A -> Vercel)
-  -> Vercel project "anticipy-fellowship"   edge/vercel.json in this repo
-  -> catch-all rewrite /:path*
+  -> anticipyfellowship.com          Cloudflare authoritative DNS
   -> Cloudflare Worker "anticipy-fellowships"
   -> cloudflare/index.js + D1 + pb_public/*   this repo
 ```
 
-The Vercel project is a front door and nothing else: it terminates TLS, maps
-three pretty URLs onto the `.html` files the Worker serves, denies four HQ
-paths, and forwards everything else untouched. The public DNS zone is not in
-the Anticipy Cloudflare account yet, which is why this thin layer still exists.
-
-The forwarding is a **catch-all**, deliberately. Adding a `/fellows/*` route
-needs no change at the edge. The marketing site's enumerated rewrite list has
-taken production down twice by being forgotten; this cannot.
+Porkbun remains the registrar, but Cloudflare is the authoritative DNS and TLS
+edge. The apex and `www` hostnames are attached directly to the Worker through
+the routes in `wrangler.toml`. The old Vercel front-door configuration remains
+in `edge/` only as a rollback reference; it is not in the live request path.
 
 `anticipy.ai` keeps exactly two fellowship-adjacent things, both on purpose:
 `/r/:code` (the sales link — it redirects to the shop with `?ref=`, so it
@@ -78,7 +72,7 @@ Wrangler deployment and should not normally be needed.
 | `gate/fellowship_gate.py` | the scoreboard. Start here. |
 | `cloudflare/index.js` | the deployed Worker entrypoint recovered from the current production version |
 | `wrangler.toml` | Worker assets, D1 binding, public variables, and cron schedule |
-| `edge/` | the temporary Vercel front door while the domain remains outside Cloudflare |
+| `edge/` | retired Vercel front-door configuration retained as a rollback reference |
 | `scripts/check.sh` | local-only syntax and behavioral checks |
 | `tests/` | local behavioral test suites |
 

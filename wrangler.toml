@@ -5,6 +5,10 @@ workers_dev = true
 preview_urls = true
 keep_vars = true
 send_metrics = false
+routes = [
+  { pattern = "anticipyfellowship.com/*", zone_name = "anticipyfellowship.com" },
+  { pattern = "www.anticipyfellowship.com/*", zone_name = "anticipyfellowship.com" },
+]
 
 [assets]
 directory = "./pb_public"

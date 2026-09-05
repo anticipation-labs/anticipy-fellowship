@@ -1,12 +1,17 @@
 # anticipyfellowship.com
 
-This project is a front door and nothing else. It owns the domain, terminates
-TLS, and forwards every request to the `anticipy-fellowships` Cloudflare
-Worker. The Worker serves the fellowship pages, implements the `/fellows/*`
-API, and stores application state in the `anticipy-fellowship` D1 database.
+This directory contains the retired Vercel front door for
+`anticipyfellowship.com`. It is retained only as a rollback reference and is
+not part of the live request path.
 
-Two reasons it exists as its own Vercel project rather than more rewrites on the
-main `anticipy` project:
+Cloudflare now owns the authoritative DNS and terminates TLS for the domain.
+The apex and `www` hostnames route directly to the `anticipy-fellowships`
+Worker through `wrangler.toml`. The Worker serves the fellowship pages,
+implements the `/fellows/*` API, and stores application state in the
+`anticipy-fellowship` D1 database.
+
+The Vercel project originally existed separately from the main `anticipy`
+project for two reasons:
 
 1. The fellowship is not the marketing site. Keeping it here means a deploy of
    anticipy.ai cannot take the fellowship down, and vice versa.
@@ -21,6 +26,5 @@ The only enumerated entries are deliberate:
     reachable from the fellowship domain. The Worker also refuses those paths
     itself — belt and braces.
 
-The domain still uses Vercel DNS today, so this small edge project remains the
-public front door. If the domain's DNS zone is moved to the Anticipy Cloudflare
-account later, attach it as a Worker custom domain and retire this project.
+Do not redeploy this project during normal releases. Cloudflare Builds deploys
+the Worker from `main`, and the Worker routes are the live domain attachment.

@@ -61,7 +61,7 @@ jobs:
         run: |
           set -euo pipefail
           ORIGIN="https://anticipyfellowship.com"
-          echo "Waiting for the public front door to serve the Cloudflare release"
+          echo "Waiting for the Cloudflare domain routes to serve this release"
           for attempt in $(seq 1 60); do
             MATCH=yes
             for path in fellowships.html assets/favicon.png assets/prototype-bench.jpg; do
@@ -78,7 +78,7 @@ jobs:
             sleep 10
           done
           echo "::error::The Worker is current, but anticipyfellowship.com did not match within ten minutes."
-          echo "::error::Check the Vercel front-door deployment or move the domain into Cloudflare."
+          echo "::error::Check the Cloudflare zone, Worker routes, and Universal SSL status."
           exit 1
 
       - name: Record the verified release
